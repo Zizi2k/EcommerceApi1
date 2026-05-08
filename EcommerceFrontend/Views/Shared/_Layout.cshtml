@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Header -->
+    <partial name="_pHeader" />
+   @*  <!-- Top Navbar -->
+    <partial name="_pTopNavbar" /> *@
+    <!-- Navbar -->
+    <partial name="_pNavbar" />
+    
+</head>
+<body>
+    
+    <!-- Main content -->
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <partial name="_pFooter" />
+
+    <!-- Scripts -->
+    <partial name="_pScripts" />
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,41 @@
+﻿<link rel="shortcut icon" type="image/x-icon" href="~/images/favicon/favicon.ico" />
+
+<!-- Libs CSS -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@tabler/icons-webfont@2.46.0/tabler-icons.min.css" />
+<link rel="stylesheet" href="~/simplebar/dist/simplebar.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<!-- Theme CSS --> 
+<!-- build:css @@webRoot/assets/css/theme.min.css -->
+<link rel="stylesheet" href="~/css/theme.css" />
+<!-- endbuild -->
+<script>
+    new Swiper('#swiper-1', {
+        slidesPerView: 6,
+        spaceBetween: 20,
+        loop: true,
+
+        autoplay: {
+            delay: 3000,
+        },
+
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+
+        breakpoints: {
+            480: {
+                slidesPerView: 2
+            },
+            768: {
+                slidesPerView: 3
+            },
+            1024: {
+                slidesPerView: 6
+            }
+        }
+    });
+</script>

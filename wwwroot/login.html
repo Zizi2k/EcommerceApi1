@@ -2,113 +2,252 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đăng nhập hệ thống</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - Group 1 Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Header/Footer CSS -->
+    <link rel="stylesheet" href="css/header-footer.css">
+
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1;
             display: flex;
             justify-content: center;
-            padding-top: 100px;
-            background: #f4f4f4;
+            align-items: center;
+            padding: 40px 20px;
         }
 
         .login-card {
             background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            width: 350px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
         }
 
         input {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
+            padding: 12px;
             border: 1px solid #ddd;
-            box-sizing: border-box;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
         }
 
         button {
             width: 100%;
-            padding: 10px;
-            background: #28a745;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
+            border-radius: 8px;
             cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: 0.3s;
+            margin-top: 10px;
+            font-family: 'Poppins', sans-serif;
         }
 
-            button:hover {
-                background: #218838;
-            }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        #message {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 500;
+            display: none;
+        }
+
+        #message.show {
+            display: block;
+        }
+
+        .login-hint {
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .back-link a:hover {
+            color: #764ba2;
+        }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <h2>Đăng Nhập</h2>
-        <input type="text" id="username" placeholder="Tên đăng nhập (admin)">
-        <input type="password" id="password" placeholder="Mật khẩu (123456)">
-        <button onclick="handleLogin()">Đăng nhập</button>
-        <p id="message" style="color: red;"></p>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <div class="logo" onclick="navigateToHome()" title="Trang chủ" style="cursor: pointer;">
+                <i class="fa-solid fa-store"></i> Group <span>1 Store</span>
+            </div>
+
+            <div class="header-right">
+                <button class="user-btn" onclick="navigateToHome()">
+                    <i class="fa-solid fa-arrow-left"></i> Quay lại
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="login-card">
+            <h2><i class="fa-solid fa-lock"></i> Đăng Nhập</h2>
+            
+            <div class="form-group">
+                <label for="username">Tên đăng nhập</label>
+                <input type="text" id="username" placeholder="Nhập tên đăng nhập (admin)">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <input type="password" id="password" placeholder="Nhập mật khẩu (123456)">
+            </div>
+
+            <button onclick="handleLogin()">
+                <i class="fa-solid fa-sign-in-alt"></i> Đăng Nhập
+            </button>
+
+            <p id="message"></p>
+
+            <div class="login-hint">
+                <strong>Tài khoản test:</strong><br>
+                Username: admin<br>
+                Password: 123456
+            </div>
+
+            <div class="back-link">
+                <a href="index.html">
+                    <i class="fa-solid fa-arrow-left"></i> Về trang chủ
+                </a>
+            </div>
+        </div>
     </div>
 
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2026 Group 1 Store. All rights reserved.</p>
+                <p>Thiết kế bởi Group 1 | HTML • CSS • JavaScript</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script src="js/header.js"></script>
     <script>
         async function handleLogin() {
-            const user = document.getElementById('username').value;
+            const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value;
             const msg = document.getElementById('message');
 
+            if (!user || !pass) {
+                msg.textContent = "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!";
+                msg.classList.add('show');
+                return;
+            }
+
             try {
-                // Thay cổng 7xxx bằng cổng thực tế của API bạn (Xem trên thanh địa chỉ khi chạy API)
-                const response = await fetch('https://localhost:7xxx/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: user, password: pass })
+                const data = await apiPost(API_ENDPOINTS.LOGIN, {
+                    username: user,
+                    password: pass
                 });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    // Lưu Token vào "ngăn kéo" trình duyệt
-                    localStorage.setItem('userToken', data.token);
-                    alert("Đăng nhập thành công! Đang chuyển hướng...");
-                    window.location.href = "index.html";
-                } else {
-                    msg.innerText = "Tài khoản hoặc mật khẩu không đúng!";
-                }
-            } catch (error) {
-                msg.innerText = "Lỗi kết nối tới Server!";
-            }
-        }
-    </script>
-    <div class="login-box">
-        <input type="text" id="username" />
-        <input type="password" id="password" />
-        <button onclick="handleLogin()">Đăng nhập</button>
-    </div>
-
-    <script>
-        async function handleLogin() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
-
-            const response = await fetch('https://localhost:7xxx/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: user, password: pass })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                // Lệnh quan trọng nhất để lưu Token vào trình duyệt
+                // Lưu Token vào "ngăn kéo" trình duyệt
                 localStorage.setItem('userToken', data.token);
-                alert("Đã lấy và lưu Token thành công!");
+                msg.classList.remove('show');
+                alert("Đăng nhập thành công! Đang chuyển hướng...");
                 window.location.href = "index.html";
-            } else {
-                alert("Đăng nhập thất bại!");
+            } catch (error) {
+                msg.textContent = "Tài khoản hoặc mật khẩu không đúng!";
+                msg.classList.add('show');
             }
         }
+
+        // Cho phép nhấn Enter để đăng nhập
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('password').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    handleLogin();
+                }
+            });
+        });
     </script>
-</body>
-</html>
 </body>
 </html>

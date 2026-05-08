@@ -93,57 +93,57 @@
     </div>
 
     <script>
-    // --- PHẦN 2: GỌI API ĐỂ LẤY SẢN PHẨM ---
-    async function loadProducts() {
-        try {
-            const response = await fetch('https://localhost:7181/api/Product'); // Nhớ đổi đúng Port của bạn
-            const products = await response.json();
+        // --- PHẦN 2: GỌI API ĐỂ LẤY SẢN PHẨM ---
+        async function loadProducts() {
+            try {
+                const response = await fetch('https://localhost:7181/api/Products'); // Nhớ đổi đúng Port của bạn
+                const products = await response.json();
+                console.log("Sản phẩm nhận được:", products);
+                let html = '';
+                products.forEach(p => {
+                    html += `
+                        <div class="product-card">
+                            <img src="${p.imageUrl || 'https://via.placeholder.com/200'}" alt="${p.name}">
+                            <h3>${p.name}</h3>
+                            <p class="price">${p.price.toLocaleString()} VNĐ</p>
+                            <button class="btn-add" onclick="addToCart(${p.id})">Thêm vào giỏ</button>
+                        </div>
+                    `;
+                });
+                document.getElementById('product-list').innerHTML = html;
+            } catch (error) {
+                console.error("Lỗi:", error);
+            }
+        }
 
-            let html = '';
-            products.forEach(p => {
-                html += `
-                    <div class="product-card">
-                        <img src="${p.imageUrl || 'https://via.placeholder.com/200'}" alt="${p.name}">
-                        <h3>${p.name}</h3>
-                        <p class="price">${p.price.toLocaleString()} VNĐ</p>
-                        <button class="btn-add" onclick="addToCart(${p.id})">Thêm vào giỏ</button>
-                    </div>
-                `;
+        // --- PHẦN 3: LOGIC THÊM VÀO GIỎ HÀNG (DÙNG TOKEN) ---
+        async function addToCart(productId) {
+            const token = localStorage.getItem('userToken');
+            if (!token) {
+                alert("Vui lòng đăng nhập trước!");
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const response = await fetch('https://localhost:7181/api/Cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` // DÁN TOKEN Ở ĐÂY NHƯ ĐÃ HỌC
+                },
+                body: JSON.stringify({ productId: productId, quantity: 1 })
             });
-            document.getElementById('product-list').innerHTML = html;
-        } catch (error) {
-            console.error("Lỗi:", error);
-        }
-    }
 
-    // --- PHẦN 3: LOGIC THÊM VÀO GIỎ HÀNG (DÙNG TOKEN) ---
-    async function addToCart(productId) {
-        const token = localStorage.getItem('userToken');
-        if (!token) {
-            alert("Vui lòng đăng nhập trước!");
-            window.location.href = 'login.html';
-            return;
+            if (response.ok) {
+                alert("Đã thêm vào giỏ hàng!");
+                updateCartCount();
+            } else {
+                alert("Không thể thêm vào giỏ. Vui lòng thử lại.");
+            }
         }
 
-        const response = await fetch('https://localhost:7181/api/Cart/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // DÁN TOKEN Ở ĐÂY NHƯ ĐÃ HỌC
-            },
-            body: JSON.stringify({ productId: productId, quantity: 1 })
-        });
-
-        if (response.ok) {
-            alert("Đã thêm vào giỏ hàng!");
-            updateCartCount();
-        } else {
-            alert("Không thể thêm vào giỏ. Vui lòng thử lại.");
-        }
-    }
-
-    // Chạy hàm lấy sản phẩm khi vừa mở trang
-    loadProducts();
+        // Chạy hàm lấy sản phẩm khi vừa mở trang
+        loadProducts();
     </script>
 
 </body>

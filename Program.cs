@@ -68,6 +68,22 @@ webAppBuilder.Services.AddAuthentication("Bearer")
 builder.Services.AddAuthorization();
 var app = builder.Build();
 
+// Seed database
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    context.Database.EnsureCreated();
+    
+    // Add products if not exists
+    if (!context.Products.Any())
+    {
+        var products = ProductSeeder.GetProducts();
+        context.Products.AddRange(products);
+        context.SaveChanges();
+    }
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -275,8 +275,21 @@
                 return;
             }
 
+            // Kiểm tra giá
+            if (price < 0) {
+                errorText.textContent = "Giá tiền không được âm!";
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            // Kiểm tra stock
+            if (stock < 0) {
+                errorText.textContent = "Số lượng không được âm!";
+                errorMsg.style.display = 'block';
+                return;
+            }
+
             const product = {
-                id: Date.now(),
                 name: name,
                 description: description,
                 price: price,
@@ -287,10 +300,9 @@
 
             try {
                 const result = await apiPost(API_ENDPOINTS.PRODUCTS, product);
-                const savedProduct = result && result.id ? result : product;
-                saveLocalProduct(savedProduct);
-
+                
                 successMsg.style.display = 'block';
+                console.log("Sản phẩm đã được thêm:", result);
 
                 // Clear form
                 document.getElementById('name').value = '';
@@ -302,13 +314,19 @@
 
                 // Redirect after 2 seconds
                 setTimeout(() => {
-                    window.location.href = "index.html";
+                    window.location.href = "index.html?new=1";
                 }, 2000);
             } catch (error) {
+                console.error("Lỗi khi thêm sản phẩm:", error);
                 errorText.textContent = "Có lỗi xảy ra: " + error.message;
                 errorMsg.style.display = 'block';
             }
         }
+
+        // Initialize page
+        window.addEventListener('load', function() {
+            initializeHeader();
+        });
     </script>
 </body>
 </html>

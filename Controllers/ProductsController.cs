@@ -22,10 +22,66 @@ namespace EcommerceApi.Controllers
         }
 
         // GET: api/Products
+        // Hỗ trợ phân trang: /api/products?page=1&pageSize=9
+        // Hỗ trợ lọc: /api/products?search=laptop&minPrice=1000000&maxPrice=50000000&categoryId=1
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        public async Task<ActionResult<object>> GetProducts(
+            int page = 1, 
+            int pageSize = 9, 
+            string search = null,
+            decimal? minPrice = null,
+            decimal? maxPrice = null,
+            int? categoryId = null)
         {
-            return await _context.Products.ToListAsync();
+            var query = _context.Products.AsQueryable();
+
+            // Lọc theo tìm kiếm
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.ToLower();
+                query = query.Where(p => 
+                    p.Name.ToLower().Contains(search) || 
+                    p.Description.ToLower().Contains(search));
+            }
+
+            // Lọc theo giá
+            if (minPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= minPrice.Value);
+            }
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= maxPrice.Value);
+            }
+
+            // Lọc theo danh mục
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+
+            // Tính tổng số sản phẩm
+            var totalCount = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            // Phân trang
+            var products = await query
+                .OrderByDescending(p => p.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return Ok(new
+            {
+                products = products,
+                pagination = new
+                {
+                    currentPage = page,
+                    pageSize = pageSize,
+                    totalCount = totalCount,
+                    totalPages = totalPages
+                }
+            });
         }
 
         // GET: api/Products/5

@@ -99,8 +99,9 @@
         /* PRODUCT GRID */
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
         }
 
         .product-card {
@@ -110,6 +111,9 @@
             transition: 0.35s;
             position: relative;
             box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
             .product-card:hover {
@@ -120,11 +124,14 @@
         .product-image {
             position: relative;
             overflow: hidden;
+            width: 100%;
+            height: 240px;
+            background: #f0f0f0;
         }
 
             .product-image img {
                 width: 100%;
-                height: 260px;
+                height: 100%;
                 object-fit: cover;
                 transition: 0.5s;
             }
@@ -143,35 +150,52 @@
             border-radius: 20px;
             font-size: 13px;
             font-weight: 600;
+            z-index: 10;
         }
 
         .product-info {
-            padding: 22px;
+            padding: 18px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .product-name {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: #111827;
+            line-height: 1.4;
+            min-height: 40px;
         }
 
         .product-desc {
             color: #666;
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: 32px;
         }
 
         .product-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
+            margin-top: auto;
+            border-top: 1px solid #eee;
+            padding-top: 12px;
         }
 
         .price {
             color: #00a8cc;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
         }
 
@@ -179,15 +203,161 @@
             border: none;
             background: linear-gradient(135deg, #00c6ff, #0072ff);
             color: white;
-            padding: 11px 18px;
+            padding: 10px 15px;
             border-radius: 12px;
             cursor: pointer;
             transition: 0.3s;
             font-weight: 500;
+            font-size: 13px;
+            white-space: nowrap;
         }
 
             .btn-add:hover {
                 transform: scale(1.05);
+            }
+
+        /* FILTER SECTION */
+        .filter-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .filter-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #111827;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-item label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .filter-item input,
+        .filter-item select {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+            .filter-item input:focus,
+            .filter-item select:focus {
+                outline: none;
+                border-color: #00d4ff;
+                box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+            }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-filter,
+        .btn-reset {
+            padding: 11px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-filter {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+        }
+
+            .btn-filter:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 114, 255, 0.4);
+            }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+            .btn-reset:hover {
+                background: #e8e8e8;
+            }
+
+        /* PAGINATION */
+        .pagination-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-btn {
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+            .pagination-btn:hover {
+                background: #f0f0f0;
+                border-color: #00d4ff;
+            }
+
+        .pagination-btn.active {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            border-color: #0072ff;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .no-products {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 16px;
+        }
+
+            .no-products i {
+                font-size: 48px;
+                margin-bottom: 20px;
+                opacity: 0.5;
             }
 
         /* RESPONSIVE */
@@ -198,6 +368,42 @@
 
             .hero-content p {
                 font-size: 15px;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .product-image {
+                height: 180px;
+            }
+
+            .product-name {
+                font-size: 16px;
+            }
+
+            .pagination-section {
+                gap: 5px;
+            }
+
+            .pagination-btn {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+        }
+
+        @media(max-width: 480px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -230,6 +436,9 @@
                 </a>
                 <button onclick="navigateToAdmin()" style="color: #ffc107;">
                     <i class="fa-solid fa-cog"></i> Admin
+                </button>
+                <button onclick="window.location.href='admin.html'" style="color: #28a745; background: rgba(40,167,69,0.1); padding: 10px 15px; border-radius: 5px;">
+                    <i class="fa-solid fa-plus"></i> Thêm Sản Phẩm
                 </button>
             </nav>
 
@@ -271,10 +480,55 @@
 
         <h2 class="section-title">Sản Phẩm Nổi Bật</h2>
 
+        <!-- FILTER SECTION -->
+        <div class="filter-section">
+            <div class="filter-title"><i class="fa-solid fa-filter"></i> Bộ Lọc Sản Phẩm</div>
+            <div class="filter-grid">
+                <div class="filter-item">
+                    <label for="search-input">🔍 Tìm Kiếm</label>
+                    <input type="text" id="search-input" placeholder="Nhập tên sản phẩm...">
+                </div>
+                <div class="filter-item">
+                    <label for="category-filter">📦 Danh Mục</label>
+                    <select id="category-filter">
+                        <option value="">Tất cả danh mục</option>
+                        <option value="1">Laptop & Máy Tính</option>
+                        <option value="2">Smartphone</option>
+                        <option value="3">Tai Nghe</option>
+                        <option value="4">Camera & Photo</option>
+                        <option value="5">Phím & Chuột</option>
+                        <option value="6">Màn Hình & Display</option>
+                        <option value="7">Router & Network</option>
+                        <option value="8">Pin & Sạc</option>
+                        <option value="9">Máy Chiếu</option>
+                        <option value="10">Wearable</option>
+                        <option value="11">Phụ Kiện</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="min-price">💰 Giá Tối Thiểu (VNĐ)</label>
+                    <input type="number" id="min-price" placeholder="0" min="0">
+                </div>
+                <div class="filter-item">
+                    <label for="max-price">💰 Giá Tối Đa (VNĐ)</label>
+                    <input type="number" id="max-price" placeholder="100000000" min="0">
+                </div>
+            </div>
+            <div class="filter-buttons">
+                <button class="btn-filter" onclick="applyFilters()"><i class="fa-solid fa-search"></i> Tìm Kiếm</button>
+                <button class="btn-reset" onclick="resetFilters()"><i class="fa-solid fa-redo"></i> Reset</button>
+            </div>
+        </div>
+
         <div id="product-list" class="product-grid">
-
             <!-- Render API -->
+        </div>
 
+        <!-- PAGINATION -->
+        <div class="pagination-section" id="pagination-container" style="display: none;">
+            <button class="pagination-btn" id="prev-btn" onclick="prevPage()"><i class="fa-solid fa-chevron-left"></i> Trước</button>
+            <span class="pagination-info" id="pagination-info"></span>
+            <button class="pagination-btn" id="next-btn" onclick="nextPage()"><i class="fa-solid fa-chevron-right"></i> Sau</button>
         </div>
 
     </div>
@@ -349,27 +603,28 @@
     <script src="js/header.js"></script>
     <script>
 
+        // PAGINATION & FILTERING VARIABLES
+        let currentPage = 1;
+        const pageSize = 9;
+        let allProducts = [];
+        let filteredProducts = [];
+        let totalPages = 1;
+        let allProductsForFiltering = [];
+
+        // Filter state
+        let filterState = {
+            search: '',
+            categoryId: '',
+            minPrice: '',
+            maxPrice: ''
+        };
+
         const DEFAULT_PRODUCTS = [
-            { id: 1001, name: 'Laptop Gaming Raptor X', description: 'Hiệu năng cao, RTX 4080, RAM 32GB.', price: 42990000, stock: 20, imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800', categoryId: 1 },
-            { id: 1002, name: 'Smartphone Flagship Neo', description: 'Màn hình 6.7 inch, camera 108MP, pin 5000mAh.', price: 18990000, stock: 30, imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800', categoryId: 2 },
-            { id: 1003, name: 'Tai nghe Bluetooth Alpha', description: 'Chống ồn chủ động, pin 40 giờ.', price: 3290000, stock: 50, imageUrl: 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=800', categoryId: 3 },
-            { id: 1004, name: 'Camera hành trình Ultra HD', description: '4K, góc rộng 170°, ghi đêm rõ nét.', price: 2490000, stock: 25, imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800', categoryId: 4 },
-            { id: 1005, name: 'Bàn phím cơ Retro RGB', description: 'Switch blue, layout fullsize, đèn RGB.', price: 1590000, stock: 40, imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800', categoryId: 5 },
-            { id: 1006, name: 'Chuột gaming Titan', description: 'Độ phân giải 16000 DPI, thiết kế công thái học.', price: 690000, stock: 45, imageUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=800', categoryId: 5 },
-            { id: 1007, name: 'Màn hình 27inch QHD', description: 'IPS, tần số quét 165Hz, FreeSync.', price: 7590000, stock: 15, imageUrl: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=800', categoryId: 1 },
-            { id: 1008, name: 'Ổ cứng SSD NVMe 1TB', description: 'Tốc độ đọc 3500MB/s, bền bỉ, nhanh.', price: 2390000, stock: 60, imageUrl: 'https://images.unsplash.com/photo-1555617117-08df4d8b8b78?q=80&w=800', categoryId: 6 },
-            { id: 1009, name: 'Router Wi-Fi 6 Pro', description: 'Phủ sóng mạnh, hỗ trợ 200 thiết bị.', price: 1890000, stock: 35, imageUrl: 'https://images.unsplash.com/photo-1581093588401-6a14ecb29969?q=80&w=800', categoryId: 7 },
-            { id: 1010, name: 'Pin dự phòng 20000mAh', description: 'Sạc nhanh 45W, 2 cổng USB-C.', price: 490000, stock: 80, imageUrl: 'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?q=80&w=800', categoryId: 8 },
-            { id: 1011, name: 'Máy chiếu mini LED', description: '1080p, di động, trình chiếu lên đến 120 inch.', price: 4590000, stock: 18, imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800', categoryId: 9 },
-            { id: 1012, name: 'Loa Bluetooth Studio', description: 'Âm thanh hi-fi, bass sâu, pin 24h.', price: 2290000, stock: 28, imageUrl: 'https://images.unsplash.com/photo-1511376777868-611b54f68947?q=80&w=800', categoryId: 3 },
-            { id: 1013, name: 'Máy tính bảng Pro', description: 'Màn 11 inch, hỗ trợ bút cảm ứng.', price: 17990000, stock: 20, imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800', categoryId: 2 },
-            { id: 1014, name: 'Vòng đeo tay thông minh', description: 'Theo dõi sức khoẻ, đo nhịp tim.', price: 1290000, stock: 70, imageUrl: 'https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?q=80&w=800', categoryId: 10 },
-            { id: 1015, name: 'Smartwatch Xtreme', description: 'GPS, hỗ trợ nhiều môn thể thao.', price: 2490000, stock: 32, imageUrl: 'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?q=80&w=800', categoryId: 10 },
-            { id: 1016, name: 'Máy ảnh mirrorless', description: '24MP, quay 4K, lấy nét cực nhanh.', price: 20990000, stock: 12, imageUrl: 'https://images.unsplash.com/photo-1519183071298-a2962be90b44?q=80&w=800', categoryId: 4 },
-            { id: 1017, name: 'Đèn bàn LED thông minh', description: 'Điều chỉnh ánh sáng, chế độ đọc.', price: 590000, stock: 55, imageUrl: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?q=80&w=800', categoryId: 11 },
-            { id: 1018, name: 'Hub USB-C 7 cổng', description: 'Thunderbolt, USB-A, HDMI, Ethernet.', price: 890000, stock: 38, imageUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800', categoryId: 6 },
-            { id: 1019, name: 'Camera webcam 1080p', description: 'Góc 90°, micro khử ồn.', price: 690000, stock: 48, imageUrl: 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=800', categoryId: 4 },
-            { id: 1020, name: 'Đế tản nhiệt laptop', description: '3 quạt, LED RGB, làm mát hiệu quả.', price: 550000, stock: 65, imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800', categoryId: 5 }
+            { id: 1001, name: 'Laptop Gaming Raptor X', description: 'Laptop gaming cao cấp với GTX 4080, RAM 32GB, SSD 1TB NVMe. Hiệu năng tuyệt vời để chơi game và làm việc sáng tạo.', price: 42990000, stock: 20, imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800&h=600&fit=crop', categoryId: 1 },
+            { id: 1002, name: 'Smartphone Flagship Neo', description: 'Màn hình 6.7 inch, camera 108MP, pin 5000mAh, 5G, Snapdragon 8 Gen 3.', price: 24990000, stock: 30, imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800&h=600&fit=crop', categoryId: 2 },
+            { id: 1003, name: 'Tai nghe Bluetooth Alpha', description: 'Chống ồn chủ động (ANC), pin 40 giờ, codec LDAC, spatial audio.', price: 5290000, stock: 50, imageUrl: 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=800&h=600&fit=crop', categoryId: 3 },
+            { id: 1004, name: 'Camera hành trình Ultra HD', description: '4K@60fps, góc rộng 170°, ghi đêm rõ nét, dual channel.', price: 3490000, stock: 25, imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&h=600&fit=crop', categoryId: 4 },
+            { id: 1005, name: 'Bàn phím cơ Retro RGB', description: 'Switch blue mechanical, layout fullsize, LED RGB customizable.', price: 1890000, stock: 40, imageUrl: 'https://images.unsplash.com/photo-1587829191301-4ba8a0664415?q=80&w=800&h=600&fit=crop', categoryId: 5 }
         ];
 
         function getSavedProducts() {
@@ -383,15 +638,23 @@
         }
 
         function mergeProducts(apiProducts) {
-            const localProducts = getSavedProducts();
-            const existingIds = new Set(apiProducts.map(p => p.id));
-            const newLocal = localProducts.filter(p => !existingIds.has(p.id));
-            return [...newLocal, ...apiProducts];
+            // Nếu API trả về sản phẩm, sử dụng chúng
+            if (Array.isArray(apiProducts) && apiProducts.length > 0) {
+                return apiProducts;
+            }
+            // Nếu không, sử dụng localStorage
+            return getSavedProducts();
         }
 
         function renderProducts(products) {
             if (!products || !products.length) {
-                document.getElementById('product-list').innerHTML = '<p style="text-align: center; color: #666;">Chưa có sản phẩm nào.</p>';
+                document.getElementById('product-list').innerHTML = `
+                    <div class="no-products" style="grid-column: 1/-1;">
+                        <i class="fa-solid fa-inbox"></i>
+                        <p>Không tìm thấy sản phẩm nào phù hợp với bộ lọc của bạn.</p>
+                    </div>
+                `;
+                document.getElementById('pagination-container').style.display = 'none';
                 return;
             }
 
@@ -401,14 +664,14 @@
                     <div class="product-card">
                         <div class="product-image">
                             <span class="discount-badge">HOT</span>
-                            <img src="${p.imageUrl || 'https://via.placeholder.com/300'}" alt="${p.name}">
+                            <img src="${p.imageUrl || 'https://via.placeholder.com/300'}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x240?text=No+Image'">
                         </div>
                         <div class="product-info">
                             <h3 class="product-name">${p.name}</h3>
-                            <p class="product-desc">${p.description || 'Sản phẩm công nghệ cao cấp với thiết kế hiện đại và hiệu năng mạnh mẽ.'}</p>
+                            <p class="product-desc">${p.description || 'Sản phẩm công nghệ cao cấp'}</p>
                             <div class="product-bottom">
                                 <div class="price">${Number(p.price).toLocaleString()} VNĐ</div>
-                                <button class="btn-add" onclick="addToCart(${p.id})"><i class="fa-solid fa-cart-plus"></i> Thêm</button>
+                                <button class="btn-add" onclick="addToCart(${p.id})" title="Thêm vào giỏ hàng"><i class="fa-solid fa-cart-plus"></i> Thêm</button>
                             </div>
                         </div>
                     </div>
@@ -417,16 +680,124 @@
             document.getElementById('product-list').innerHTML = html;
         }
 
+        function updatePagination(totalCount) {
+            totalPages = Math.ceil(totalCount / pageSize);
+            
+            if (totalPages <= 1) {
+                document.getElementById('pagination-container').style.display = 'none';
+            } else {
+                document.getElementById('pagination-container').style.display = 'flex';
+                document.getElementById('pagination-info').textContent = `Trang ${currentPage}/${totalPages}`;
+                document.getElementById('prev-btn').disabled = currentPage === 1;
+                document.getElementById('next-btn').disabled = currentPage === totalPages;
+            }
+        }
+
         async function loadProducts() {
             try {
-                const products = await apiGet(API_ENDPOINTS.PRODUCTS);
-                const items = (products && products.length > 0) ? products : DEFAULT_PRODUCTS;
-                const merged = mergeProducts(items);
-                renderProducts(merged);
+                currentPage = 1;
+                const queryParams = new URLSearchParams();
+                queryParams.append('page', currentPage);
+                queryParams.append('pageSize', pageSize * 10); // Lấy nhiều hơn để có đủ dữ liệu lọc
+                
+                if (filterState.search) queryParams.append('search', filterState.search);
+                if (filterState.categoryId) queryParams.append('categoryId', filterState.categoryId);
+                if (filterState.minPrice) queryParams.append('minPrice', filterState.minPrice);
+                if (filterState.maxPrice) queryParams.append('maxPrice', filterState.maxPrice);
+
+                const url = `${API_ENDPOINTS.PRODUCTS}?${queryParams.toString()}`;
+                console.log("Gọi API:", url);
+                const response = await apiGet(url);
+                
+                let apiProducts = [];
+                let totalCount = 0;
+
+                if (response && response.products && Array.isArray(response.products)) {
+                    apiProducts = response.products;
+                    totalCount = response.pagination.totalCount;
+                    console.log("API trả về sản phẩm:", apiProducts.length, "Tổng:", totalCount);
+                } else if (Array.isArray(response)) {
+                    apiProducts = response;
+                    totalCount = response.length;
+                    console.log("API trả về array:", apiProducts.length);
+                }
+
+                // Lấy tất cả sản phẩm để lọc
+                allProductsForFiltering = apiProducts;
+                
+                // Nếu không có bộ lọc, paginate kết quả
+                if (!filterState.search && !filterState.categoryId && !filterState.minPrice && !filterState.maxPrice) {
+                    const startIndex = (currentPage - 1) * pageSize;
+                    const pageProducts = apiProducts.slice(startIndex, startIndex + pageSize);
+                    renderProducts(pageProducts);
+                    updatePagination(totalCount);
+                } else {
+                    // Nếu có bộ lọc, hiển thị trang đầu
+                    const pageProducts = apiProducts.slice(0, pageSize);
+                    renderProducts(pageProducts);
+                    updatePagination(apiProducts.length);
+                }
+
             } catch (error) {
                 console.error("Lỗi tải sản phẩm:", error);
+                // Fallback: Sử dụng DEFAULT_PRODUCTS hoặc localStorage
                 const fallback = [...getSavedProducts(), ...DEFAULT_PRODUCTS];
-                renderProducts(fallback);
+                allProductsForFiltering = fallback;
+                const pageProducts = fallback.slice(0, pageSize);
+                renderProducts(pageProducts);
+                updatePagination(fallback.length);
+            }
+        }
+
+        async function applyFilters() {
+            filterState.search = document.getElementById('search-input').value;
+            filterState.categoryId = document.getElementById('category-filter').value;
+            filterState.minPrice = document.getElementById('min-price').value;
+            filterState.maxPrice = document.getElementById('max-price').value;
+            
+            currentPage = 1;
+            await loadProducts();
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('category-filter').value = '';
+            document.getElementById('min-price').value = '';
+            document.getElementById('max-price').value = '';
+            
+            filterState = { search: '', categoryId: '', minPrice: '', maxPrice: '' };
+            currentPage = 1;
+            loadProducts();
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                scrollToProducts();
+                loadPageContent();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                scrollToProducts();
+                loadPageContent();
+            }
+        }
+
+        async function loadPageContent() {
+            // Paginate từ allProductsForFiltering
+            const startIndex = (currentPage - 1) * pageSize;
+            const pageProducts = allProductsForFiltering.slice(startIndex, startIndex + pageSize);
+            renderProducts(pageProducts);
+            updatePagination(allProductsForFiltering.length);
+        }
+
+        function scrollToProducts() {
+            const productSection = document.getElementById('products');
+            if (productSection) {
+                productSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
@@ -468,6 +839,16 @@
         window.onload = function() {
             loadProducts();
             updateCartCount();
+            
+            // Kiểm tra nếu là redirect từ admin (thêm sản phẩm mới)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('new') === '1') {
+                console.log("Detect thêm sản phẩm mới, refresh danh sách");
+                // Reload danh sách sau 1 giây
+                setTimeout(() => {
+                    loadProducts();
+                }, 1000);
+            }
         };
 
     </script>

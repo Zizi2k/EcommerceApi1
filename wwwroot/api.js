@@ -77,7 +77,8 @@ async function apiCall(url, options = {}) {
         if (!options.headers) {
             options.headers = {};
         }
-        if (!options.headers['Content-Type'] && options.body) {
+        // FormData: không set Content-Type để trình duyệt gửi kèm boundary multipart
+        if (options.body != null && typeof options.body === 'string' && !options.headers['Content-Type']) {
             options.headers['Content-Type'] = 'application/json';
         }
         
@@ -121,6 +122,14 @@ async function apiPost(url, data) {
     return apiCall(url, {
         method: 'POST',
         body: JSON.stringify(data)
+    });
+}
+
+/** POST multipart (upload file); không set Content-Type thủ công. */
+async function apiPostFormData(url, formData) {
+    return apiCall(url, {
+        method: 'POST',
+        body: formData
     });
 }
 

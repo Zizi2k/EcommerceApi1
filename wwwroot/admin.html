@@ -1,0 +1,642 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sản phẩm - Group 1 Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/header-footer.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fb;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 24px auto 40px;
+            width: 100%;
+        }
+        .page-title {
+            font-size: 28px;
+            color: #111827;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        /* Nút + Thêm Sản Phẩm (đồng bộ phong cách header cửa hàng) */
+        .btn-them-san-pham {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 14px;
+            background: #14532d;
+            color: #86efac;
+            box-shadow: 0 2px 8px rgba(20, 83, 45, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+            width: auto;
+        }
+        .btn-them-san-pham:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(20, 83, 45, 0.45);
+        }
+        .btn-them-san-pham i { font-size: 15px; color: #4ade80; }
+        .btn-refresh {
+            padding: 10px 18px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: inherit;
+            width: auto;
+        }
+        .btn-refresh:hover { border-color: #00d4ff; color: #0072ff; }
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+            align-items: start;
+        }
+        @media (max-width: 992px) {
+            .layout-grid { grid-template-columns: 1fr; }
+        }
+        .panel {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+        }
+        .panel h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .table-wrap { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+        }
+        tr:hover td { background: #fafbfc; }
+        .thumb {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #f0f0f0;
+        }
+        .cell-name { max-width: 200px; }
+        .cell-name strong { display: block; color: #111827; }
+        .cell-name small { color: #6b7280; font-size: 12px; }
+        .actions { white-space: nowrap; }
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 6px;
+            font-size: 14px;
+        }
+        .btn-edit { background: #e0f2fe; color: #0369a1; }
+        .btn-edit:hover { background: #bae6fd; }
+        .btn-del { background: #fee2e2; color: #b91c1c; }
+        .btn-del:hover { background: #fecaca; }
+        .form-group { margin-bottom: 14px; }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15);
+        }
+        textarea { resize: vertical; min-height: 88px; }
+        .form-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            font-family: inherit;
+        }
+        .btn-primary:hover { transform: scale(1.01); }
+        .btn-secondary {
+            width: 100%;
+            padding: 10px;
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: inherit;
+        }
+        .btn-secondary:hover { background: #e5e7eb; }
+        .success, .error {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            display: none;
+            font-size: 14px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 12px;
+            color: #0072ff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .back-link:hover { text-decoration: underline; }
+        .empty-hint {
+            text-align: center;
+            padding: 40px 16px;
+            color: #9ca3af;
+        }
+        .badge-mode {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #ecfdf5;
+            color: #047857;
+        }
+        .badge-mode.edit { background: #fef3c7; color: #b45309; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo" onclick="navigateToHome()" title="Trang chủ" style="cursor: pointer;">
+                <i class="fa-solid fa-store"></i> Group <span>1 Store</span>
+            </div>
+            <button class="menu-toggle" type="button">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <nav class="nav-menu">
+                <a href="index.html"><i class="fa-solid fa-home"></i> Trang chủ</a>
+                <a href="admin.html"><i class="fa-solid fa-box"></i> Quản lý sản phẩm</a>
+            </nav>
+            <div class="header-right">
+                <button class="user-btn" id="user-btn" type="button" style="display: none;" title="Tài khoản">
+                    <span class="user-btn-mark">
+                        <img class="user-avatar-img" alt="" width="30" height="30" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+                        <i class="user-avatar-fallback fa-solid fa-user" aria-hidden="true"></i>
+                    </span>
+                    <span class="user-btn-text">Tài khoản</span>
+                </button>
+                <div class="dropdown-menu" id="user-dropdown">
+                    <a href="account.html"><i class="fa-solid fa-gauge-high"></i> Khu cá nhân</a>
+                    <a href="#" onclick="logout(); return false;">
+                        <i class="fa-solid fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <h1 class="page-title">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            Quản lý sản phẩm
+            <span id="mode-badge" class="badge-mode">Thêm mới</span>
+        </h1>
+
+        <div class="toolbar">
+            <button type="button" class="btn-them-san-pham" onclick="goToAddProduct()" title="Mở form thêm sản phẩm">
+                <i class="fa-solid fa-plus"></i> Thêm Sản Phẩm
+            </button>
+            <button type="button" class="btn-refresh" onclick="loadProductTable()">
+                <i class="fa-solid fa-rotate"></i> Làm mới danh sách
+            </button>
+            <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Về cửa hàng</a>
+        </div>
+
+        <div class="layout-grid">
+            <div class="panel">
+                <h2><i class="fa-solid fa-list"></i> Danh sách sản phẩm</h2>
+                <div id="table-loading" class="empty-hint" style="display:none;">Đang tải...</div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ảnh</th>
+                                <th>Sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Kho</th>
+                                <th>Danh mục</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="product-table-body"></tbody>
+                    </table>
+                </div>
+                <div id="table-empty" class="empty-hint" style="display:none;">
+                    <i class="fa-solid fa-inbox fa-2x" style="margin-bottom:12px;display:block;"></i>
+                    Chưa có sản phẩm hoặc không tải được dữ liệu.
+                </div>
+            </div>
+
+            <div class="panel" id="product-form-panel">
+                <h2 id="form-panel-title"><i class="fa-solid fa-pen-to-square"></i> Thêm / sửa</h2>
+                <div id="success-message" class="success">
+                    <i class="fa-solid fa-check"></i> <span id="success-text"></span>
+                </div>
+                <div id="error-message" class="error">
+                    <i class="fa-solid fa-circle-exclamation"></i> <span id="error-text"></span>
+                </div>
+
+                <input type="hidden" id="productId" value="">
+
+                <div class="form-group">
+                    <label for="name">Tên sản phẩm *</label>
+                    <input type="text" id="name" placeholder="Nhập tên" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="description">Mô tả *</label>
+                    <textarea id="description" placeholder="Mô tả" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="price">Giá (VNĐ) *</label>
+                    <input type="number" id="price" min="0" step="1000" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Tồn kho *</label>
+                    <input type="number" id="stock" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="imageUrl">URL ảnh *</label>
+                    <input type="text" id="imageUrl" placeholder="https://..." required>
+                </div>
+                <div class="form-group">
+                    <label for="categoryId">Danh mục</label>
+                    <select id="categoryId" required>
+                        <option value="1">Đang tải…</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-primary" onclick="submitProductForm()">
+                        <i class="fa-solid fa-floppy-disk"></i> <span id="submit-btn-label">Lưu sản phẩm</span>
+                    </button>
+                    <button type="button" class="btn-secondary" id="btn-cancel-edit" style="display:none;" onclick="resetForm()">
+                        Hủy sửa — thêm mới
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2026 Group 1 Store. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script src="js/header.js"></script>
+    <script>
+        let editingId = null;
+        let adminProductsCache = [];
+
+        function escHtml(s) {
+            return String(s == null ? '' : s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        async function fillCategorySelect() {
+            const sel = document.getElementById('categoryId');
+            if (!sel || sel.tagName !== 'SELECT') return;
+            try {
+                const cats = await apiGet(API_ENDPOINTS.CATEGORIES);
+                if (!Array.isArray(cats) || !cats.length) throw new Error('empty');
+                sel.innerHTML = cats.map(c => `<option value="${c.id}">${escHtml(c.name)}</option>`).join('');
+            } catch (e) {
+                console.warn(e);
+                sel.innerHTML = CATEGORY_CATALOG.map(c => `<option value="${c.id}">${escHtml(c.name)}</option>`).join('');
+            }
+        }
+
+        function setMessages(success, error) {
+            const s = document.getElementById('success-message');
+            const e = document.getElementById('error-message');
+            const st = document.getElementById('success-text');
+            const et = document.getElementById('error-text');
+            s.style.display = success ? 'block' : 'none';
+            e.style.display = error ? 'block' : 'none';
+            if (success) st.textContent = success;
+            if (error) et.textContent = error;
+        }
+
+        function updateModeUI() {
+            const badge = document.getElementById('mode-badge');
+            const cancel = document.getElementById('btn-cancel-edit');
+            const label = document.getElementById('submit-btn-label');
+            if (editingId != null) {
+                badge.textContent = 'Đang sửa #' + editingId;
+                badge.classList.add('edit');
+                cancel.style.display = 'block';
+                label.textContent = 'Cập nhật sản phẩm';
+            } else {
+                badge.textContent = 'Thêm mới';
+                badge.classList.remove('edit');
+                cancel.style.display = 'none';
+                label.textContent = 'Lưu sản phẩm';
+            }
+        }
+
+        function goToAddProduct() {
+            resetForm();
+            scrollToProductForm();
+            const nameInput = document.getElementById('name');
+            if (nameInput) {
+                setTimeout(function () { nameInput.focus(); }, 400);
+            }
+        }
+
+        function scrollToProductForm() {
+            const panel = document.getElementById('product-form-panel');
+            if (panel) {
+                panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        async function maybeOpenEditFromQuery() {
+            const params = new URLSearchParams(window.location.search);
+            const raw = params.get('edit');
+            const editId = raw != null ? parseInt(raw, 10) : NaN;
+            if (isNaN(editId) || editId < 1) return;
+
+            try {
+                const p = await apiGet(`${API_ENDPOINTS.PRODUCTS}/${editId}`);
+                fillForm(p);
+                scrollToProductForm();
+                const nameInput = document.getElementById('name');
+                if (nameInput) {
+                    setTimeout(function () { nameInput.focus(); }, 500);
+                }
+                params.delete('edit');
+                const qs = params.toString();
+                const path = window.location.pathname;
+                const newUrl = qs ? (path + '?' + qs) : path;
+                history.replaceState(null, '', newUrl);
+            } catch (e) {
+                console.error(e);
+                setMessages('', 'Không tải được sản phẩm #' + editId + ' để sửa.');
+            }
+        }
+
+        function resetForm() {
+            editingId = null;
+            document.getElementById('productId').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('stock').value = '';
+            document.getElementById('imageUrl').value = '';
+            const catSel = document.getElementById('categoryId');
+            if (catSel && catSel.options.length) catSel.selectedIndex = 0;
+            setMessages('', '');
+            updateModeUI();
+        }
+
+        function fillForm(p) {
+            editingId = p.id;
+            document.getElementById('productId').value = p.id;
+            document.getElementById('name').value = p.name || '';
+            document.getElementById('description').value = p.description || '';
+            document.getElementById('price').value = p.price != null ? p.price : '';
+            document.getElementById('stock').value = p.stock != null ? p.stock : '';
+            document.getElementById('imageUrl').value = p.imageUrl || '';
+            const cid = p.categoryId != null ? String(p.categoryId) : '1';
+            const catSel = document.getElementById('categoryId');
+            if (catSel) {
+                catSel.value = cid;
+                if (catSel.value !== cid && catSel.options.length) catSel.selectedIndex = 0;
+            }
+            setMessages('', '');
+            updateModeUI();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function loadProductTable() {
+            const tbody = document.getElementById('product-table-body');
+            const loading = document.getElementById('table-loading');
+            const empty = document.getElementById('table-empty');
+            loading.style.display = 'block';
+            empty.style.display = 'none';
+            tbody.innerHTML = '';
+
+            try {
+                const url = `${API_ENDPOINTS.PRODUCTS}?page=1&pageSize=500`;
+                const data = await apiGet(url);
+                let list = [];
+                if (data && Array.isArray(data.products)) {
+                    list = data.products;
+                } else if (Array.isArray(data)) {
+                    list = data;
+                }
+
+                loading.style.display = 'none';
+                if (!list.length) {
+                    empty.style.display = 'block';
+                    adminProductsCache = [];
+                    return;
+                }
+                empty.style.display = 'none';
+                adminProductsCache = list;
+
+                tbody.innerHTML = list.map(p => {
+                    const safeName = escHtml(p.name);
+                    const fullDesc = String(p.description || '');
+                    const desc = escHtml(fullDesc.slice(0, 60));
+                    const img = escHtml(p.imageUrl || '');
+                    const catCell = escHtml(resolveCategoryName(p.categoryId, p.categoryName) || '—');
+                    return `
+                        <tr data-id="${p.id}">
+                            <td><img class="thumb" src="${img || 'https://via.placeholder.com/48'}" alt="" onerror="this.src='https://via.placeholder.com/48'"></td>
+                            <td class="cell-name"><strong>${safeName}</strong><small>${desc}${fullDesc.length > 60 ? '…' : ''}</small></td>
+                            <td>${Number(p.price).toLocaleString('vi-VN')} ₫</td>
+                            <td>${p.stock}</td>
+                            <td>${catCell}</td>
+                            <td class="actions">
+                                <button type="button" class="btn-icon btn-edit" title="Sửa" onclick="editProductById(${p.id})"><i class="fa-solid fa-pen"></i></button>
+                                <button type="button" class="btn-icon btn-del" title="Xóa" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error(err);
+                loading.style.display = 'none';
+                empty.style.display = 'block';
+                empty.textContent = 'Không tải được danh sách: ' + (err.message || err);
+            }
+        }
+
+        function editProductById(id) {
+            const p = adminProductsCache.find(x => x.id === id);
+            if (p) fillForm(p);
+        }
+
+        async function deleteProduct(id) {
+            if (!checkAuth()) return;
+            const p = adminProductsCache.find(x => x.id === id);
+            const name = p && p.name ? p.name : ('#' + id);
+            if (!confirm('Xóa sản phẩm "' + name + '"? Thao tác không hoàn tác.')) return;
+            try {
+                await apiDelete(`${API_ENDPOINTS.PRODUCTS}/${id}`);
+                if (editingId === id) resetForm();
+                setMessages('Đã xóa sản phẩm.', '');
+                await loadProductTable();
+            } catch (e) {
+                setMessages('', 'Không xóa được: ' + (e.message || e));
+            }
+        }
+
+        function readFormPayload(includeId) {
+            const name = document.getElementById('name').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const price = parseFloat(document.getElementById('price').value);
+            const stock = parseInt(document.getElementById('stock').value, 10);
+            const imageUrl = document.getElementById('imageUrl').value.trim();
+            const categoryId = parseInt(document.getElementById('categoryId').value, 10) || 1;
+
+            if (!name || !description || !imageUrl || isNaN(price) || isNaN(stock)) {
+                setMessages('', 'Vui lòng điền đầy đủ các trường bắt buộc.');
+                return null;
+            }
+            if (price < 0 || stock < 0) {
+                setMessages('', 'Giá và số lượng không được âm.');
+                return null;
+            }
+
+            const body = { name, description, price, stock, imageUrl, categoryId };
+            if (includeId && editingId != null) {
+                body.id = editingId;
+            }
+            return body;
+        }
+
+        async function submitProductForm() {
+            if (!checkAuth()) return;
+            setMessages('', '');
+
+            if (editingId != null) {
+                const body = readFormPayload(true);
+                if (!body) return;
+                try {
+                    await apiPut(`${API_ENDPOINTS.PRODUCTS}/${editingId}`, body);
+                    setMessages('Cập nhật thành công.', '');
+                    await loadProductTable();
+                } catch (e) {
+                    setMessages('', 'Cập nhật thất bại: ' + (e.message || e));
+                }
+                return;
+            }
+
+            const body = readFormPayload(false);
+            if (!body) return;
+            try {
+                await apiPost(API_ENDPOINTS.PRODUCTS, body);
+                setMessages('Đã thêm sản phẩm.', '');
+                resetForm();
+                await loadProductTable();
+            } catch (e) {
+                setMessages('', 'Thêm thất bại: ' + (e.message || e));
+            }
+        }
+
+        window.addEventListener('load', async function () {
+            if (!checkAuth()) return;
+            if (typeof isAdminUser === 'function' && !isAdminUser()) {
+                alert('Chỉ tài khoản admin mới được quản lý sản phẩm.');
+                window.location.href = 'index.html';
+                return;
+            }
+            initializeHeader();
+            await fillCategorySelect();
+            resetForm();
+            await loadProductTable();
+            await maybeOpenEditFromQuery();
+        });
+    </script>
+</body>
+</html>

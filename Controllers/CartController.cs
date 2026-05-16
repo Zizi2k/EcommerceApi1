@@ -63,10 +63,11 @@ namespace EcommerceApi.Controllers
             return Ok(new { message = "Đã thêm vào giỏ hàng thành công!" });
         }
 
-        // 3. Cập nhật số lượng (Ví dụ nhấn nút + hoặc - trong giỏ hàng)
+        // 3. Cập nhật số lượng — body JSON: { "newQuantity": 2 }
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateQuantity(int id, int newQuantity)
+        public async Task<IActionResult> UpdateQuantity(int id, [FromBody] UpdateCartItemQuantityDto dto)
         {
+            var newQuantity = dto?.NewQuantity ?? 0;
             var cartItem = await _context.CartItems.FindAsync(id);
             if (cartItem == null) return NotFound();
 

@@ -185,9 +185,9 @@
             <p id="message"></p>
 
             <div class="login-hint">
-                <strong>Tài khoản test:</strong><br>
-                Username: admin<br>
-                Password: 123456
+                <strong>Tài khoản test</strong> (mật khẩu đều <code>123456</code>):<br>
+                <code>admin</code> · <code>khach</code> · <code>user</code><br>
+                <small>Mỗi tài khoản có avatar riêng.</small>
             </div>
 
             <div class="back-link">
@@ -229,11 +229,20 @@
                     password: pass
                 });
 
-                // Lưu Token vào "ngăn kéo" trình duyệt
                 localStorage.setItem('userToken', data.token);
+                if (data.avatarUrl) {
+                    localStorage.setItem('userAvatar', data.avatarUrl);
+                } else {
+                    localStorage.removeItem('userAvatar');
+                }
+                if (data.username) {
+                    localStorage.setItem('userName', data.username);
+                } else {
+                    localStorage.setItem('userName', user);
+                }
                 msg.classList.remove('show');
-                alert("Đăng nhập thành công! Đang chuyển hướng...");
-                window.location.href = "index.html";
+                alert("Đăng nhập thành công! Đang chuyển đến khu vực cá nhân...");
+                window.location.href = "account.html";
             } catch (error) {
                 msg.textContent = "Tài khoản hoặc mật khẩu không đúng!";
                 msg.classList.add('show');

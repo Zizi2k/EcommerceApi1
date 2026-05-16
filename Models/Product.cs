@@ -9,5 +9,9 @@
         public int Stock { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
         public int CategoryId { get; set; }
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        public Category? Category { get; set; }
     }
 }
+

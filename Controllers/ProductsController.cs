@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using EcommerceApi.Data;
+using EcommerceApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using EcommerceApi.Data;
-using EcommerceApi.Models;
 
 namespace EcommerceApi.Controllers
 {
@@ -21,93 +17,106 @@ namespace EcommerceApi.Controllers
             _context = context;
         }
 
-        // GET: api/Products
-        // Hỗ trợ phân trang: /api/products?page=1&pageSize=9
-        // Hỗ trợ lọc: /api/products?search=laptop&minPrice=1000000&maxPrice=50000000&categoryId=1
+        // GET: api/Products — phân trang, lọc giá/danh mục, tìm theo tên/mô tả/tên danh mục
         [HttpGet]
         public async Task<ActionResult<object>> GetProducts(
-            int page = 1, 
-            int pageSize = 9, 
-            string search = null,
+            int page = 1,
+            int pageSize = 9,
+            string? search = null,
             decimal? minPrice = null,
             decimal? maxPrice = null,
             int? categoryId = null)
         {
             var query = _context.Products.AsQueryable();
 
-            // Lọc theo tìm kiếm
             if (!string.IsNullOrWhiteSpace(search))
             {
-                search = search.ToLower();
-                query = query.Where(p => 
-                    p.Name.ToLower().Contains(search) || 
-                    p.Description.ToLower().Contains(search));
+                var s = search.Trim().ToLower();
+                var matchingCategoryIds = await _context.Categories
+                    .Where(c => c.Name.ToLower().Contains(s))
+                    .Select(c => c.Id)
+                    .ToListAsync();
+
+                query = query.Where(p =>
+                    p.Name.ToLower().Contains(s) ||
+                    p.Description.ToLower().Contains(s) ||
+                    matchingCategoryIds.Contains(p.CategoryId));
             }
 
-            // Lọc theo giá
             if (minPrice.HasValue)
-            {
                 query = query.Where(p => p.Price >= minPrice.Value);
-            }
             if (maxPrice.HasValue)
-            {
                 query = query.Where(p => p.Price <= maxPrice.Value);
-            }
 
-            // Lọc theo danh mục
             if (categoryId.HasValue)
-            {
                 query = query.Where(p => p.CategoryId == categoryId.Value);
-            }
 
-            // Tính tổng số sản phẩm
             var totalCount = await query.CountAsync();
             var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
-            // Phân trang
             var products = await query
                 .OrderByDescending(p => p.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Name,
+                    p.Description,
+                    p.Price,
+                    p.Stock,
+                    p.ImageUrl,
+                    p.CategoryId,
+                    categoryName = p.Category != null ? p.Category.Name : ""
+                })
                 .ToListAsync();
 
             return Ok(new
             {
-                products = products,
+                products,
                 pagination = new
                 {
                     currentPage = page,
-                    pageSize = pageSize,
-                    totalCount = totalCount,
-                    totalPages = totalPages
+                    pageSize,
+                    totalCount,
+                    totalPages
                 }
             });
         }
 
-        // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<object>> GetProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var dto = await _context.Products
+                .AsNoTracking()
+                .Where(p => p.Id == id)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Name,
+                    p.Description,
+                    p.Price,
+                    p.Stock,
+                    p.ImageUrl,
+                    p.CategoryId,
+                    categoryName = p.Category != null ? p.Category.Name : ""
+                })
+                .FirstOrDefaultAsync();
 
-            if (product == null)
-            {
+            if (dto == null)
                 return NotFound();
-            }
 
-            return product;
+            return Ok(dto);
         }
 
-        // PUT: api/Products/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
             if (id != product.Id)
-            {
                 return BadRequest();
-            }
 
+            product.Category = null;
             _context.Entry(product).State = EntityState.Modified;
 
             try
@@ -117,38 +126,31 @@ namespace EcommerceApi.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!ProductExists(id))
-                {
                     return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
         }
 
-        // POST: api/Products
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
+            product.Category = null;
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
         }
 
-        // DELETE: api/Products/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null)
-            {
                 return NotFound();
-            }
 
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
@@ -156,9 +158,6 @@ namespace EcommerceApi.Controllers
             return NoContent();
         }
 
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
-        }
+        private bool ProductExists(int id) => _context.Products.Any(e => e.Id == id);
     }
 }

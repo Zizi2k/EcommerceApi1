@@ -73,15 +73,27 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApplicationDbContext>();
-    context.Database.EnsureCreated();
-    
-    // Add products if not exists
+    context.Database.Migrate();
+
+    if (!context.Categories.Any())
+    {
+        context.Categories.AddRange(CategorySeeder.GetCategories());
+        context.SaveChanges();
+    }
+
     if (!context.Products.Any())
     {
         var products = ProductSeeder.GetProducts();
         context.Products.AddRange(products);
         context.SaveChanges();
     }
+
+    foreach (var p in ProductSeeder.GetTwentyExtraProducts())
+    {
+        if (!context.Products.Any(x => x.Name == p.Name))
+            context.Products.Add(p);
+    }
+    context.SaveChanges();
 }
 
 
@@ -96,6 +108,7 @@ app.UseStaticFiles();  // Cho phép trình duyệt truy cập các file trong ww
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

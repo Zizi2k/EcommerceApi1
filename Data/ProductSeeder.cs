@@ -72,5 +72,41 @@ namespace EcommerceApi.Data
                 new Product { Id = 1050, Name = "Portable Monitor 15.6 USB-C", Description = "1920x1080 IPS, USB-C power + video, speakers built-in, lightweight.", Price = 3490000, Stock = 28, ImageUrl = "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=800&h=600&fit=crop", CategoryId = 6 }
             };
         }
+
+        /// <summary>20 sản phẩm bổ sung (Id để DB tự sinh). Chèn theo tên trong Program nếu chưa có.</summary>
+        public static List<Product> GetTwentyExtraProducts()
+        {
+            const string phone = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800&h=600&fit=crop";
+            const string laptop = "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800&h=600&fit=crop";
+            const string audio = "https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=800&h=600&fit=crop";
+            const string camera = "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&h=600&fit=crop";
+            const string keyboard = "https://images.unsplash.com/photo-1587829191301-4ba8a0664415?q=80&w=800&h=600&fit=crop";
+            const string network = "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=800&h=600&fit=crop";
+            const string power = "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?q=80&w=800&h=600&fit=crop";
+
+            return new List<Product>
+            {
+                new Product { Name = "Samsung Galaxy S25 Ultra", Description = "Snapdragon 8 Elite, S Pen, camera 200MP, màn 6.9 inch Dynamic AMOLED 2X.", Price = 32990000, Stock = 12, ImageUrl = phone, CategoryId = 2 },
+                new Product { Name = "Google Pixel 9 Pro", Description = "Tensor G4, Magic Eraser, Night Sight, Android gốc, 7 năm cập nhật.", Price = 22490000, Stock = 10, ImageUrl = phone, CategoryId = 2 },
+                new Product { Name = "Xiaomi 15", Description = "Snapdragon 8 Gen 4, Leica camera, pin 5400mAh, sạc nhanh 90W.", Price = 14990000, Stock = 22, ImageUrl = phone, CategoryId = 2 },
+                new Product { Name = "OPPO Find X8", Description = "Hasselblad tuning, zoom tiềm vọng, sạc SuperVOOC 80W, thiết kế mỏng.", Price = 18990000, Stock = 15, ImageUrl = phone, CategoryId = 2 },
+                new Product { Name = "Nothing Phone (3)", Description = "Glyph Interface, Snapdragon 8s Gen 3, màn 6.7 inch 120Hz.", Price = 12990000, Stock = 18, ImageUrl = phone, CategoryId = 2 },
+                new Product { Name = "iPhone 14", Description = "Chip A15 Bionic, camera kép 12MP, Face ID, 5G, pin cả ngày.", Price = 17990000, Stock = 25, ImageUrl = phone, CategoryId = 2 },
+                new Product { Name = "ASUS ROG Phone 9", Description = "Gaming phone, tản nhiệt tích hợp, màn 165Hz, pin 5800mAh.", Price = 21990000, Stock = 8, ImageUrl = phone, CategoryId = 2 },
+                new Product { Name = "realme GT 6", Description = "Chip flagship, sạc 120W, màn AMOLED 6000 nits, giá hiệu năng.", Price = 9990000, Stock = 30, ImageUrl = phone, CategoryId = 2 },
+                new Product { Name = "MacBook Air 15 inch M3", Description = "Apple M3, RAM 16GB, SSD 512GB, pin 18 giờ, không quạt.", Price = 28990000, Stock = 9, ImageUrl = laptop, CategoryId = 1 },
+                new Product { Name = "Dell XPS 15 OLED", Description = "Intel Core Ultra 7, RTX 4050, màn OLED 3.5K, vỏ nhôm cao cấp.", Price = 42990000, Stock = 6, ImageUrl = laptop, CategoryId = 1 },
+                new Product { Name = "LG gram 17 2025", Description = "Siêu nhẹ dưới 1.4kg, pin 80Wh, màn 17 inch WQXGA, MIL-STD.", Price = 35990000, Stock = 7, ImageUrl = laptop, CategoryId = 1 },
+                new Product { Name = "Sony WH-1000XM6", Description = "ANC đỉnh, LDAC, 30 giờ pin, multipoint, cảm biến đeo tự dừng nhạc.", Price = 7990000, Stock = 20, ImageUrl = audio, CategoryId = 3 },
+                new Product { Name = "Apple AirPods Pro 3", Description = "Adaptive Audio, USB-C, chống ồn chủ động, Spatial Audio cá nhân hóa.", Price = 4990000, Stock = 35, ImageUrl = audio, CategoryId = 3 },
+                new Product { Name = "Bose QuietComfort Ultra Earbuds", Description = "ANC mạnh, Immersive Audio, pin 6h + hộp 18h, fit ổn định.", Price = 9490000, Stock = 14, ImageUrl = audio, CategoryId = 3 },
+                new Product { Name = "Canon EOS R50 Kit RF-S18-45", Description = "APS-C 24.2MP, quay 4K không crop, Dual Pixel AF II, nhẹ cho Vlog.", Price = 16990000, Stock = 11, ImageUrl = camera, CategoryId = 4 },
+                new Product { Name = "GoPro HERO13 Black", Description = "5.3K60, HyperSmooth 6.0, chống nước 10m, GPS & metadata.", Price = 10990000, Stock = 16, ImageUrl = camera, CategoryId = 4 },
+                new Product { Name = "Logitech MX Keys S", Description = "Bàn phím không dây low-profile, đèn nền thông minh, Easy-Switch 3 thiết bị.", Price = 2490000, Stock = 28, ImageUrl = keyboard, CategoryId = 5 },
+                new Product { Name = "Keychron Q1 Pro QMK", Description = "Khung nhôm, hot-swap, Bluetooth/USB-C, layout 75%, tùy chỉnh phím.", Price = 3990000, Stock = 19, ImageUrl = keyboard, CategoryId = 5 },
+                new Product { Name = "ASUS RT-AX86U Pro", Description = "Wi-Fi 6, 2.5G WAN/LAN, AiProtection Pro, tối ưu game Mobile Game Mode.", Price = 5490000, Stock = 13, ImageUrl = network, CategoryId = 7 },
+                new Product { Name = "Anker Prime Power Bank 27650mAh", Description = "Sạc nhanh 140W, 3 cổng, màn hiển thị, phù hợp laptop & điện thoại.", Price = 2190000, Stock = 24, ImageUrl = power, CategoryId = 8 }
+            };
+        }
     }
 }

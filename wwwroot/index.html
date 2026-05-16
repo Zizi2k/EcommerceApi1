@@ -69,6 +69,53 @@
                 transform: scale(1.05);
             }
 
+        body.app-user-logged-in .hero {
+            background: linear-gradient(118deg, rgba(13, 148, 136, 0.85), rgba(30, 58, 138, 0.82)), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1920');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .member-welcome-strip {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #f0fdfa;
+            background: linear-gradient(90deg, #0f766e, #1d4ed8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .member-welcome-strip-inner {
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .member-welcome-strip a {
+            margin-left: auto;
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            transition: background 0.2s;
+        }
+
+        .member-welcome-strip a:hover {
+            background: rgba(255, 255, 255, 0.28);
+        }
+
         /* CONTAINER */
         .container {
             max-width: 1300px;
@@ -160,6 +207,16 @@
             flex-direction: column;
         }
 
+        .product-category {
+            font-size: 12px;
+            font-weight: 600;
+            color: #0072ff;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin: 0 0 6px 0;
+            line-height: 1.3;
+        }
+
         .product-name {
             font-size: 18px;
             font-weight: 600;
@@ -191,12 +248,23 @@
             margin-top: auto;
             border-top: 1px solid #eee;
             padding-top: 12px;
+            flex-wrap: wrap;
         }
 
         .price {
             color: #00a8cc;
             font-size: 20px;
             font-weight: 700;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .product-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
 
         .btn-add {
@@ -216,7 +284,25 @@
                 transform: scale(1.05);
             }
 
-        /* FILTER SECTION */
+        .btn-edit-card {
+            border: 2px solid #f59e0b;
+            background: linear-gradient(180deg, #fffbeb, #fef3c7);
+            color: #b45309;
+            padding: 9px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-edit-card:hover {
+            transform: scale(1.05);
+            background: #fde68a;
+            border-color: #d97706;
+        }
         .filter-section {
             background: white;
             padding: 25px;
@@ -422,24 +508,29 @@
             </button>
 
             <nav class="nav-menu">
-                <a href="index.html">
+                <a href="index.html" title="Trang chủ">
                     <i class="fa-solid fa-home"></i> Trang chủ
                 </a>
-                <a href="#products">
-                    <i class="fa-solid fa-box"></i> Sản phẩm
+                <div class="nav-dropdown nav-dropdown--products">
+                    <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true" title="Sản phẩm">
+                        <i class="fa-solid fa-box"></i> Sản phẩm
+                        <i class="fa-solid fa-chevron-down nav-dropdown-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div class="nav-dropdown-menu" role="menu">
+                        <a href="#products" class="nav-dropdown-item" role="menuitem" title="Xem danh sách sản phẩm">
+                            <i class="fa-solid fa-store"></i> Cửa hàng
+                        </a>
+                        <a href="admin.html" class="nav-dropdown-item nav-dropdown-item--module nav-admin-only" role="menuitem" title="Quản lý sản phẩm">
+                            <i class="fa-solid fa-sliders"></i> Quản lý
+                        </a>
+                    </div>
+                </div>
+                <a href="#about" title="Giới thiệu">
+                    <i class="fa-solid fa-info-circle"></i> Giới thiệu
                 </a>
-                <a href="#about">
-                    <i class="fa-solid fa-info-circle"></i> Về chúng tôi
-                </a>
-                <a href="#contact">
+                <a href="#contact" title="Liên hệ">
                     <i class="fa-solid fa-envelope"></i> Liên hệ
                 </a>
-                <button onclick="navigateToAdmin()" style="color: #ffc107;">
-                    <i class="fa-solid fa-cog"></i> Admin
-                </button>
-                <button onclick="window.location.href='admin.html'" style="color: #28a745; background: rgba(40,167,69,0.1); padding: 10px 15px; border-radius: 5px;">
-                    <i class="fa-solid fa-plus"></i> Thêm Sản Phẩm
-                </button>
             </nav>
 
             <div class="header-right">
@@ -449,10 +540,15 @@
                 </button>
 
                 <div class="user-menu">
-                    <button class="user-btn" id="user-btn" style="display: none;" title="Tài khoản">
-                        <i class="fa-solid fa-user"></i> Tài khoản
+                    <button class="user-btn" id="user-btn" type="button" style="display: none;" title="Tài khoản">
+                        <span class="user-btn-mark">
+                            <img class="user-avatar-img" alt="" width="30" height="30" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+                            <i class="user-avatar-fallback fa-solid fa-user" aria-hidden="true"></i>
+                        </span>
+                        <span class="user-btn-text">Tài khoản</span>
                     </button>
                     <div class="dropdown-menu" id="user-dropdown">
+                        <a href="account.html"><i class="fa-solid fa-gauge-high"></i> Khu cá nhân</a>
                         <a href="#" onclick="logout(); return false;">
                             <i class="fa-solid fa-sign-out-alt"></i> Đăng xuất
                         </a>
@@ -465,6 +561,14 @@
             </div>
         </div>
     </header>
+
+    <div id="member-welcome-strip" class="member-welcome-strip" style="display: none;" role="status" aria-live="polite">
+        <div class="member-welcome-strip-inner">
+            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+            <span class="member-welcome-text"></span>
+            <a href="account.html">Khu vực cá nhân <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+    </div>
 
     <!-- HERO -->
     <section class="hero">
@@ -492,17 +596,6 @@
                     <label for="category-filter">📦 Danh Mục</label>
                     <select id="category-filter">
                         <option value="">Tất cả danh mục</option>
-                        <option value="1">Laptop & Máy Tính</option>
-                        <option value="2">Smartphone</option>
-                        <option value="3">Tai Nghe</option>
-                        <option value="4">Camera & Photo</option>
-                        <option value="5">Phím & Chuột</option>
-                        <option value="6">Màn Hình & Display</option>
-                        <option value="7">Router & Network</option>
-                        <option value="8">Pin & Sạc</option>
-                        <option value="9">Máy Chiếu</option>
-                        <option value="10">Wearable</option>
-                        <option value="11">Phụ Kiện</option>
                     </select>
                 </div>
                 <div class="filter-item">
@@ -562,7 +655,7 @@
                     <h4><i class="fa-solid fa-sitemap"></i> Menu</h4>
                     <a href="index.html">Trang chủ</a>
                     <a href="#products">Sản phẩm</a>
-                    <a href="#about">Về chúng tôi</a>
+                    <a href="#about">Giới thiệu</a>
                     <a href="#contact">Liên hệ</a>
                 </div>
 
@@ -620,12 +713,38 @@
         };
 
         const DEFAULT_PRODUCTS = [
-            { id: 1001, name: 'Laptop Gaming Raptor X', description: 'Laptop gaming cao cấp với GTX 4080, RAM 32GB, SSD 1TB NVMe. Hiệu năng tuyệt vời để chơi game và làm việc sáng tạo.', price: 42990000, stock: 20, imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800&h=600&fit=crop', categoryId: 1 },
-            { id: 1002, name: 'Smartphone Flagship Neo', description: 'Màn hình 6.7 inch, camera 108MP, pin 5000mAh, 5G, Snapdragon 8 Gen 3.', price: 24990000, stock: 30, imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800&h=600&fit=crop', categoryId: 2 },
-            { id: 1003, name: 'Tai nghe Bluetooth Alpha', description: 'Chống ồn chủ động (ANC), pin 40 giờ, codec LDAC, spatial audio.', price: 5290000, stock: 50, imageUrl: 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=800&h=600&fit=crop', categoryId: 3 },
-            { id: 1004, name: 'Camera hành trình Ultra HD', description: '4K@60fps, góc rộng 170°, ghi đêm rõ nét, dual channel.', price: 3490000, stock: 25, imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&h=600&fit=crop', categoryId: 4 },
-            { id: 1005, name: 'Bàn phím cơ Retro RGB', description: 'Switch blue mechanical, layout fullsize, LED RGB customizable.', price: 1890000, stock: 40, imageUrl: 'https://images.unsplash.com/photo-1587829191301-4ba8a0664415?q=80&w=800&h=600&fit=crop', categoryId: 5 }
+            { id: 1001, name: 'Laptop Gaming Raptor X', description: 'Laptop gaming cao cấp với GTX 4080, RAM 32GB, SSD 1TB NVMe. Hiệu năng tuyệt vời để chơi game và làm việc sáng tạo.', price: 42990000, stock: 20, imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800&h=600&fit=crop', categoryId: 1, categoryName: 'Laptop & Máy Tính' },
+            { id: 1002, name: 'Smartphone Flagship Neo', description: 'Màn hình 6.7 inch, camera 108MP, pin 5000mAh, 5G, Snapdragon 8 Gen 3.', price: 24990000, stock: 30, imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800&h=600&fit=crop', categoryId: 2, categoryName: 'Smartphone' },
+            { id: 1003, name: 'Tai nghe Bluetooth Alpha', description: 'Chống ồn chủ động (ANC), pin 40 giờ, codec LDAC, spatial audio.', price: 5290000, stock: 50, imageUrl: 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=800&h=600&fit=crop', categoryId: 3, categoryName: 'Tai Nghe' },
+            { id: 1004, name: 'Camera hành trình Ultra HD', description: '4K@60fps, góc rộng 170°, ghi đêm rõ nét, dual channel.', price: 3490000, stock: 25, imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&h=600&fit=crop', categoryId: 4, categoryName: 'Camera & Photo' },
+            { id: 1005, name: 'Bàn phím cơ Retro RGB', description: 'Switch blue mechanical, layout fullsize, LED RGB customizable.', price: 1890000, stock: 40, imageUrl: 'https://images.unsplash.com/photo-1587829191301-4ba8a0664415?q=80&w=800&h=600&fit=crop', categoryId: 5, categoryName: 'Phím & Chuột' }
         ];
+
+        function escapeHtml(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function categoryLabel(p) {
+            return resolveCategoryName(p.categoryId, p.categoryName);
+        }
+
+        async function loadCategoryFilterOptions() {
+            const sel = document.getElementById('category-filter');
+            if (!sel) return;
+            try {
+                const cats = await apiGet(API_ENDPOINTS.CATEGORIES);
+                if (!Array.isArray(cats) || !cats.length) throw new Error('empty');
+                sel.innerHTML = '<option value="">Tất cả danh mục</option>' +
+                    cats.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+            } catch (e) {
+                console.warn('Không tải danh mục:', e);
+                sel.innerHTML = '<option value="">Tất cả danh mục</option>' +
+                    CATEGORY_CATALOG.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+            }
+        }
 
         function getSavedProducts() {
             try {
@@ -660,18 +779,27 @@
 
             let html = '';
             products.forEach(p => {
+                const catLine = categoryLabel(p);
+                const catHtml = catLine ? `<p class="product-category">${escapeHtml(catLine)}</p>` : '';
+                const editBtn = (typeof isAdminUser === 'function' && isAdminUser())
+                    ? `<button type="button" class="btn-edit-card" onclick="editProductFromStore(${p.id})" title="Sửa sản phẩm"><i class="fa-solid fa-pen"></i> Sửa</button>`
+                    : '';
                 html += `
                     <div class="product-card">
                         <div class="product-image">
                             <span class="discount-badge">HOT</span>
-                            <img src="${p.imageUrl || 'https://via.placeholder.com/300'}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x240?text=No+Image'">
+                            <img src="${p.imageUrl || 'https://via.placeholder.com/300'}" alt="${escapeHtml(p.name)}" onerror="this.src='https://via.placeholder.com/300x240?text=No+Image'">
                         </div>
                         <div class="product-info">
-                            <h3 class="product-name">${p.name}</h3>
-                            <p class="product-desc">${p.description || 'Sản phẩm công nghệ cao cấp'}</p>
+                            ${catHtml}
+                            <h3 class="product-name">${escapeHtml(p.name)}</h3>
+                            <p class="product-desc">${escapeHtml(p.description || 'Sản phẩm công nghệ cao cấp')}</p>
                             <div class="product-bottom">
                                 <div class="price">${Number(p.price).toLocaleString()} VNĐ</div>
-                                <button class="btn-add" onclick="addToCart(${p.id})" title="Thêm vào giỏ hàng"><i class="fa-solid fa-cart-plus"></i> Thêm</button>
+                                <div class="product-actions">
+                                    ${editBtn}
+                                    <button type="button" class="btn-add" onclick="addToCart(${p.id})" title="Thêm vào giỏ hàng"><i class="fa-solid fa-cart-plus"></i> Thêm</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -818,6 +946,20 @@
             }
         }
 
+        /** Mở trang quản lý với sản phẩm đã chọn (cần đăng nhập). */
+        function editProductFromStore(productId) {
+            if (!getToken()) {
+                alert("Vui lòng đăng nhập để sửa sản phẩm.");
+                window.location.href = "login.html";
+                return;
+            }
+            if (typeof isAdminUser === 'function' && !isAdminUser()) {
+                alert("Chỉ tài khoản admin mới được sửa sản phẩm.");
+                return;
+            }
+            window.location.href = "admin.html?edit=" + encodeURIComponent(productId);
+        }
+
         // UPDATE CART COUNT
         async function updateCartCount() {
             try {
@@ -837,6 +979,22 @@
 
         // LOAD
         window.onload = function() {
+            (function syncStoreMemberUi() {
+                if (!getToken()) return;
+                var name = localStorage.getItem('userName');
+                var strip = document.getElementById('member-welcome-strip');
+                var sub = document.querySelector('.hero-content p');
+                if (name && sub) {
+                    sub.textContent = 'Chào ' + name + '! Khám phá sản phẩm và ưu đãi dành cho bạn.';
+                }
+                if (strip && name) {
+                    strip.style.display = 'flex';
+                    var tx = strip.querySelector('.member-welcome-text');
+                    if (tx) tx.textContent = 'Bạn đang đăng nhập với tài khoản: ' + name;
+                }
+            })();
+
+            loadCategoryFilterOptions();
             loadProducts();
             updateCartCount();
             

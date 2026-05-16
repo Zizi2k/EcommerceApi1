@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Khu vực cá nhân - Group 1 Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="css/header-footer.css">
+    <link rel="stylesheet" href="css/member.css">
+</head>
+<body class="member-page">
+
+    <header>
+        <div class="header-container">
+            <div class="logo" onclick="navigateToHome()" title="Về cửa hàng">
+                <i class="fa-solid fa-store"></i> Group <span>1 Store</span>
+            </div>
+
+            <button class="menu-toggle" type="button" aria-label="Mở menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <nav class="nav-menu">
+                <a href="index.html" title="Trang chủ cửa hàng">
+                    <i class="fa-solid fa-home"></i> Cửa hàng
+                </a>
+                <a href="index.html#products" title="Sản phẩm">
+                    <i class="fa-solid fa-box"></i> Sản phẩm
+                </a>
+                <a href="cart.html" title="Giỏ hàng">
+                    <i class="fa-solid fa-cart-shopping"></i> Giỏ hàng
+                </a>
+                <a href="admin.html" title="Quản lý" class="nav-dropdown-item--module nav-admin-only">
+                    <i class="fa-solid fa-sliders"></i> Quản lý
+                </a>
+            </nav>
+
+            <div class="header-right">
+                <button class="cart-icon" onclick="navigateToCart()" title="Giỏ hàng" type="button">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span id="cart-count">0</span>
+                </button>
+
+                <div class="user-menu">
+                    <button class="user-btn" id="user-btn" type="button" style="display: none;" title="Tài khoản">
+                        <span class="user-btn-mark">
+                            <img class="user-avatar-img" alt="" width="30" height="30" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+                            <i class="user-avatar-fallback fa-solid fa-user" aria-hidden="true"></i>
+                        </span>
+                        <span class="user-btn-text">Tài khoản</span>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown">
+                        <a href="account.html"><i class="fa-solid fa-gauge-high"></i> Khu cá nhân</a>
+                        <a href="#" onclick="logout(); return false;"><i class="fa-solid fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="member-shell">
+        <aside class="member-sidebar" aria-label="Thông tin tài khoản">
+            <div class="member-profile">
+                <div class="member-avatar-wrap">
+                    <img id="member-avatar-lg" class="member-avatar-img" alt="" style="display:none;" width="90" height="90" />
+                    <div id="member-avatar-fallback-lg" class="member-avatar-fallback" aria-hidden="true">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+                <h1 id="member-display-name">Thành viên</h1>
+                <span class="member-tag">Đã đăng nhập</span>
+            </div>
+            <nav class="member-sidebar-nav" aria-label="Điều hướng nhanh">
+                <a href="account.html" class="is-active"><i class="fa-solid fa-gauge-high"></i> Tổng quan</a>
+                <a href="index.html#products"><i class="fa-solid fa-bag-shopping"></i> Tiếp tục mua sắm</a>
+                <a href="cart.html"><i class="fa-solid fa-cart-flatbed"></i> Giỏ hàng của tôi</a>
+                <a href="index.html"><i class="fa-solid fa-store"></i> Trang chủ cửa hàng</a>
+                <a href="admin.html" class="nav-admin-only"><i class="fa-solid fa-screwdriver-wrench"></i> Quản lý sản phẩm</a>
+            </nav>
+        </aside>
+
+        <section class="member-main" aria-labelledby="member-dashboard-title">
+            <div class="member-main-header">
+                <h2 id="member-dashboard-title">Khu vực của bạn</h2>
+                <p>Đây là không gian riêng sau khi đăng nhập: truy cập nhanh giỏ hàng, cửa hàng và các tiện ích. Giao diện tối và accent xanh ngọc giúp phân biệt với trang khách.</p>
+            </div>
+
+            <div class="member-cards">
+                <a class="member-card" href="index.html#products">
+                    <span class="icon"><i class="fa-solid fa-store"></i></span>
+                    <h3>Cửa hàng</h3>
+                    <p>Xem sản phẩm, lọc theo danh mục và thêm vào giỏ.</p>
+                    <span class="go">Vào cửa hàng <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+                <a class="member-card" href="cart.html">
+                    <span class="icon"><i class="fa-solid fa-basket-shopping"></i></span>
+                    <h3>Giỏ hàng</h3>
+                    <p>Kiểm tra đơn hàng tạm và thanh toán khi sẵn sàng.</p>
+                    <span class="go">Mở giỏ hàng <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+                <a class="member-card nav-admin-only" href="admin.html">
+                    <span class="icon"><i class="fa-solid fa-boxes-stacked"></i></span>
+                    <h3>Quản lý</h3>
+                    <p>Thêm, sửa hoặc xóa sản phẩm (cần quyền truy cập).</p>
+                    <span class="go">Mở quản lý <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.08); padding: 20px;">
+                <p>&copy; 2026 Group 1 Store — Khu vực thành viên</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script src="js/header.js"></script>
+    <script>
+        function syncMemberProfile() {
+            var name = localStorage.getItem('userName');
+            var avatar = localStorage.getItem('userAvatar');
+            var titleEl = document.getElementById('member-display-name');
+            if (titleEl && name) titleEl.textContent = name;
+
+            var img = document.getElementById('member-avatar-lg');
+            var fb = document.getElementById('member-avatar-fallback-lg');
+            if (!img || !fb) return;
+
+            if (avatar && avatar.trim()) {
+                img.onload = function () {
+                    img.style.display = 'block';
+                    fb.style.display = 'none';
+                };
+                img.onerror = function () {
+                    img.style.display = 'none';
+                    fb.style.display = 'flex';
+                    img.removeAttribute('src');
+                };
+                img.src = avatar.trim();
+                img.alt = name || 'Avatar';
+                if (img.complete && img.naturalHeight > 0) {
+                    img.style.display = 'block';
+                    fb.style.display = 'none';
+                }
+            } else {
+                img.style.display = 'none';
+                fb.style.display = 'flex';
+            }
+        }
+
+        async function updateCartCountMember() {
+            try {
+                var el = document.getElementById('cart-count');
+                if (!el) return;
+                var cartItems = await apiGet(API_ENDPOINTS.CART);
+                var total = cartItems.reduce(function (s, it) { return s + it.quantity; }, 0);
+                el.textContent = total;
+            } catch (e) {
+                var el2 = document.getElementById('cart-count');
+                if (el2) el2.textContent = '0';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!getToken()) {
+                window.location.href = 'login.html';
+                return;
+            }
+            document.body.classList.add('app-user-logged-in');
+            initializeHeader();
+            syncMemberProfile();
+            updateCartCountMember();
+        });
+    </script>
+</body>
+</html>

@@ -7,6 +7,43 @@ function getToken() {
     return localStorage.getItem('userToken');
 }
 
+/** Payload JWT (phần giữa), không xác thực chữ ký — chỉ đọc role hiển thị UI. */
+function parseJwtPayload(token) {
+    if (!token || typeof token !== 'string') return null;
+    try {
+        const parts = token.split('.');
+        if (parts.length < 2) return null;
+        let base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+        while (base64.length % 4) base64 += '=';
+        const json = atob(base64);
+        return JSON.parse(json);
+    } catch (e) {
+        console.warn('parseJwtPayload', e);
+        return null;
+    }
+}
+
+function getJwtRoleClaim(payload) {
+    if (!payload) return null;
+    const longKey = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
+    return payload.role || payload[longKey] || payload.Role || null;
+}
+
+/** Chỉ tài khoản admin (JWT role Admin) mới quản lý sản phẩm. */
+function isAdminUser() {
+    const payload = parseJwtPayload(getToken());
+    if (!payload) return false;
+    const r = getJwtRoleClaim(payload);
+    if (r != null) {
+        if (Array.isArray(r)) return r.indexOf('Admin') >= 0;
+        if (r === 'Admin') return true;
+    }
+    const nameClaim = payload.unique_name || payload.name || payload.preferred_username
+        || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+    if (nameClaim && String(nameClaim).toLowerCase() === 'admin') return true;
+    return false;
+}
+
 /**
  * Kiểm tra xem user đã đăng nhập chưa
  * Nếu chưa thì redirect tới login
@@ -47,10 +84,23 @@ async function apiCall(url, options = {}) {
         const response = await fetch(url, options);
         
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            let detail = '';
+            try {
+                const errText = await response.text();
+                if (errText) detail = ' — ' + errText;
+            } catch { /* ignore */ }
+            throw new Error(`HTTP error! status: ${response.status}${detail}`);
         }
         
-        return await response.json();
+        const text = await response.text();
+        if (!text) {
+            return null;
+        }
+        try {
+            return JSON.parse(text);
+        } catch {
+            return text;
+        }
     } catch (error) {
         console.error('API Error:', error);
         throw error;

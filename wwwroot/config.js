@@ -5,6 +5,7 @@ const API_BASE_URL = `${window.location.protocol}//${window.location.host}/api`;
 const API_ENDPOINTS = {
     LOGIN: `${API_BASE_URL}/auth/login`,
     PRODUCTS: `${API_BASE_URL}/Products`,
+    UPLOAD_PRODUCT_IMAGE: `${API_BASE_URL}/Upload/product-image`,
     CATEGORIES: `${API_BASE_URL}/Categories`,
     CART: `${API_BASE_URL}/Cart`,
     CART_ADD: `${API_BASE_URL}/Cart/add`,

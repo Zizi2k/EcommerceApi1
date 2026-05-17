@@ -77,7 +77,8 @@ async function apiCall(url, options = {}) {
         if (!options.headers) {
             options.headers = {};
         }
-        if (!options.headers['Content-Type'] && options.body) {
+        // FormData: không set Content-Type để trình duyệt gửi kèm boundary multipart
+        if (options.body != null && typeof options.body === 'string' && !options.headers['Content-Type']) {
             options.headers['Content-Type'] = 'application/json';
         }
         
@@ -87,9 +88,21 @@ async function apiCall(url, options = {}) {
             let detail = '';
             try {
                 const errText = await response.text();
-                if (errText) detail = ' — ' + errText;
+                if (errText) {
+                    try {
+                        const errJson = JSON.parse(errText);
+                        if (errJson.message) detail = errJson.message;
+                        else if (errJson.title) detail = errJson.title;
+                        else detail = errText;
+                    } catch {
+                        detail = errText;
+                    }
+                }
             } catch { /* ignore */ }
-            throw new Error(`HTTP error! status: ${response.status}${detail}`);
+            const msg = detail
+                ? detail
+                : `HTTP error! status: ${response.status}`;
+            throw new Error(msg);
         }
         
         const text = await response.text();
@@ -121,6 +134,14 @@ async function apiPost(url, data) {
     return apiCall(url, {
         method: 'POST',
         body: JSON.stringify(data)
+    });
+}
+
+/** POST multipart (upload file); không set Content-Type thủ công. */
+async function apiPostFormData(url, formData) {
+    return apiCall(url, {
+        method: 'POST',
+        body: formData
     });
 }
 

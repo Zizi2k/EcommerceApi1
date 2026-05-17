@@ -440,9 +440,9 @@
         .checkout-modal {
             background: #fff;
             border-radius: 16px;
-            max-width: 480px;
+            max-width: 520px;
             width: 100%;
-            max-height: 90vh;
+            max-height: 92vh;
             overflow-y: auto;
             box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
         }
@@ -623,6 +623,128 @@
             transform: none;
         }
 
+        .cod-customer-section {
+            display: none;
+            margin: 12px 0 14px;
+            padding: 14px;
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            background: #f0f9ff;
+        }
+
+        .cod-customer-section.is-visible {
+            display: block !important;
+        }
+
+        .cod-customer-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            margin: 0 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cod-field {
+            margin-bottom: 10px;
+        }
+
+        .cod-field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 4px;
+        }
+
+        .cod-field input,
+        .cod-field textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .cod-field textarea {
+            min-height: 64px;
+            resize: vertical;
+        }
+
+        .cod-phone-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .cod-phone-row .cod-field {
+            flex: 1;
+            min-width: 140px;
+            margin-bottom: 0;
+        }
+
+        .btn-send-otp {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 8px;
+            background: #0f766e;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .btn-send-otp:hover { filter: brightness(1.05); }
+        .btn-send-otp:disabled { opacity: 0.55; cursor: not-allowed; }
+
+        .cod-otp-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .cod-otp-row input {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            letter-spacing: 0.15em;
+            font-family: inherit;
+        }
+
+        .btn-verify-otp {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 8px;
+            background: #1d4ed8;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn-verify-otp:disabled { opacity: 0.55; cursor: not-allowed; }
+
+        .cod-otp-status {
+            font-size: 12px;
+            margin-top: 8px;
+            line-height: 1.45;
+        }
+
+        .cod-otp-status.ok { color: #047857; }
+        .cod-otp-status.err { color: #b91c1c; }
+        .cod-otp-status.info { color: #0369a1; }
+
         .empty-message {
             text-align: center;
             padding: 56px 32px;
@@ -747,11 +869,26 @@
             <div class="checkout-modal-body">
                 <div class="checkout-total-line" id="checkout-modal-total">Tổng: 0 VNĐ</div>
                 <div id="checkout-items-preview" class="checkout-items-preview" style="display: none;" aria-label="Sản phẩm trong đơn"></div>
+                <div id="cod-customer-section" class="cod-customer-section is-visible" aria-hidden="false">
+                    <h3><i class="fa-solid fa-user"></i> Thông tin khách hàng</h3>
+                    <div class="cod-field">
+                        <label for="cod-customer-name">Họ tên người nhận *</label>
+                        <input type="text" id="cod-customer-name" autocomplete="name" placeholder="Nguyễn Văn A">
+                    </div>
+                    <div class="cod-field">
+                        <label for="cod-customer-phone">Số điện thoại *</label>
+                        <input type="tel" id="cod-customer-phone" autocomplete="tel" placeholder="0912345678" maxlength="11">
+                    </div>
+                    <div class="cod-field">
+                        <label for="cod-shipping-address">Địa chỉ giao hàng *</label>
+                        <textarea id="cod-shipping-address" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"></textarea>
+                    </div>
+                </div>
                 <div class="payment-methods-title">Chọn hình thức thanh toán</div>
                 <div id="payment-methods-list"></div>
                 <div id="payment-hint" class="payment-hint"></div>
                 <button type="button" class="btn-confirm-pay" id="btn-confirm-pay" onclick="confirmCheckout()">
-                    Xác nhận thanh toán
+                    Đặt hàng
                 </button>
             </div>
         </div>
@@ -766,13 +903,12 @@
         </div>
     </footer>
 
-    <script src="config.js"></script>
-    <script src="api.js"></script>
-    <script src="js/header.js"></script>
+    <script src="config.js?v=5"></script>
+    <script src="api.js?v=5"></script>
+    <script src="js/header.js?v=3"></script>
     <script>
         let cartData = [];
         let lastCartTotal = 0;
-
         function escapeHtml(str) {
             return String(str == null ? '' : str)
                 .replace(/&/g, '&amp;')
@@ -787,7 +923,7 @@
         }
 
         const PAYMENT_OPTIONS = [
-            { id: 'COD', title: 'Tiền mặt (COD)', desc: 'Thanh toán khi nhận hàng tại nhà.', hint: 'Đơn hàng sẽ ở trạng thái chờ thanh toán cho đến khi bạn nhận hàng và trả tiền cho shipper.' },
+            { id: 'COD', title: 'Tiền mặt (COD)', desc: 'Thanh toán khi nhận hàng tại nhà.', hint: 'Điền thông tin khách hàng phía trên, chọn tiền mặt rồi bấm Đặt hàng.' },
             { id: 'BankTransfer', title: 'Chuyển khoản ngân hàng', desc: 'CK qua Internet Banking / quầy.', hint: 'Nội dung CK: SĐT + Mã đơn (demo). STK: 0123456789 — Ngân hàng TMCP Demo — Chủ TK: GROUP1 STORE.' },
             { id: 'MoMo', title: 'Ví MoMo', desc: 'Quét QR hoặc thanh toán trong app MoMo.', hint: 'Số ví demo: 0901 234 567. Sau khi xác nhận, hệ thống ghi nhận thanh toán thành công (mô phỏng).' },
             { id: 'VNPay', title: 'VNPay', desc: 'Thẻ ATM nội địa / QR VNPay.', hint: 'Luồng demo: không chuyển sang cổng thật. Đơn được ghi nhận như đã thanh toán online.' },
@@ -941,6 +1077,41 @@
             if (!opt || !hintEl) return;
             hintEl.textContent = opt.hint;
             hintEl.classList.add('show');
+            toggleCodCustomerSection(id === 'COD');
+        }
+
+        function toggleCodCustomerSection(show) {
+            const sec = document.getElementById('cod-customer-section');
+            if (!sec) return;
+            if (show) {
+                sec.classList.add('is-visible');
+                sec.style.display = 'block';
+                sec.setAttribute('aria-hidden', 'false');
+                setTimeout(function () {
+                    sec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 80);
+            } else {
+                sec.classList.remove('is-visible');
+                sec.style.display = 'none';
+                sec.setAttribute('aria-hidden', 'true');
+            }
+        }
+
+        function resetCodCheckoutState() {
+            ['cod-customer-name', 'cod-customer-phone', 'cod-shipping-address'].forEach(function (id) {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+        }
+
+        function normalizePhoneInput(raw) {
+            var d = String(raw || '').replace(/\D/g, '');
+            if (d.indexOf('84') === 0 && d.length >= 11) d = '0' + d.slice(2);
+            return d;
+        }
+
+        function isValidVnPhone(d) {
+            return /^0\d{9}$/.test(d);
         }
 
         function openCheckoutModal() {
@@ -973,6 +1144,7 @@
             }
 
             renderPaymentMethodRadios();
+            resetCodCheckoutState();
             document.getElementById('checkout-overlay').classList.add('show');
             document.getElementById('checkout-overlay').setAttribute('aria-hidden', 'false');
         }
@@ -985,6 +1157,8 @@
                 prev.innerHTML = '';
                 prev.style.display = 'none';
             }
+            resetCodCheckoutState();
+            toggleCodCustomerSection(false);
         }
 
         async function confirmCheckout() {
@@ -995,15 +1169,45 @@
                 return;
             }
             const paymentMethod = selected.value;
+            var payload = { paymentMethod: paymentMethod };
+
+            if (paymentMethod === 'COD') {
+                const name = (document.getElementById('cod-customer-name').value || '').trim();
+                const phone = normalizePhoneInput(document.getElementById('cod-customer-phone').value);
+                const address = (document.getElementById('cod-shipping-address').value || '').trim();
+                if (!name) {
+                    alert('Vui lòng nhập họ tên người nhận.');
+                    return;
+                }
+                if (!isValidVnPhone(phone)) {
+                    alert('Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0).');
+                    return;
+                }
+                if (!address) {
+                    alert('Vui lòng nhập địa chỉ giao hàng.');
+                    return;
+                }
+                payload.customerName = name;
+                payload.customerPhone = phone;
+                payload.shippingAddress = address;
+            }
+
             btn.disabled = true;
             try {
-                const res = await apiPost(API_ENDPOINTS.CHECKOUT, { paymentMethod: paymentMethod });
+                const res = await apiPost(API_ENDPOINTS.CHECKOUT, payload);
                 closeCheckoutModal();
+                var extra = '';
+                if (paymentMethod === 'COD' && res.customerName) {
+                    extra = '\nNgười nhận: ' + res.customerName +
+                        '\nSĐT: ' + res.customerPhone +
+                        '\nĐịa chỉ: ' + res.shippingAddress;
+                }
                 alert(
-                    'Thanh toán thành công!\n' +
+                    (res.message || 'Thanh toán thành công!') + '\n' +
                     'Mã đơn: #' + res.orderId + '\n' +
                     'Hình thức: ' + paymentMethod + '\n' +
-                    'Tổng tiền: ' + Number(res.totalAmount).toLocaleString('vi-VN') + ' VNĐ'
+                    'Tổng tiền: ' + Number(res.totalAmount).toLocaleString('vi-VN') + ' VNĐ' +
+                    extra
                 );
                 await loadMyCart();
             } catch (e) {

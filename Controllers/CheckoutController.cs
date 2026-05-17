@@ -1,6 +1,7 @@
 using EcommerceApi.Data;
 using EcommerceApi.DTOs;
 using EcommerceApi.Models;
+using EcommerceApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,8 @@ namespace EcommerceApi.Controllers
             _context = context;
         }
 
+        private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
         [HttpPost]
         public async Task<IActionResult> Checkout([FromBody] CheckoutDto dto)
         {
@@ -34,7 +37,26 @@ namespace EcommerceApi.Controllers
             if (!AllowedPaymentMethods.Contains(method, StringComparer.OrdinalIgnoreCase))
                 return BadRequest(new { message = "Hình thức thanh toán không hợp lệ.", allowed = AllowedPaymentMethods });
 
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var isCod = string.Equals(method, "COD", StringComparison.OrdinalIgnoreCase);
+            string? customerName = null;
+            string? customerPhone = null;
+            string? shippingAddress = null;
+
+            if (isCod)
+            {
+                customerName = dto.CustomerName?.Trim();
+                customerPhone = PhoneVerificationService.NormalizePhone(dto.CustomerPhone);
+                shippingAddress = dto.ShippingAddress?.Trim();
+
+                if (string.IsNullOrWhiteSpace(customerName))
+                    return BadRequest(new { message = "Vui lòng nhập họ tên người nhận." });
+                if (!PhoneVerificationService.IsValidVietnamPhone(customerPhone))
+                    return BadRequest(new { message = "Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0)." });
+                if (string.IsNullOrWhiteSpace(shippingAddress))
+                    return BadRequest(new { message = "Vui lòng nhập địa chỉ giao hàng." });
+            }
+
+            var userId = GetUserId();
 
             var cartItems = await _context.CartItems
                 .Where(c => c.UserId == userId)
@@ -52,17 +74,17 @@ namespace EcommerceApi.Controllers
 
             decimal total = cartItems.Sum(c => c.Product!.Price * c.Quantity);
 
-            var status = string.Equals(method, "COD", StringComparison.OrdinalIgnoreCase)
-                ? "PendingPayment"
-                : "Completed";
-
             var order = new Order
             {
                 UserId = userId,
                 TotalAmount = total,
                 PaymentMethod = method,
-                Status = status,
+                Status = "Completed",
                 CreatedAtUtc = DateTime.UtcNow,
+                CustomerName = customerName,
+                CustomerPhone = customerPhone,
+                ShippingAddress = shippingAddress,
+                PhoneVerified = false,
                 Items = cartItems.Select(c => new OrderItem
                 {
                     ProductId = c.ProductId,
@@ -81,7 +103,10 @@ namespace EcommerceApi.Controllers
                 orderId = order.Id,
                 totalAmount = total,
                 paymentMethod = method,
-                status = order.Status
+                status = "Completed",
+                customerName = order.CustomerName,
+                customerPhone = order.CustomerPhone,
+                shippingAddress = order.ShippingAddress
             });
         }
     }

@@ -11,6 +11,12 @@ namespace EcommerceApi.Models
         public string Status { get; set; } = "Completed";
         public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
 
+        /// <summary>Thông tin giao hàng / COD.</summary>
+        public string? CustomerName { get; set; }
+        public string? CustomerPhone { get; set; }
+        public string? ShippingAddress { get; set; }
+        public bool PhoneVerified { get; set; }
+
         public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
     }
 }

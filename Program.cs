@@ -1,4 +1,5 @@
 ﻿using EcommerceApi.Data;
+using EcommerceApi.Services;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -79,6 +80,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApplicationDbContext>();
     context.Database.Migrate();
+    DbSchemaEnsurer.EnsureOrderCustomerColumns(context);
 
     if (!context.Categories.Any())
     {

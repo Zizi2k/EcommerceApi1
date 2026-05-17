@@ -88,9 +88,21 @@ async function apiCall(url, options = {}) {
             let detail = '';
             try {
                 const errText = await response.text();
-                if (errText) detail = ' — ' + errText;
+                if (errText) {
+                    try {
+                        const errJson = JSON.parse(errText);
+                        if (errJson.message) detail = errJson.message;
+                        else if (errJson.title) detail = errJson.title;
+                        else detail = errText;
+                    } catch {
+                        detail = errText;
+                    }
+                }
             } catch { /* ignore */ }
-            throw new Error(`HTTP error! status: ${response.status}${detail}`);
+            const msg = detail
+                ? detail
+                : `HTTP error! status: ${response.status}`;
+            throw new Error(msg);
         }
         
         const text = await response.text();

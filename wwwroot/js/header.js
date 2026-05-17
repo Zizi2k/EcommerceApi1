@@ -65,6 +65,17 @@ function initializeHeader() {
 
     document.body.classList.toggle('app-user-logged-in', !!token);
 
+    if (token) {
+        if (typeof fetchAndCacheProfile === 'function') {
+            fetchAndCacheProfile();
+        }
+        if (document.body.classList.contains('admin-page') && typeof applyUserBackgroundAdmin === 'function') {
+            applyUserBackgroundAdmin();
+        } else if (typeof applyUserBackground === 'function') {
+            applyUserBackground();
+        }
+    }
+
     document.querySelectorAll('.nav-admin-only, [data-admin-only]').forEach(function (el) {
         el.style.display = token && typeof isAdminUser === 'function' && isAdminUser() ? '' : 'none';
     });
@@ -154,7 +165,12 @@ function logout() {
     localStorage.removeItem('userToken');
     localStorage.removeItem('userAvatar');
     localStorage.removeItem('userName');
+    localStorage.removeItem('userBackground');
+    localStorage.removeItem('loginUsername');
     document.body.classList.remove('app-user-logged-in');
+    if (typeof applyUserBackground === 'function') {
+        applyUserBackground();
+    }
     alert("Đã đăng xuất thành công!");
     window.location.href = 'login.html';
 }

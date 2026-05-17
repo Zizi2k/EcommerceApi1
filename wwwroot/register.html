@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký - Group 1 Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/header-footer.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #8b5cf6 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        .register-card {
+            background: white;
+            padding: 36px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            width: 100%;
+            max-width: 420px;
+            animation: slideUp 0.5s ease;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .register-card h2 {
+            text-align: center;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 26px;
+        }
+        .register-card .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        input {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 8px rgba(99, 102, 241, 0.25);
+        }
+        .hint {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        button[type="submit"], .btn-register {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #0ea5e9, #6366f1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 8px;
+            font-family: inherit;
+        }
+        button[type="submit"]:hover { filter: brightness(1.05); }
+        button:disabled { opacity: 0.65; cursor: not-allowed; }
+        #message {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 12px;
+            font-size: 14px;
+            display: none;
+        }
+        #message.show { display: block; }
+        #message.success { color: #059669; }
+        .auth-switch {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+            color: #666;
+        }
+        .auth-switch a {
+            color: #6366f1;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 12px;
+        }
+        .back-link a {
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo" onclick="window.location.href='index.html'" title="Trang chủ" style="cursor: pointer;">
+                <i class="fa-solid fa-store"></i> Group <span>1 Store</span>
+            </div>
+            <div class="header-right">
+                <button class="user-btn" onclick="window.location.href='login.html'" type="button">
+                    <i class="fa-solid fa-sign-in-alt"></i> Đăng nhập
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <form class="register-card" id="register-form" onsubmit="handleRegister(event)">
+            <h2><i class="fa-solid fa-user-plus"></i> Đăng ký</h2>
+            <p class="subtitle">Tạo tài khoản mới để mua sắm và theo dõi đơn hàng</p>
+
+            <div class="form-group">
+                <label for="username">Tên đăng nhập *</label>
+                <input type="text" id="username" required autocomplete="username"
+                    pattern="[a-zA-Z0-9_]{3,32}" maxlength="32"
+                    placeholder="vd: trang_shop" />
+                <p class="hint">3–32 ký tự: chữ, số, dấu _ (không dấu, không khoảng trắng)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="displayName">Tên hiển thị</label>
+                <input type="text" id="displayName" maxlength="80" autocomplete="nickname"
+                    placeholder="Tên bạn muốn hiện trên cửa hàng" />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mật khẩu *</label>
+                <input type="password" id="password" required minlength="4" autocomplete="new-password"
+                    placeholder="Ít nhất 4 ký tự" />
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Nhập lại mật khẩu *</label>
+                <input type="password" id="confirmPassword" required minlength="4" autocomplete="new-password" />
+            </div>
+
+            <button type="submit" class="btn-register" id="btn-register">
+                <i class="fa-solid fa-check"></i> Tạo tài khoản
+            </button>
+
+            <p id="message"></p>
+
+            <div class="auth-switch">
+                Đã có tài khoản? <a href="login.html">Đăng nhập</a>
+            </div>
+            <div class="back-link">
+                <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Về trang chủ</a>
+            </div>
+        </form>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>&copy; 2026 Group 1 Store. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script src="js/profile.js"></script>
+    <script>
+        async function handleRegister(event) {
+            event.preventDefault();
+            var msg = document.getElementById('message');
+            var btn = document.getElementById('btn-register');
+
+            var username = document.getElementById('username').value.trim();
+            var password = document.getElementById('password').value;
+            var confirm = document.getElementById('confirmPassword').value;
+            var displayName = document.getElementById('displayName').value.trim();
+
+            msg.classList.remove('show', 'success');
+
+            if (password !== confirm) {
+                msg.textContent = 'Mật khẩu xác nhận không khớp.';
+                msg.classList.add('show');
+                return;
+            }
+
+            btn.disabled = true;
+            try {
+                var data = await apiPost(API_ENDPOINTS.REGISTER, {
+                    username: username,
+                    password: password,
+                    confirmPassword: confirm,
+                    displayName: displayName || username
+                });
+
+                localStorage.setItem('userToken', data.token);
+                saveProfileToLocalStorage({
+                    username: data.username || username,
+                    displayName: data.displayName || displayName || username,
+                    avatarUrl: data.avatarUrl,
+                    backgroundUrl: data.backgroundUrl
+                });
+
+                msg.textContent = 'Đăng ký thành công! Đang chuyển đến khu vực cá nhân...';
+                msg.classList.add('show', 'success');
+                setTimeout(function () {
+                    window.location.href = 'account.html';
+                }, 600);
+            } catch (e) {
+                msg.textContent = e.message || 'Đăng ký thất bại.';
+                msg.classList.add('show');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -327,9 +327,48 @@
             background: #e2e8f0;
             border: 1px solid #cbd5e1;
         }
+        .admin-section { margin-top: 32px; }
+        .admin-section-title {
+            font-size: 22px;
+            color: #111827;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .tier-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .tier-diamond { background: #e0e7ff; color: #3730a3; }
+        .tier-gold { background: #fef3c7; color: #b45309; }
+        .tier-silver { background: #f1f5f9; color: #475569; }
+        .tier-bronze { background: #ffedd5; color: #c2410c; }
+        .tier-new { background: #ecfdf5; color: #047857; }
+        .rank-num {
+            font-weight: 700;
+            color: #0369a1;
+            min-width: 28px;
+            display: inline-block;
+        }
+        .customer-sub { font-size: 12px; color: #64748b; margin-top: 2px; }
+        .customer-orders-detail {
+            font-size: 12px;
+            color: #475569;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #e2e8f0;
+        }
+        .customer-orders-detail span { display: block; margin-bottom: 4px; }
+        tr.customer-row-top td { vertical-align: top; }
     </style>
 </head>
-<body>
+<body class="admin-page">
     <header>
         <div class="header-container">
             <div class="logo" onclick="navigateToHome()" title="Trang chủ" style="cursor: pointer;">
@@ -352,6 +391,7 @@
                 </button>
                 <div class="dropdown-menu" id="user-dropdown">
                     <a href="account.html"><i class="fa-solid fa-gauge-high"></i> Khu cá nhân</a>
+                    <a href="settings.html"><i class="fa-solid fa-gear"></i> Cài đặt</a>
                     <a href="#" onclick="logout(); return false;">
                         <i class="fa-solid fa-sign-out-alt"></i> Đăng xuất
                     </a>
@@ -469,6 +509,40 @@
                 </div>
             </div>
         </div>
+        <section class="admin-section panel" aria-labelledby="customers-section-title">
+            <h2 class="admin-section-title" id="customers-section-title">
+                <i class="fa-solid fa-ranking-star"></i> Khách hàng &amp; xếp hạng mua hàng
+            </h2>
+            <p style="font-size: 13px; color: #64748b; margin: -8px 0 16px;">
+                Sắp xếp theo <strong>số đơn đã mua</strong> (cao → thấp). Dữ liệu lấy từ đơn hoàn tất trong hệ thống.
+            </p>
+            <div class="toolbar" style="margin-bottom: 12px;">
+                <button type="button" class="btn-refresh" onclick="loadCustomerRankings()">
+                    <i class="fa-solid fa-rotate"></i> Làm mới khách hàng
+                </button>
+            </div>
+            <div id="customers-loading" class="empty-hint" style="display:none;">Đang tải...</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Khách hàng</th>
+                            <th>Liên hệ</th>
+                            <th>Số đơn</th>
+                            <th>Tổng chi</th>
+                            <th>Mua gần nhất</th>
+                            <th>Xếp loại</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customers-table-body"></tbody>
+                </table>
+            </div>
+            <div id="customers-empty" class="empty-hint" style="display:none;">
+                <i class="fa-solid fa-users fa-2x" style="margin-bottom:12px;display:block;"></i>
+                Chưa có đơn hàng nào. Khách mua qua giỏ hàng sẽ hiển thị tại đây.
+            </div>
+        </section>
     </div>
 
     <footer>
@@ -481,6 +555,7 @@
 
     <script src="config.js"></script>
     <script src="api.js"></script>
+    <script src="js/profile.js"></script>
     <script src="js/header.js"></script>
     <script>
         let editingId = null;
@@ -887,6 +962,76 @@
             }
         }
 
+        function formatVnd(amount) {
+            return Number(amount || 0).toLocaleString('vi-VN') + ' VNĐ';
+        }
+
+        function formatOrderDate(iso) {
+            if (!iso) return '—';
+            try {
+                return new Date(iso).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' });
+            } catch (e) {
+                return iso;
+            }
+        }
+
+        function escapeHtml(s) {
+            if (s == null) return '';
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        async function loadCustomerRankings() {
+            var loading = document.getElementById('customers-loading');
+            var tbody = document.getElementById('customers-table-body');
+            var empty = document.getElementById('customers-empty');
+            if (!tbody) return;
+
+            if (loading) loading.style.display = 'block';
+            if (empty) empty.style.display = 'none';
+            tbody.innerHTML = '';
+
+            try {
+                var list = await apiGet(API_ENDPOINTS.ADMIN_CUSTOMERS);
+                if (!list || !list.length) {
+                    if (empty) empty.style.display = 'block';
+                    return;
+                }
+
+                tbody.innerHTML = list.map(function (c) {
+                    var tierClass = 'tier-' + (c.tier || 'new');
+                    var ordersHtml = '';
+                    if (c.recentOrders && c.recentOrders.length) {
+                        ordersHtml = '<div class="customer-orders-detail">' +
+                            c.recentOrders.map(function (o) {
+                                return '<span>#' + o.orderId + ' · ' + formatVnd(o.totalAmount) +
+                                    ' · ' + escapeHtml(o.paymentMethod) + ' · ' + formatOrderDate(o.createdAtUtc) +
+                                    ' · ' + o.itemCount + ' SP</span>';
+                            }).join('') + '</div>';
+                    }
+                    return '<tr class="customer-row-top">' +
+                        '<td><span class="rank-num">' + c.rank + '</span></td>' +
+                        '<td><strong>' + escapeHtml(c.displayName) + '</strong>' +
+                        '<div class="customer-sub">@' + escapeHtml(c.accountUsername) + ' · ID ' + c.userId + '</div>' +
+                        ordersHtml + '</td>' +
+                        '<td>' + (c.phone ? escapeHtml(c.phone) : '—') +
+                        (c.shippingAddress ? '<div class="customer-sub">' + escapeHtml(c.shippingAddress) + '</div>' : '') + '</td>' +
+                        '<td><strong>' + c.orderCount + '</strong></td>' +
+                        '<td>' + formatVnd(c.totalSpent) + '</td>' +
+                        '<td>' + formatOrderDate(c.lastOrderAtUtc) + '</td>' +
+                        '<td><span class="tier-badge ' + tierClass + '">' + escapeHtml(c.tierLabel) + '</span></td>' +
+                        '</tr>';
+                }).join('');
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="7" style="color:#b91c1c;">' + escapeHtml(e.message || 'Không tải được danh sách khách.') + '</td></tr>';
+            } finally {
+                if (loading) loading.style.display = 'none';
+            }
+        }
+
         window.addEventListener('load', async function () {
             if (!checkAuth()) return;
             if (typeof isAdminUser === 'function' && !isAdminUser()) {
@@ -899,6 +1044,7 @@
             await fillCategorySelect();
             resetForm();
             await loadProductTable();
+            await loadCustomerRankings();
             await maybeOpenEditFromQuery();
         });
     </script>

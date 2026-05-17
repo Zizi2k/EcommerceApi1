@@ -19,10 +19,12 @@ namespace EcommerceApi.Controllers
             ["COD", "BankTransfer", "MoMo", "VNPay", "Card"];
 
         private readonly ApplicationDbContext _context;
+        private readonly IDemoUserStore _users;
 
-        public CheckoutController(ApplicationDbContext context)
+        public CheckoutController(ApplicationDbContext context, IDemoUserStore users)
         {
             _context = context;
+            _users = users;
         }
 
         private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -57,6 +59,18 @@ namespace EcommerceApi.Controllers
             }
 
             var userId = GetUserId();
+            var accountUsername = User.FindFirstValue(ClaimTypes.Name)?.Trim();
+            UserProfileData? profile = null;
+            if (!string.IsNullOrWhiteSpace(accountUsername))
+            {
+                try { profile = _users.GetProfile(accountUsername); }
+                catch { /* tài khoản ngoài demo */ }
+            }
+
+            if (!isCod && profile != null)
+            {
+                customerName = string.IsNullOrWhiteSpace(profile.DisplayName) ? accountUsername : profile.DisplayName;
+            }
 
             var cartItems = await _context.CartItems
                 .Where(c => c.UserId == userId)
@@ -77,6 +91,7 @@ namespace EcommerceApi.Controllers
             var order = new Order
             {
                 UserId = userId,
+                AccountUsername = accountUsername,
                 TotalAmount = total,
                 PaymentMethod = method,
                 Status = "Completed",

@@ -72,6 +72,8 @@ webAppBuilder.Services.AddAuthentication("Bearer")
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddSingleton<IDemoUserStore, DemoUserStore>();
+builder.Services.AddScoped<CustomerRankingService>();
 var app = builder.Build();
 
 // Seed database

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cài đặt tài khoản - Group 1 Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="css/header-footer.css">
+    <link rel="stylesheet" href="css/member.css">
+    <link rel="stylesheet" href="css/settings.css">
+</head>
+<body class="member-page">
+
+    <header>
+        <div class="header-container">
+            <div class="logo" onclick="navigateToHome()" title="Về cửa hàng">
+                <i class="fa-solid fa-store"></i> Group <span>1 Store</span>
+            </div>
+            <button class="menu-toggle" type="button" aria-label="Mở menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <nav class="nav-menu">
+                <a href="index.html"><i class="fa-solid fa-home"></i> Cửa hàng</a>
+                <a href="account.html"><i class="fa-solid fa-gauge-high"></i> Khu cá nhân</a>
+                <a href="cart.html"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
+                <a href="admin.html" class="nav-admin-only"><i class="fa-solid fa-sliders"></i> Quản lý</a>
+            </nav>
+            <div class="header-right">
+                <div class="user-menu">
+                    <button class="user-btn" id="user-btn" type="button" style="display: none;" title="Tài khoản">
+                        <span class="user-btn-mark">
+                            <img class="user-avatar-img" alt="" width="30" height="30" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+                            <i class="user-avatar-fallback fa-solid fa-user" aria-hidden="true"></i>
+                        </span>
+                        <span class="user-btn-text">Tài khoản</span>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown">
+                        <a href="account.html"><i class="fa-solid fa-gauge-high"></i> Khu cá nhân</a>
+                        <a href="settings.html"><i class="fa-solid fa-gear"></i> Cài đặt</a>
+                        <a href="#" onclick="logout(); return false;"><i class="fa-solid fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="member-shell">
+        <aside class="member-sidebar" aria-label="Điều hướng">
+            <div class="member-profile">
+                <div class="member-avatar-wrap">
+                    <img id="settings-avatar-preview" class="member-avatar-img" alt="" style="display:none;" width="90" height="90" />
+                    <div id="settings-avatar-fallback" class="member-avatar-fallback" aria-hidden="true">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+                <h1 id="settings-sidebar-name">Tài khoản</h1>
+                <span class="member-tag" id="settings-login-id">—</span>
+            </div>
+            <nav class="member-sidebar-nav">
+                <a href="account.html"><i class="fa-solid fa-gauge-high"></i> Tổng quan</a>
+                <a href="settings.html" class="is-active"><i class="fa-solid fa-gear"></i> Cài đặt</a>
+                <a href="admin.html" class="nav-admin-only"><i class="fa-solid fa-screwdriver-wrench"></i> Quản lý</a>
+            </nav>
+        </aside>
+
+        <section class="member-main" aria-labelledby="settings-title">
+            <div class="member-main-header">
+                <h2 id="settings-title">Cài đặt tài khoản</h2>
+                <p>Đổi tên hiển thị, ảnh đại diện, hình nền và mật khẩu. Áp dụng cho tài khoản user và admin.</p>
+            </div>
+
+            <div id="settings-alert" class="settings-alert" role="status" hidden></div>
+
+            <form class="settings-panel" id="form-profile" onsubmit="saveProfile(event)">
+                <h3><i class="fa-solid fa-id-card"></i> Hồ sơ</h3>
+                <div class="settings-field">
+                    <label for="displayName">Tên hiển thị</label>
+                    <input type="text" id="displayName" maxlength="80" placeholder="Tên bạn muốn hiện trên header" autocomplete="nickname" />
+                </div>
+                <div class="settings-field">
+                    <label for="avatarUrl">Ảnh đại diện (URL)</label>
+                    <div class="settings-row">
+                        <input type="text" id="avatarUrl" placeholder="https://... hoặc /uploads/profiles/..." />
+                        <button type="button" class="settings-btn secondary" onclick="pickAvatarFile()">Tải ảnh</button>
+                    </div>
+                    <input type="file" id="avatarFile" accept="image/jpeg,image/png,image/webp,image/gif" class="visually-hidden-file" />
+                    <span class="settings-hint" id="avatar-upload-status"></span>
+                </div>
+                <div class="settings-field">
+                    <label for="backgroundUrl">Hình nền (URL)</label>
+                    <div class="settings-row">
+                        <input type="text" id="backgroundUrl" placeholder="https://... hoặc để trống = mặc định" />
+                        <button type="button" class="settings-btn secondary" onclick="pickBackgroundFile()">Tải ảnh</button>
+                    </div>
+                    <input type="file" id="backgroundFile" accept="image/jpeg,image/png,image/webp,image/gif" class="visually-hidden-file" />
+                    <span class="settings-hint" id="bg-upload-status"></span>
+                    <div class="settings-bg-preview" id="bg-preview-wrap" hidden>
+                        <span>Xem trước hình nền</span>
+                        <div id="bg-preview" class="settings-bg-preview-box"></div>
+                    </div>
+                </div>
+                <button type="submit" class="settings-btn primary"><i class="fa-solid fa-floppy-disk"></i> Lưu hồ sơ</button>
+            </form>
+
+            <form class="settings-panel" id="form-password" onsubmit="savePassword(event)">
+                <h3><i class="fa-solid fa-key"></i> Đổi mật khẩu</h3>
+                <div class="settings-field">
+                    <label for="currentPassword">Mật khẩu hiện tại</label>
+                    <input type="password" id="currentPassword" autocomplete="current-password" required />
+                </div>
+                <div class="settings-field">
+                    <label for="newPassword">Mật khẩu mới</label>
+                    <input type="password" id="newPassword" minlength="4" autocomplete="new-password" required />
+                </div>
+                <div class="settings-field">
+                    <label for="confirmPassword">Nhập lại mật khẩu mới</label>
+                    <input type="password" id="confirmPassword" minlength="4" autocomplete="new-password" required />
+                </div>
+                <button type="submit" class="settings-btn primary"><i class="fa-solid fa-lock"></i> Đổi mật khẩu</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.08); padding: 20px;">
+                <p>&copy; 2026 Group 1 Store — Cài đặt</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/settings-page.js"></script>
+</body>
+</html>

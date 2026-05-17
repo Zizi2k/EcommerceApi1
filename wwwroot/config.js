@@ -4,12 +4,18 @@ const API_BASE_URL = `${window.location.protocol}//${window.location.host}/api`;
 // Các endpoint API
 const API_ENDPOINTS = {
     LOGIN: `${API_BASE_URL}/auth/login`,
+    REGISTER: `${API_BASE_URL}/auth/register`,
+    PROFILE_ME: `${API_BASE_URL}/auth/profile/me`,
+    PROFILE: `${API_BASE_URL}/auth/profile`,
+    PROFILE_PASSWORD: `${API_BASE_URL}/auth/profile/password`,
+    UPLOAD_PROFILE_IMAGE: `${API_BASE_URL}/Upload/profile-image`,
     PRODUCTS: `${API_BASE_URL}/Products`,
     UPLOAD_PRODUCT_IMAGE: `${API_BASE_URL}/Upload/product-image`,
     CATEGORIES: `${API_BASE_URL}/Categories`,
     CART: `${API_BASE_URL}/Cart`,
     CART_ADD: `${API_BASE_URL}/Cart/add`,
     CHECKOUT: `${API_BASE_URL}/Checkout`,
+    ADMIN_CUSTOMERS: `${API_BASE_URL}/auth/admin/customers`,
 };
 
 /** Danh mục cố định id 1–11 (khớp DB / migration). Dùng khi API không trả categoryName. */

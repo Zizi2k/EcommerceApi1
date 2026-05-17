@@ -5,6 +5,8 @@ namespace EcommerceApi.Models
     {
         public int Id { get; set; }
         public int UserId { get; set; }
+        /// <summary>Tên đăng nhập (admin, khach, user…) lúc đặt hàng.</summary>
+        public string? AccountUsername { get; set; }
         public decimal TotalAmount { get; set; }
         /// <summary>Mã: COD, BankTransfer, MoMo, VNPay, Card</summary>
         public string PaymentMethod { get; set; } = string.Empty;

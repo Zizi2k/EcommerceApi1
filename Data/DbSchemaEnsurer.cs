@@ -16,6 +16,8 @@ IF COL_LENGTH('Orders', 'ShippingAddress') IS NULL
     ALTER TABLE [Orders] ADD [ShippingAddress] nvarchar(max) NULL;
 IF COL_LENGTH('Orders', 'PhoneVerified') IS NULL
     ALTER TABLE [Orders] ADD [PhoneVerified] bit NOT NULL CONSTRAINT [DF_Orders_PhoneVerified] DEFAULT 0;
+IF COL_LENGTH('Orders', 'AccountUsername') IS NULL
+    ALTER TABLE [Orders] ADD [AccountUsername] nvarchar(128) NULL;
 ");
 
             context.Database.ExecuteSqlRaw(@"

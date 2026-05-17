@@ -1,0 +1,31 @@
+{
+  "Passwords": {
+    "admin": "123456",
+    "khach": "123456",
+    "user": "123456",
+    "trang_moi": "123456",
+    "Duy": "123456"
+  },
+  "Profiles": {
+    "admin": {
+      "DisplayName": "Admin",
+      "AvatarUrl": "https://media.lilybridal.vn/wp-content/uploads/2023/12/Chup-anh-the-passport-nen-trang-dep-go-vap-683x1024.webp",
+      "BackgroundUrl": null
+    },
+    "user": {
+      "DisplayName": "Trang",
+      "AvatarUrl": "https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/486511Bzo/anh-mo-ta.png",
+      "BackgroundUrl": null
+    },
+    "trang_moi": {
+      "DisplayName": "Trang M?i",
+      "AvatarUrl": "https://api.dicebear.com/7.x/avataaars/svg?seed=trang_moi",
+      "BackgroundUrl": null
+    },
+    "Duy": {
+      "DisplayName": "Duy",
+      "AvatarUrl": "/uploads/profiles/c4028395c74a41f491dd5b18bd12e259.jpg",
+      "BackgroundUrl": null
+    }
+  }
+}

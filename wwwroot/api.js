@@ -99,9 +99,10 @@ async function apiCall(url, options = {}) {
                     }
                 }
             } catch { /* ignore */ }
-            const msg = detail
-                ? detail
-                : `HTTP error! status: ${response.status}`;
+            let msg = detail ? detail : `HTTP error! status: ${response.status}`;
+            if (response.status === 404 && url && /profile|auth\/profile|admin\/customers/i.test(url)) {
+                msg = 'API chưa cập nhật (404). Dừng EcommerceApi trong Task Manager, chạy lại dotnet run --launch-profile https, rồi Ctrl+F5 trang admin.';
+            }
             throw new Error(msg);
         }
         

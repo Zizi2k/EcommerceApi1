@@ -62,5 +62,43 @@ namespace EcommerceApi.Controllers
             var publicUrl = $"/uploads/products/{storedName}";
             return Ok(new { url = publicUrl });
         }
+
+        [HttpPost("profile-image")]
+        [Authorize]
+        [RequestSizeLimit(10 * 1024 * 1024)]
+        public async Task<ActionResult<object>> UploadProfileImage(IFormFile? file, CancellationToken cancellationToken)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(new { message = "Thiếu file ảnh." });
+
+            if (!AllowedImageContentTypes.Contains(file.ContentType))
+                return BadRequest(new { message = "Chỉ chấp nhận JPEG, PNG, WebP hoặc GIF." });
+
+            var ext = Path.GetExtension(file.FileName);
+            if (string.IsNullOrEmpty(ext) || !AllowedImageExtensions.Contains(ext))
+            {
+                ext = file.ContentType.ToLowerInvariant() switch
+                {
+                    "image/jpeg" => ".jpg",
+                    "image/png" => ".png",
+                    "image/webp" => ".webp",
+                    "image/gif" => ".gif",
+                    _ => ".png"
+                };
+            }
+
+            var uploadsDir = Path.Combine(_env.WebRootPath ?? "", "uploads", "profiles");
+            Directory.CreateDirectory(uploadsDir);
+
+            var safeExt = AllowedImageExtensions.Contains(ext) ? ext : ".png";
+            var storedName = $"{Guid.NewGuid():N}{safeExt}";
+            var physicalPath = Path.Combine(uploadsDir, storedName);
+
+            await using (var stream = System.IO.File.Create(physicalPath))
+                await file.CopyToAsync(stream, cancellationToken);
+
+            var publicUrl = $"/uploads/profiles/{storedName}";
+            return Ok(new { url = publicUrl });
+        }
     }
 }

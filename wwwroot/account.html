@@ -52,6 +52,7 @@
                     </button>
                     <div class="dropdown-menu" id="user-dropdown">
                         <a href="account.html"><i class="fa-solid fa-gauge-high"></i> Khu cá nhân</a>
+                        <a href="settings.html"><i class="fa-solid fa-gear"></i> Cài đặt</a>
                         <a href="#" onclick="logout(); return false;"><i class="fa-solid fa-sign-out-alt"></i> Đăng xuất</a>
                     </div>
                 </div>
@@ -73,6 +74,7 @@
             </div>
             <nav class="member-sidebar-nav" aria-label="Điều hướng nhanh">
                 <a href="account.html" class="is-active"><i class="fa-solid fa-gauge-high"></i> Tổng quan</a>
+                <a href="settings.html"><i class="fa-solid fa-gear"></i> Cài đặt</a>
                 <a href="index.html#products"><i class="fa-solid fa-bag-shopping"></i> Tiếp tục mua sắm</a>
                 <a href="cart.html"><i class="fa-solid fa-cart-flatbed"></i> Giỏ hàng của tôi</a>
                 <a href="index.html"><i class="fa-solid fa-store"></i> Trang chủ cửa hàng</a>
@@ -105,6 +107,12 @@
                     <p>Thêm, sửa hoặc xóa sản phẩm (cần quyền truy cập).</p>
                     <span class="go">Mở quản lý <i class="fa-solid fa-arrow-right"></i></span>
                 </a>
+                <a class="member-card" href="settings.html">
+                    <span class="icon"><i class="fa-solid fa-gear"></i></span>
+                    <h3>Cài đặt</h3>
+                    <p>Đổi tên, mật khẩu, avatar và hình nền.</p>
+                    <span class="go">Mở cài đặt <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
             </div>
         </section>
     </main>
@@ -119,6 +127,7 @@
 
     <script src="config.js"></script>
     <script src="api.js"></script>
+    <script src="js/profile.js"></script>
     <script src="js/header.js"></script>
     <script>
         function syncMemberProfile() {
@@ -173,7 +182,10 @@
             }
             document.body.classList.add('app-user-logged-in');
             initializeHeader();
-            syncMemberProfile();
+            fetchAndCacheProfile().then(function () {
+                syncMemberProfile();
+            });
+            applyUserBackground();
             updateCartCountMember();
         });
     </script>

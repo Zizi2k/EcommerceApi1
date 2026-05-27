@@ -9,5 +9,7 @@ namespace EcommerceApi.Models
         public int Quantity { get; set; }
         /// <summary>Giá tại thời điểm đặt (snapshot).</summary>
         public decimal UnitPrice { get; set; }
+        /// <summary>Giá vốn tại thời điểm đặt (snapshot).</summary>
+        public decimal UnitCost { get; set; }
     }
 }

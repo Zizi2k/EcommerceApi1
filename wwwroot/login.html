@@ -197,8 +197,15 @@
                     backgroundUrl: data.backgroundUrl
                 });
                 msg.classList.remove('show');
-                alert("Đăng nhập thành công! Đang chuyển đến khu vực cá nhân...");
-                window.location.href = "account.html";
+                if (window.AppNotify && typeof window.AppNotify.success === 'function') {
+                    window.AppNotify.success('Đăng nhập thành công! Đang chuyển trang...');
+                    setTimeout(function () {
+                        window.location.href = "account.html";
+                    }, 500);
+                } else {
+                    alert("Đăng nhập thành công! Đang chuyển đến khu vực cá nhân...");
+                    window.location.href = "account.html";
+                }
             } catch (error) {
                 msg.textContent = error.message || "Tài khoản hoặc mật khẩu không đúng!";
                 msg.classList.add('show');

@@ -3,6 +3,7 @@
     var selectedOrderId = null;
     var selectedRating = 0;
     var orderPollTimer = null;
+    var monthlyReportCache = null;
 
     var STATUS_OPTIONS = [
         { value: 'Preparing', label: 'Đang chuẩn bị' },
@@ -49,6 +50,65 @@
             return new Date(iso).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' });
         } catch (e) {
             return iso;
+        }
+    }
+
+    function getReportMonthParts() {
+        var monthEl = document.getElementById('order-report-month');
+        var val = monthEl && monthEl.value ? monthEl.value : '';
+        if (!val || val.indexOf('-') < 0) {
+            var now = new Date();
+            return { year: now.getFullYear(), month: now.getMonth() + 1 };
+        }
+        var parts = val.split('-');
+        return {
+            year: parseInt(parts[0], 10),
+            month: parseInt(parts[1], 10)
+        };
+    }
+
+    function showReportMsg(text, isError) {
+        var el = document.getElementById('order-report-msg');
+        if (!el) return;
+        if (!text) {
+            el.style.display = 'none';
+            el.className = 'order-msg';
+            el.textContent = '';
+            return;
+        }
+        el.style.display = 'block';
+        el.className = 'order-msg ' + (isError ? 'err' : 'ok');
+        el.textContent = text;
+    }
+
+    function renderMonthlyReport(report) {
+        monthlyReportCache = report || null;
+        var rows = report && Array.isArray(report.products) ? report.products : [];
+        var body = document.getElementById('order-report-body');
+        var empty = document.getElementById('order-report-empty');
+        if (!body) return;
+
+        document.getElementById('report-delivered-orders').textContent = String(report && report.deliveredOrderCount || 0);
+        document.getElementById('report-total-quantity').textContent = String(report && report.totalQuantity || 0);
+        document.getElementById('report-total-revenue').textContent = formatVnd(report && report.totalRevenue || 0);
+        document.getElementById('report-total-capital').textContent = formatVnd(report && report.totalCapital || 0);
+        document.getElementById('report-total-profit').textContent = formatVnd(report && report.totalProfit || 0);
+
+        body.innerHTML = rows.map(function (r) {
+            return '<tr>' +
+                '<td>#' + r.productId + '</td>' +
+                '<td>' + escHtml(r.productName) + '</td>' +
+                '<td>' + r.quantity + '</td>' +
+                '<td>' + formatVnd(r.revenue) + '</td>' +
+                '<td>' + formatVnd(r.capital) + '</td>' +
+                '<td><strong>' + formatVnd(r.profit) + '</strong></td>' +
+                '</tr>';
+        }).join('');
+
+        if (!rows.length) {
+            if (empty) empty.style.display = 'block';
+        } else if (empty) {
+            empty.style.display = 'none';
         }
     }
 
@@ -329,6 +389,56 @@
         }
     }
 
+    window.loadMonthlyOrderReport = async function () {
+        if (!checkAuth()) return;
+        var monthPart = getReportMonthParts();
+        showReportMsg('', false);
+        try {
+            var url = API_ENDPOINTS.ADMIN_ORDERS_REPORT_MONTHLY +
+                '?year=' + encodeURIComponent(monthPart.year) +
+                '&month=' + encodeURIComponent(monthPart.month);
+            var report = await apiGet(url);
+            renderMonthlyReport(report);
+            showReportMsg('Đã tải báo cáo ' + (report.periodLabel || ''), false);
+        } catch (e) {
+            renderMonthlyReport(null);
+            showReportMsg(e.message || 'Không tải được báo cáo.', true);
+        }
+    };
+
+    window.exportMonthlyOrderReportExcel = async function () {
+        if (!checkAuth()) return;
+        var monthPart = getReportMonthParts();
+        var token = getToken();
+        if (!token) return;
+
+        try {
+            var exportUrl = API_ENDPOINTS.ADMIN_ORDERS_REPORT_MONTHLY + '/export' +
+                '?year=' + encodeURIComponent(monthPart.year) +
+                '&month=' + encodeURIComponent(monthPart.month);
+            var res = await fetch(exportUrl, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) throw new Error('Xuất Excel thất bại.');
+            var blob = await res.blob();
+            var dlUrl = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = dlUrl;
+            a.download = 'bao-cao-don-da-giao-' + monthPart.year + '-' +
+                String(monthPart.month).padStart(2, '0') + '.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(dlUrl);
+            showReportMsg('Đã xuất file Excel.', false);
+            if (window.AppNotify && typeof window.AppNotify.success === 'function') {
+                window.AppNotify.success('Xuất Excel thành công.');
+            }
+        } catch (e) {
+            showReportMsg(e.message || 'Không xuất được Excel.', true);
+        }
+    };
+
     window.saveOrderStatus = async function () {
         if (!checkAuth() || !selectedOrderId) {
             showOrderMsg('Chọn đơn hàng trước.', true);
@@ -452,6 +562,11 @@
             statusSel.innerHTML = STATUS_OPTIONS.map(function (o) {
                 return '<option value="' + o.value + '">' + o.label + '</option>';
             }).join('');
+        }
+        var monthEl = document.getElementById('order-report-month');
+        if (monthEl && !monthEl.value) {
+            var now = new Date();
+            monthEl.value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
         }
     }
 

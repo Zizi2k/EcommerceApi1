@@ -2,6 +2,7 @@
     var ordersCache = [];
     var selectedOrderId = null;
     var selectedRating = 0;
+    var orderAutoRefreshTimer = null;
     var CANCEL_REASONS = [
         'Đặt nhầm sản phẩm',
         'Muốn thay đổi sản phẩm khác',
@@ -143,9 +144,15 @@
         var reviewBox = document.getElementById('my-order-review-box');
         if (reviewBox) reviewBox.classList.toggle('is-locked', !order.canReview);
         var reviewHint = document.getElementById('my-order-review-hint');
-        if (reviewHint) reviewHint.textContent = order.canReview
-            ? 'Bạn có thể đánh giá trải nghiệm đơn hàng này.'
-            : 'Đơn chưa giao thành công, chưa thể đánh giá.';
+        if (reviewHint) {
+            if (order.canReview && order.customerRating) {
+                reviewHint.textContent = 'Bạn có thể cập nhật lại đánh giá cho đơn đã giao.';
+            } else if (order.canReview) {
+                reviewHint.textContent = 'Bạn có thể đánh giá trải nghiệm đơn hàng này.';
+            } else {
+                reviewHint.textContent = 'Đơn chưa giao thành công, chưa thể đánh giá.';
+            }
+        }
         var reviewed = document.getElementById('my-order-reviewed');
         if (reviewed) {
             if (order.customerRating) {
@@ -199,6 +206,7 @@
         var loading = document.getElementById('my-orders-loading');
         var wrap = document.getElementById('my-orders-wrap');
         var noOrders = document.getElementById('my-orders-no-data');
+        var prevSelected = selectedOrderId;
         if (loading) loading.style.display = 'block';
         if (wrap) wrap.style.display = 'none';
         if (noOrders) noOrders.style.display = 'none';
@@ -208,18 +216,39 @@
             if (loading) loading.style.display = 'none';
             if (!ordersCache.length) {
                 if (noOrders) noOrders.style.display = 'block';
+                selectedOrderId = null;
                 return;
             }
             if (wrap) wrap.style.display = 'block';
-            selectedOrderId = ordersCache[0].id;
+            if (prevSelected && ordersCache.some(function (o) { return o.id === prevSelected; })) {
+                selectedOrderId = prevSelected;
+            } else {
+                selectedOrderId = ordersCache[0].id;
+            }
             renderOrderSelect();
-            renderOrderDetail(ordersCache[0]);
+            var selected = ordersCache.find(function (o) { return o.id === selectedOrderId; }) || ordersCache[0];
+            renderOrderDetail(selected);
         } catch (e) {
             if (loading) loading.style.display = 'none';
             if (noOrders) {
                 noOrders.style.display = 'block';
                 noOrders.textContent = 'Không tải được đơn hàng: ' + (e.message || e);
             }
+        }
+    }
+
+    function startAutoRefreshOrders() {
+        stopAutoRefreshOrders();
+        orderAutoRefreshTimer = setInterval(function () {
+            if (!getToken()) return;
+            loadMyOrders();
+        }, 10000);
+    }
+
+    function stopAutoRefreshOrders() {
+        if (orderAutoRefreshTimer) {
+            clearInterval(orderAutoRefreshTimer);
+            orderAutoRefreshTimer = null;
         }
     }
 
@@ -365,6 +394,18 @@
             cancelBtn._wired = true;
             cancelBtn.addEventListener('click', submitCancel);
         }
+        if (!document._orderVisibilityWired) {
+            document._orderVisibilityWired = true;
+            document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState === 'visible') {
+                    loadMyOrders();
+                    startAutoRefreshOrders();
+                } else {
+                    stopAutoRefreshOrders();
+                }
+            });
+        }
+        startAutoRefreshOrders();
         loadMyOrders();
     };
 })();

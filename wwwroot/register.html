@@ -208,8 +208,13 @@
                     backgroundUrl: data.backgroundUrl
                 });
 
-                msg.textContent = 'Đăng ký thành công! Đang chuyển đến khu vực cá nhân...';
-                msg.classList.add('show', 'success');
+                msg.classList.remove('show', 'success');
+                if (window.AppNotify && typeof window.AppNotify.success === 'function') {
+                    window.AppNotify.success('Đăng ký thành công! Đang chuyển trang...');
+                } else {
+                    msg.textContent = 'Đăng ký thành công! Đang chuyển đến khu vực cá nhân...';
+                    msg.classList.add('show', 'success');
+                }
                 setTimeout(function () {
                     window.location.href = 'account.html';
                 }, 600);

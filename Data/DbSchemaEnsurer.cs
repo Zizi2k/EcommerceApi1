@@ -183,5 +183,28 @@ AND NOT EXISTS (
 );
 ");
         }
+
+        public static void EnsureCostAndProfitColumns(ApplicationDbContext context)
+        {
+            context.Database.ExecuteSqlRaw(@"
+IF COL_LENGTH('Products', 'CostPrice') IS NULL
+    ALTER TABLE [Products] ADD [CostPrice] decimal(18,2) NOT NULL CONSTRAINT [DF_Products_CostPrice] DEFAULT 0;
+
+IF COL_LENGTH('OrderItems', 'UnitCost') IS NULL
+    ALTER TABLE [OrderItems] ADD [UnitCost] decimal(18,2) NOT NULL CONSTRAINT [DF_OrderItems_UnitCost] DEFAULT 0;
+");
+
+            context.Database.ExecuteSqlRaw(@"
+UPDATE oi
+SET oi.[UnitCost] =
+    CASE
+        WHEN p.[CostPrice] > 0 THEN p.[CostPrice]
+        ELSE ROUND(oi.[UnitPrice] * 0.7, 2)
+    END
+FROM [OrderItems] oi
+INNER JOIN [Products] p ON p.[Id] = oi.[ProductId]
+WHERE oi.[UnitCost] <= 0;
+");
+        }
     }
 }

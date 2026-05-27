@@ -1740,7 +1740,11 @@
                 }
 
                 await apiPut(`${API_ENDPOINTS.CART}/update/${cartItemId}`, { newQuantity: newQty });
-                alert("Cập nhật thành công!");
+                if (window.AppNotify && typeof window.AppNotify.success === 'function') {
+                    window.AppNotify.success('Cập nhật giỏ hàng thành công.');
+                } else {
+                    alert("Cập nhật thành công!");
+                }
                 loadMyCart();
             } catch (error) {
                 alert("Lỗi cập nhật: " + error.message);
@@ -1752,7 +1756,11 @@
 
             try {
                 await apiDelete(`${API_ENDPOINTS.CART}/${cartItemId}`);
-                alert("Xóa thành công!");
+                if (window.AppNotify && typeof window.AppNotify.success === 'function') {
+                    window.AppNotify.success('Đã xóa sản phẩm khỏi giỏ hàng.');
+                } else {
+                    alert("Xóa thành công!");
+                }
                 loadMyCart();
             } catch (error) {
                 alert("Lỗi xóa: " + error.message);

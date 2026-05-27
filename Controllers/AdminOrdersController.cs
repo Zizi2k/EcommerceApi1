@@ -2,6 +2,7 @@ using EcommerceApi.Data;
 using EcommerceApi.DTOs;
 using EcommerceApi.Models;
 using EcommerceApi.Services;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -213,6 +214,95 @@ namespace EcommerceApi.Controllers
             });
         }
 
+        [HttpGet("reports/monthly")]
+        public async Task<ActionResult<AdminMonthlyOrderReportDto>> GetMonthlyReport(
+            [FromQuery] int year,
+            [FromQuery] int month)
+        {
+            if (year < 2000 || year > 2100)
+                return BadRequest(new { message = "Năm không hợp lệ." });
+            if (month is < 1 or > 12)
+                return BadRequest(new { message = "Tháng không hợp lệ." });
+
+            var report = await BuildMonthlyReportAsync(year, month);
+            return Ok(report);
+        }
+
+        [HttpGet("reports/monthly/export")]
+        public async Task<IActionResult> ExportMonthlyReportExcel(
+            [FromQuery] int year,
+            [FromQuery] int month)
+        {
+            if (year < 2000 || year > 2100)
+                return BadRequest(new { message = "Năm không hợp lệ." });
+            if (month is < 1 or > 12)
+                return BadRequest(new { message = "Tháng không hợp lệ." });
+
+            var report = await BuildMonthlyReportAsync(year, month);
+            using var workbook = new XLWorkbook();
+            var ws = workbook.Worksheets.Add("BaoCaoThang");
+
+            ws.Cell("A1").Value = "BÁO CÁO ĐƠN ĐÃ GIAO THEO THÁNG";
+            ws.Range("A1:F1").Merge();
+            ws.Cell("A1").Style.Font.Bold = true;
+            ws.Cell("A1").Style.Font.FontSize = 15;
+            ws.Cell("A2").Value = $"Kỳ báo cáo: {report.PeriodLabel}";
+
+            ws.Cell("A4").Value = "Số đơn đã giao";
+            ws.Cell("B4").Value = report.DeliveredOrderCount;
+            ws.Cell("A5").Value = "Tổng số lượng";
+            ws.Cell("B5").Value = report.TotalQuantity;
+            ws.Cell("A6").Value = "Tổng doanh thu";
+            ws.Cell("B6").Value = report.TotalRevenue;
+            ws.Cell("A7").Value = "Tổng vốn";
+            ws.Cell("B7").Value = report.TotalCapital;
+            ws.Cell("A8").Value = "Tổng lãi";
+            ws.Cell("B8").Value = report.TotalProfit;
+
+            ws.Range("A4:A8").Style.Font.Bold = true;
+            ws.Range("B6:B8").Style.NumberFormat.Format = "#,##0";
+
+            var headerRow = 10;
+            ws.Cell(headerRow, 1).Value = "Mã SP";
+            ws.Cell(headerRow, 2).Value = "Tên sản phẩm";
+            ws.Cell(headerRow, 3).Value = "Số lượng";
+            ws.Cell(headerRow, 4).Value = "Doanh thu";
+            ws.Cell(headerRow, 5).Value = "Vốn";
+            ws.Cell(headerRow, 6).Value = "Lãi";
+            ws.Range(headerRow, 1, headerRow, 6).Style.Font.Bold = true;
+            ws.Range(headerRow, 1, headerRow, 6).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+            var row = headerRow + 1;
+            foreach (var p in report.Products)
+            {
+                ws.Cell(row, 1).Value = p.ProductId;
+                ws.Cell(row, 2).Value = p.ProductName;
+                ws.Cell(row, 3).Value = p.Quantity;
+                ws.Cell(row, 4).Value = p.Revenue;
+                ws.Cell(row, 5).Value = p.Capital;
+                ws.Cell(row, 6).Value = p.Profit;
+                row++;
+            }
+
+            if (report.Products.Count > 0)
+            {
+                ws.Range(headerRow + 1, 3, row - 1, 6).Style.NumberFormat.Format = "#,##0";
+                ws.Range(headerRow, 1, row - 1, 6).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                ws.Range(headerRow, 1, row - 1, 6).Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+            }
+
+            ws.Columns(1, 6).AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            var fileName = $"bao-cao-don-da-giao-{year}-{month:00}.xlsx";
+            return File(stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                fileName);
+        }
+
         private static string? ValidateCancelResponse(Order order)
         {
             if (string.IsNullOrWhiteSpace(order.CancelReason))
@@ -225,6 +315,78 @@ namespace EcommerceApi.Controllers
                 return "Đơn đã hủy.";
 
             return null;
+        }
+
+        private async Task<AdminMonthlyOrderReportDto> BuildMonthlyReportAsync(int year, int month)
+        {
+            var fromUtc = new DateTime(year, month, 1, 0, 0, 0, DateTimeKind.Utc);
+            var toUtc = fromUtc.AddMonths(1);
+
+            var orders = await _context.Orders
+                .Include(o => o.Items)
+                .AsNoTracking()
+                .Where(o => o.CreatedAtUtc >= fromUtc && o.CreatedAtUtc < toUtc)
+                .ToListAsync();
+
+            var deliveredOrders = orders
+                .Where(o => OrderStatuses.Normalize(o.Status) == OrderStatuses.Delivered)
+                .ToList();
+
+            var productIds = deliveredOrders
+                .SelectMany(o => o.Items.Select(i => i.ProductId))
+                .Distinct()
+                .ToList();
+
+            var products = productIds.Count == 0
+                ? new Dictionary<int, Product>()
+                : await _context.Products.AsNoTracking()
+                    .Where(p => productIds.Contains(p.Id))
+                    .ToDictionaryAsync(p => p.Id, p => p);
+
+            var rows = deliveredOrders
+                .SelectMany(o => o.Items)
+                .GroupBy(i => i.ProductId)
+                .Select(g =>
+                {
+                    var product = products.TryGetValue(g.Key, out var p) ? p : null;
+                    var name = product?.Name ?? $"SP #{g.Key}";
+                    var quantity = g.Sum(x => x.Quantity);
+                    var revenue = g.Sum(x => x.UnitPrice * x.Quantity);
+                    var capital = g.Sum(x =>
+                    {
+                        if (x.UnitCost > 0) return x.UnitCost * x.Quantity;
+                        var fallbackCost = product != null && product.CostPrice > 0
+                            ? product.CostPrice
+                            : decimal.Round(x.UnitPrice * 0.7m, 2);
+                        return fallbackCost * x.Quantity;
+                    });
+
+                    return new AdminMonthlyProductReportRowDto
+                    {
+                        ProductId = g.Key,
+                        ProductName = name,
+                        Quantity = quantity,
+                        Revenue = revenue,
+                        Capital = capital,
+                        Profit = revenue - capital
+                    };
+                })
+                .OrderByDescending(x => x.Revenue)
+                .ThenBy(x => x.ProductName)
+                .ToList();
+
+            return new AdminMonthlyOrderReportDto
+            {
+                Year = year,
+                Month = month,
+                PeriodLabel = $"Tháng {month:00}/{year}",
+                DeliveredOrderCount = deliveredOrders.Count,
+                TotalQuantity = rows.Sum(x => x.Quantity),
+                TotalRevenue = rows.Sum(x => x.Revenue),
+                TotalCapital = rows.Sum(x => x.Capital),
+                TotalProfit = rows.Sum(x => x.Profit),
+                Products = rows
+            };
         }
 
         private static AdminOrderDto MapOrder(Order o, Dictionary<int, string> productNames)

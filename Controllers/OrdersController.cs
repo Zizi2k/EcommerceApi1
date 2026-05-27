@@ -64,9 +64,6 @@ namespace EcommerceApi.Controllers
             if (OrderStatuses.Normalize(order.Status) != OrderStatuses.Delivered)
                 return BadRequest(new { message = "Chỉ đánh giá được khi đơn ở trạng thái Đã giao." });
 
-            if (order.CustomerRating.HasValue)
-                return BadRequest(new { message = "Bạn đã đánh giá đơn này rồi." });
-
             order.CustomerRating = dto.Rating;
             order.CustomerReviewNote = string.IsNullOrWhiteSpace(dto.Note) ? null : dto.Note.Trim();
             order.CustomerReviewedAtUtc = DateTime.UtcNow;
@@ -82,7 +79,7 @@ namespace EcommerceApi.Controllers
 
             return Ok(new
             {
-                message = "Cảm ơn bạn đã đánh giá đơn hàng.",
+                message = "Đã lưu đánh giá đơn hàng.",
                 orderId = order.Id,
                 customerRating = order.CustomerRating,
                 customerReviewNote = order.CustomerReviewNote,
@@ -158,7 +155,7 @@ namespace EcommerceApi.Controllers
                 CanCancel = status != OrderStatuses.Delivered &&
                             status != OrderStatuses.Cancelled &&
                             string.IsNullOrWhiteSpace(o.CancelReason),
-                CanReview = status == OrderStatuses.Delivered && !o.CustomerRating.HasValue,
+                CanReview = status == OrderStatuses.Delivered,
                 Items = o.Items.Select(i => new UserOrderItemDto
                 {
                     ProductId = i.ProductId,

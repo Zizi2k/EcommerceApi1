@@ -122,10 +122,26 @@ html[data-theme="dark"] .no-products {
     color: var(--th-text-muted) !important;
 }
 
-html[data-theme="dark"] .pagination-container button {
+html[data-theme="dark"] .pagination-section .pagination-btn {
     background: var(--th-bg-elevated);
     color: var(--th-text);
     border-color: var(--th-border);
+}
+
+html[data-theme="dark"] .pagination-section .pagination-btn:hover:not(:disabled) {
+    background: var(--th-bg-muted);
+    border-color: var(--th-accent-soft);
+}
+
+html[data-theme="dark"] .pagination-section .pagination-btn:disabled {
+    background: #475569;
+    color: #cbd5e1;
+    border-color: #64748b;
+    opacity: 0.75;
+}
+
+html[data-theme="dark"] .pagination-section .pagination-info {
+    color: var(--th-text-muted);
 }
 
 /* Promo showcase */
@@ -241,9 +257,45 @@ html[data-theme="dark"] .page-title {
 }
 
 html[data-theme="dark"] .cart-list-panel,
-html[data-theme="dark"] .cart-summary-aside > div,
+html[data-theme="dark"] .cart-summary-aside,
 html[data-theme="dark"] .cart-list-panel {
     background: var(--th-bg-elevated) !important;
+    border-color: var(--th-border) !important;
+}
+
+html[data-theme="dark"] .cart-summary-aside h3 {
+    color: var(--th-text) !important;
+    border-bottom-color: var(--th-border) !important;
+}
+
+html[data-theme="dark"] .summary-row {
+    color: var(--th-text-muted) !important;
+}
+
+html[data-theme="dark"] .summary-row span:last-child {
+    color: var(--th-text) !important;
+}
+
+html[data-theme="dark"] .summary-row--muted {
+    color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .summary-row--muted span:last-child {
+    color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .summary-total {
+    color: #cbd5e1 !important;
+    border-top-color: var(--th-border) !important;
+}
+
+html[data-theme="dark"] .summary-total .amount {
+    color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .btn-continue {
+    background: var(--th-bg-muted) !important;
+    color: var(--th-text) !important;
     border-color: var(--th-border) !important;
 }
 
@@ -329,10 +381,24 @@ html[data-theme="light"] .member-card {
     background: #fff !important;
     border-color: #e2e8f0 !important;
     color: #0f172a !important;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06) !important;
+}
+
+html[data-theme="light"] .member-card h3 {
+    color: #0f172a !important;
 }
 
 html[data-theme="light"] .member-card p {
     color: #64748b !important;
+}
+
+html[data-theme="light"] .member-card .go {
+    color: #0d9488 !important;
+}
+
+html[data-theme="light"] .member-card .icon {
+    background: #ecfdf5 !important;
+    color: #0d9488 !important;
 }
 
 html[data-theme="light"] .settings-panel {

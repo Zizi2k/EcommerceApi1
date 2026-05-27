@@ -15,11 +15,13 @@ namespace EcommerceApi.Controllers
     {
         private readonly IDemoUserStore _users;
         private readonly CustomerRankingService _customerRanking;
+        private readonly UserProfileResolver _profiles;
 
-        public AuthController(IDemoUserStore users, CustomerRankingService customerRanking)
+        public AuthController(IDemoUserStore users, CustomerRankingService customerRanking, UserProfileResolver profiles)
         {
             _users = users;
             _customerRanking = customerRanking;
+            _profiles = profiles;
         }
 
         [HttpPost("login")]
@@ -82,22 +84,25 @@ namespace EcommerceApi.Controllers
 
         [HttpGet("profile/me")]
         [Authorize]
-        public IActionResult GetProfileMe()
+        public async Task<IActionResult> GetProfileMe()
         {
-            var username = CurrentUsername();
-            if (username == null) return Unauthorized();
-            return Ok(ToProfileResponse(_users.GetProfile(username)));
+            var login = CurrentLogin();
+            if (login == null) return Unauthorized();
+            var profile = await _profiles.GetProfileAsync(login);
+            if (profile == null) return NotFound(new { message = "Không tìm thấy hồ sơ tài khoản." });
+            return Ok(ToProfileResponse(profile));
         }
 
         [HttpPut("profile")]
         [Authorize]
-        public IActionResult UpdateProfile([FromBody] UpdateProfileDto dto)
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
         {
-            var username = CurrentUsername();
-            if (username == null) return Unauthorized();
+            var login = CurrentLogin();
+            if (login == null) return Unauthorized();
             if (dto == null) return BadRequest(new { message = "Thiếu dữ liệu." });
 
-            var profile = _users.UpdateProfile(username, dto.DisplayName, dto.AvatarUrl, dto.BackgroundUrl);
+            var profile = await _profiles.UpdateProfileAsync(login, dto.DisplayName, dto.AvatarUrl, dto.BackgroundUrl);
+            if (profile == null) return NotFound(new { message = "Không tìm thấy hồ sơ tài khoản." });
             return Ok(ToProfileResponse(profile));
         }
 
@@ -116,17 +121,21 @@ namespace EcommerceApi.Controllers
             if (username == null) return Unauthorized();
             if (dto == null) return BadRequest(new { message = "Thiếu dữ liệu." });
 
-            if (!_users.TryChangePassword(username, dto.CurrentPassword ?? "", dto.NewPassword ?? "", out var error))
+            if (!_profiles.TryChangePassword(username, dto.CurrentPassword ?? "", dto.NewPassword ?? "", out var error))
                 return BadRequest(new { message = error });
 
             return Ok(new { message = "Đã đổi mật khẩu." });
         }
 
-        private string? CurrentUsername()
+        private string? CurrentLogin()
         {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            if (!string.IsNullOrWhiteSpace(email)) return email.Trim();
             var name = User.FindFirstValue(ClaimTypes.Name);
             return string.IsNullOrWhiteSpace(name) ? null : name.Trim();
         }
+
+        private string? CurrentUsername() => CurrentLogin();
 
         private static object ToProfileResponse(UserProfileData profile) => new
         {

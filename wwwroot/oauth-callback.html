@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đang đăng nhập...</title>
+    <link rel="stylesheet" href="css/header-footer.css">
+    <style>
+        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; min-height: 100vh; display:flex; align-items:center; justify-content:center; background:#0b1220; color:#e2e8f0; }
+        .box { width: min(520px, 92vw); background: rgba(30,41,59,.85); border: 1px solid rgba(148,163,184,.2); border-radius: 14px; padding: 22px 20px; }
+        .title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+        .sub { color: #94a3b8; font-size: 13px; line-height: 1.5; }
+        .err { margin-top: 12px; color: #fca5a5; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="title">Đang xử lý đăng nhập...</div>
+        <div class="sub" id="status">Vui lòng chờ vài giây.</div>
+        <div class="err" id="err" style="display:none;"></div>
+    </div>
+
+    <script src="js/profile.js"></script>
+    <script>
+        (function () {
+            var params = new URLSearchParams(window.location.search);
+            var err = params.get('error');
+            if (err) {
+                document.getElementById('status').textContent = 'Đăng nhập thất bại.';
+                var e = document.getElementById('err');
+                e.style.display = 'block';
+                e.textContent = 'Lỗi: ' + err;
+                return;
+            }
+
+            var token = params.get('token');
+            if (!token) {
+                document.getElementById('status').textContent = 'Không nhận được token.';
+                return;
+            }
+
+            var name = params.get('name') || params.get('email') || 'Tài khoản';
+            var avatar = params.get('avatar') || '';
+
+            localStorage.setItem('userToken', token);
+            saveProfileToLocalStorage({
+                username: params.get('email') || name,
+                displayName: name,
+                avatarUrl: avatar,
+                backgroundUrl: ''
+            });
+
+            window.location.href = 'account.html';
+        })();
+    </script>
+</body>
+</html>
+

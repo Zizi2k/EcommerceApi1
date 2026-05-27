@@ -28,5 +28,45 @@ IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_OrderItems_Produc
         FOREIGN KEY ([ProductId]) REFERENCES [Products]([Id]) ON DELETE NO ACTION;
 ");
         }
+
+        public static void EnsureUsersForGoogleLogin(ApplicationDbContext context)
+        {
+            // App hiện chạy demo user từ file; Google login cần bảng Users để lưu Email/Name/Avatar/GoogleId.
+            context.Database.ExecuteSqlRaw(@"
+IF OBJECT_ID(N'[Users]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [Users](
+        [Id] int IDENTITY(1,1) NOT NULL,
+        [Email] nvarchar(256) NOT NULL,
+        [FullName] nvarchar(256) NOT NULL,
+        [PasswordHash] nvarchar(512) NOT NULL CONSTRAINT [DF_Users_PasswordHash] DEFAULT 'GOOGLE_OAUTH',
+        [Role] nvarchar(32) NOT NULL CONSTRAINT [DF_Users_Role] DEFAULT 'Customer',
+        [AuthProvider] nvarchar(32) NOT NULL CONSTRAINT [DF_Users_AuthProvider] DEFAULT 'Local',
+        [CreatedAt] datetime2 NOT NULL CONSTRAINT [DF_Users_CreatedAt] DEFAULT SYSUTCDATETIME(),
+        [GoogleSub] nvarchar(128) NULL,
+        [Name] nvarchar(256) NOT NULL CONSTRAINT [DF_Users_Name] DEFAULT '',
+        [AvatarUrl] nvarchar(2048) NULL,
+        [GoogleId] nvarchar(128) NULL,
+        CONSTRAINT [PK_Users] PRIMARY KEY ([Id])
+    );
+END;
+
+IF COL_LENGTH('Users', 'Email') IS NULL
+    ALTER TABLE [Users] ADD [Email] nvarchar(256) NOT NULL CONSTRAINT [DF_Users_Email] DEFAULT '';
+IF COL_LENGTH('Users', 'Name') IS NULL
+    ALTER TABLE [Users] ADD [Name] nvarchar(256) NOT NULL CONSTRAINT [DF_Users_Name] DEFAULT '';
+IF COL_LENGTH('Users', 'AvatarUrl') IS NULL
+    ALTER TABLE [Users] ADD [AvatarUrl] nvarchar(2048) NULL;
+IF COL_LENGTH('Users', 'GoogleId') IS NULL
+    ALTER TABLE [Users] ADD [GoogleId] nvarchar(128) NULL;
+IF COL_LENGTH('Users', 'Role') IS NULL
+    ALTER TABLE [Users] ADD [Role] nvarchar(32) NOT NULL CONSTRAINT [DF_Users_Role2] DEFAULT 'Customer';
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Users_Email' AND object_id = OBJECT_ID('Users'))
+    CREATE UNIQUE INDEX [IX_Users_Email] ON [Users]([Email]);
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Users_GoogleId' AND object_id = OBJECT_ID('Users'))
+    CREATE INDEX [IX_Users_GoogleId] ON [Users]([GoogleId]);
+");
+        }
     }
 }

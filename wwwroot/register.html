@@ -68,6 +68,44 @@
             color: #94a3b8;
             margin-top: 4px;
         }
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 18px 0 14px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+        .auth-divider::before,
+        .auth-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+        a.btn-google {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            min-height: 54px;
+            padding: 12px 24px;
+            margin-top: 4px;
+            border-radius: 6px;
+            background: #dc3545 !important;
+            border: 1px solid #c82333 !important;
+            color: #fff !important;
+            text-decoration: none !important;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.35);
+        }
+        a.btn-google:hover {
+            color: #fff !important;
+            text-decoration: none !important;
+            filter: brightness(1.06);
+        }
     </style>
   </head>
   <body>
@@ -105,6 +143,12 @@
               </div>
 
               <input type="submit" value="Tạo tài khoản" class="btn btn-block btn-primary" id="btn-register">
+
+              <div class="auth-divider">hoặc</div>
+
+              <a href="/Account/GoogleLogin" class="btn-google" title="Đăng ký / đăng nhập bằng Google">
+                <i class="fa-brands fa-google"></i> Đăng ký bằng Google
+              </a>
 
               <p id="message"></p>
 

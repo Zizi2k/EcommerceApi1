@@ -1,5 +1,8 @@
-﻿using EcommerceApi.Data;
+﻿using EcommerceApi.Configuration;
+using EcommerceApi.Data;
 using EcommerceApi.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -56,12 +59,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Nhom1")));
 
 
-WebApplicationBuilder webApplicationBuilder = builder;
+var googleAuth = builder.Configuration
+    .GetSection("Authentication:Google")
+    .Get<GoogleAuthSettings>() ?? new GoogleAuthSettings();
 
-WebApplicationBuilder webAppBuilder = webApplicationBuilder;
+builder.Services.Configure<GoogleAuthSettings>(
+    builder.Configuration.GetSection("Authentication:Google"));
 
-webAppBuilder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer(options => {
+var authBuilder = builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(options =>
+    {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
@@ -69,11 +76,33 @@ webAppBuilder.Services.AddAuthentication("Bearer")
             ValidateIssuer = false,
             ValidateAudience = false
         };
+    })
+    .AddCookie("External", options =>
+    {
+        options.Cookie.Name = "ext_auth";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
     });
+
+if (googleAuth.IsConfigured)
+{
+    authBuilder.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+    {
+        options.SignInScheme = "External";
+        options.ClientId = googleAuth.ClientId;
+        options.ClientSecret = googleAuth.ClientSecret;
+        options.CallbackPath = "/signin-google";
+        options.SaveTokens = true;
+    });
+}
+else
+{
+    Console.WriteLine("WARN: Chưa cấu hình Authentication:Google:ClientId/ClientSecret trong appsettings.");
+}
 
 builder.Services.AddAuthorization();
 builder.Services.AddSingleton<IDemoUserStore, DemoUserStore>();
 builder.Services.AddScoped<CustomerRankingService>();
+builder.Services.AddScoped<UserProfileResolver>();
 var app = builder.Build();
 
 // Seed database
@@ -83,6 +112,7 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<ApplicationDbContext>();
     context.Database.Migrate();
     DbSchemaEnsurer.EnsureOrderCustomerColumns(context);
+    DbSchemaEnsurer.EnsureUsersForGoogleLogin(context);
 
     if (!context.Categories.Any())
     {

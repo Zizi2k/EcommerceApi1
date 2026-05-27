@@ -11,48 +11,56 @@ namespace EcommerceApi.Controllers
     [Authorize]
     public class ProfileController : ControllerBase
     {
-        private readonly IDemoUserStore _users;
+        private readonly UserProfileResolver _profiles;
 
-        public ProfileController(IDemoUserStore users)
+        public ProfileController(UserProfileResolver profiles)
         {
-            _users = users;
+            _profiles = profiles;
         }
 
         [HttpGet("me")]
-        public IActionResult GetMe()
+        public async Task<IActionResult> GetMe()
         {
-            var username = CurrentUsername();
-            if (username == null) return Unauthorized();
-            var profile = _users.GetProfile(username);
+            var login = CurrentLogin();
+            if (login == null) return Unauthorized();
+
+            var profile = await _profiles.GetProfileAsync(login);
+            if (profile == null) return NotFound(new { message = "Không tìm thấy hồ sơ tài khoản." });
+
             return Ok(ToResponse(profile));
         }
 
         [HttpPut]
-        public IActionResult UpdateProfile([FromBody] UpdateProfileDto dto)
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
         {
-            var username = CurrentUsername();
-            if (username == null) return Unauthorized();
+            var login = CurrentLogin();
+            if (login == null) return Unauthorized();
             if (dto == null) return BadRequest(new { message = "Thiếu dữ liệu." });
 
-            var profile = _users.UpdateProfile(username, dto.DisplayName, dto.AvatarUrl, dto.BackgroundUrl);
+            var profile = await _profiles.UpdateProfileAsync(login, dto.DisplayName, dto.AvatarUrl, dto.BackgroundUrl);
+            if (profile == null) return NotFound(new { message = "Không tìm thấy hồ sơ tài khoản." });
+
             return Ok(ToResponse(profile));
         }
 
         [HttpPut("password")]
         public IActionResult ChangePassword([FromBody] ChangePasswordDto dto)
         {
-            var username = CurrentUsername();
-            if (username == null) return Unauthorized();
+            var login = CurrentLogin();
+            if (login == null) return Unauthorized();
             if (dto == null) return BadRequest(new { message = "Thiếu dữ liệu." });
 
-            if (!_users.TryChangePassword(username, dto.CurrentPassword ?? "", dto.NewPassword ?? "", out var error))
+            if (!_profiles.TryChangePassword(login, dto.CurrentPassword ?? "", dto.NewPassword ?? "", out var error))
                 return BadRequest(new { message = error });
 
             return Ok(new { message = "Đã đổi mật khẩu." });
         }
 
-        private string? CurrentUsername()
+        private string? CurrentLogin()
         {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            if (!string.IsNullOrWhiteSpace(email)) return email.Trim();
+
             var name = User.FindFirstValue(ClaimTypes.Name);
             return string.IsNullOrWhiteSpace(name) ? null : name.Trim();
         }

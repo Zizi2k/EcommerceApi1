@@ -163,6 +163,15 @@
     <script src="js/profile.js"></script>
     <script src="js/header.js"></script>
     <script>
+        (function () {
+            var err = new URLSearchParams(window.location.search).get('error');
+            if (err === 'google_not_configured') {
+                var msg = document.getElementById('message');
+                msg.textContent = 'Đăng nhập Google chưa được cấu hình. Thêm ClientId/ClientSecret vào appsettings.Development.json rồi khởi động lại API.';
+                msg.classList.add('show');
+            }
+        })();
+
         async function handleLogin() {
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value;

@@ -1,9 +1,10 @@
-﻿using EcommerceApi.Data;
+﻿using EcommerceApi.Configuration;
+using EcommerceApi.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -15,15 +16,22 @@ namespace EcommerceApi.Controllers
     public class AccountController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly GoogleAuthSettings _googleAuth;
 
-        public AccountController(ApplicationDbContext context)
+        public AccountController(ApplicationDbContext context, IOptions<GoogleAuthSettings> googleAuth)
         {
             _context = context;
+            _googleAuth = googleAuth.Value;
         }
 
         [HttpGet]
         public IActionResult GoogleLogin(string? returnUrl = null)
         {
+            if (!_googleAuth.IsConfigured)
+            {
+                return Redirect("/login.html?error=google_not_configured");
+            }
+
             var redirectUrl = Url.Action(nameof(GoogleCallback), "Account", new { returnUrl }) ?? "/Account/GoogleCallback";
             var props = new AuthenticationProperties { RedirectUri = redirectUrl };
             return Challenge(props, GoogleDefaults.AuthenticationScheme);

@@ -25,11 +25,16 @@
         (function () {
             var params = new URLSearchParams(window.location.search);
             var err = params.get('error');
+            var errMessages = {
+                google_not_configured: 'Chưa cấu hình đăng nhập Google trên server. Liên hệ quản trị hoặc dùng tài khoản/mật khẩu.',
+                google_auth_failed: 'Google từ chối đăng nhập hoặc phiên hết hạn. Thử lại.',
+                missing_email: 'Google không cung cấp email. Chọn tài khoản Google có email.'
+            };
             if (err) {
                 document.getElementById('status').textContent = 'Đăng nhập thất bại.';
                 var e = document.getElementById('err');
                 e.style.display = 'block';
-                e.textContent = 'Lỗi: ' + err;
+                e.textContent = errMessages[err] || ('Lỗi: ' + err);
                 return;
             }
 

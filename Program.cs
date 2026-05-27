@@ -1,7 +1,6 @@
 ﻿using EcommerceApi.Configuration;
 using EcommerceApi.Data;
 using EcommerceApi.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
@@ -59,12 +58,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Nhom1")));
 
 
-var googleAuth = builder.Configuration
-    .GetSection("Authentication:Google")
-    .Get<GoogleAuthSettings>() ?? new GoogleAuthSettings();
+builder.Services.Configure<GoogleAuthSettings>(settings =>
+{
+    var resolved = GoogleAuthSettings.FromConfiguration(builder.Configuration);
+    settings.ClientId = resolved.ClientId;
+    settings.ClientSecret = resolved.ClientSecret;
+});
 
-builder.Services.Configure<GoogleAuthSettings>(
-    builder.Configuration.GetSection("Authentication:Google"));
+var googleAuth = GoogleAuthSettings.FromConfiguration(builder.Configuration);
 
 var authBuilder = builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>

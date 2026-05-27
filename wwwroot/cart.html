@@ -623,6 +623,247 @@
             transform: none;
         }
 
+        /* Modal thanh toán thành công */
+        .order-success-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2100;
+            background: rgba(15, 23, 42, 0.62);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .order-success-overlay.show {
+            display: flex;
+            animation: successOverlayIn 0.35s ease;
+        }
+
+        @keyframes successOverlayIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .order-success-card {
+            background: #fff;
+            border-radius: 20px;
+            max-width: 440px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 28px 60px rgba(15, 23, 42, 0.28);
+            animation: successCardIn 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes successCardIn {
+            from {
+                opacity: 0;
+                transform: translateY(24px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .order-success-hero {
+            text-align: center;
+            padding: 32px 28px 24px;
+            background: linear-gradient(145deg, #059669 0%, #0d9488 45%, #0284c7 100%);
+            color: #fff;
+            position: relative;
+        }
+
+        .order-success-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.15), transparent 50%);
+            pointer-events: none;
+        }
+
+        .success-icon-ring {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            position: relative;
+            z-index: 1;
+            animation: successPop 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+        }
+
+        @keyframes successPop {
+            0% { transform: scale(0.4); opacity: 0; }
+            70% { transform: scale(1.08); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .order-success-hero h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.02em;
+        }
+
+        .order-success-hero .success-subtitle {
+            font-size: 14px;
+            opacity: 0.92;
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+        }
+
+        .order-success-body {
+            padding: 22px 24px 8px;
+        }
+
+        .order-success-body .detail-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .order-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            font-size: 14px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .order-detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-detail-row .label {
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .order-detail-row .label i {
+            color: #0284c7;
+            width: 18px;
+            text-align: center;
+        }
+
+        .order-detail-row .value {
+            font-weight: 600;
+            color: #0f172a;
+            text-align: right;
+        }
+
+        .order-detail-row--total {
+            background: linear-gradient(90deg, #f0f9ff, #ecfeff);
+        }
+
+        .order-detail-row--total .value {
+            font-size: 1.1rem;
+            color: #0072ff;
+            font-weight: 700;
+        }
+
+        .order-detail-row--id .value {
+            font-family: ui-monospace, 'Cascadia Code', monospace;
+            font-size: 15px;
+            color: #0d9488;
+        }
+
+        .success-cod-block {
+            margin-top: 14px;
+            padding: 14px 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px dashed #cbd5e1;
+            font-size: 13px;
+            line-height: 1.55;
+            color: #475569;
+        }
+
+        .success-cod-block h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .success-cod-block p {
+            margin: 4px 0;
+        }
+
+        .success-cod-block strong {
+            color: #0f172a;
+        }
+
+        .order-success-actions {
+            padding: 16px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-success-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 20px rgba(0, 114, 255, 0.3);
+        }
+
+        .btn-success-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0, 114, 255, 0.38);
+        }
+
+        .btn-success-secondary {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: #fff;
+            color: #475569;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .btn-success-secondary:hover {
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+
         .cod-customer-section {
             display: none;
             margin: 12px 0 14px;
@@ -895,6 +1136,46 @@
         </div>
     </div>
 
+    <div id="order-success-overlay" class="order-success-overlay" aria-hidden="true">
+        <div class="order-success-card" role="dialog" aria-labelledby="order-success-title" aria-modal="true">
+            <div class="order-success-hero">
+                <div class="success-icon-ring" aria-hidden="true">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h2 id="order-success-title">Thanh toán thành công!</h2>
+                <p class="success-subtitle" id="success-message">Đơn hàng của bạn đã được ghi nhận.</p>
+            </div>
+            <div class="order-success-body">
+                <div class="detail-grid">
+                    <div class="order-detail-row order-detail-row--id">
+                        <span class="label"><i class="fa-solid fa-receipt"></i> Mã đơn hàng</span>
+                        <span class="value" id="success-order-id">#—</span>
+                    </div>
+                    <div class="order-detail-row">
+                        <span class="label"><i class="fa-solid fa-credit-card"></i> Hình thức</span>
+                        <span class="value" id="success-payment">—</span>
+                    </div>
+                    <div class="order-detail-row order-detail-row--total">
+                        <span class="label"><i class="fa-solid fa-coins"></i> Tổng thanh toán</span>
+                        <span class="value" id="success-total">—</span>
+                    </div>
+                </div>
+                <div id="success-cod-details" class="success-cod-block" style="display: none;">
+                    <h4><i class="fa-solid fa-truck"></i> Giao hàng COD</h4>
+                    <p>Người nhận: <strong id="success-recipient">—</strong></p>
+                    <p>SĐT: <strong id="success-phone">—</strong></p>
+                    <p>Địa chỉ: <strong id="success-address">—</strong></p>
+                </div>
+            </div>
+            <div class="order-success-actions">
+                <a href="index.html#products" class="btn-success-primary" id="success-shop-btn">
+                    <i class="fa-solid fa-bag-shopping"></i> Tiếp tục mua sắm
+                </a>
+                <button type="button" class="btn-success-secondary" onclick="closeOrderSuccessModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <footer>
         <div class="footer-container">
@@ -1151,6 +1432,43 @@
             document.getElementById('checkout-overlay').setAttribute('aria-hidden', 'false');
         }
 
+        function getPaymentMethodLabel(methodId) {
+            var opt = PAYMENT_OPTIONS.find(function (o) { return o.id === methodId; });
+            return opt ? opt.title : methodId;
+        }
+
+        function showOrderSuccessModal(res, paymentMethod) {
+            var overlay = document.getElementById('order-success-overlay');
+            document.getElementById('success-message').textContent =
+                (res && res.message) ? res.message : 'Đơn hàng của bạn đã được ghi nhận thành công.';
+            document.getElementById('success-order-id').textContent =
+                '#' + (res && res.orderId != null ? res.orderId : '—');
+            document.getElementById('success-payment').textContent = getPaymentMethodLabel(paymentMethod);
+            document.getElementById('success-total').textContent =
+                Number(res && res.totalAmount != null ? res.totalAmount : 0).toLocaleString('vi-VN') + ' VNĐ';
+
+            var codBlock = document.getElementById('success-cod-details');
+            if (paymentMethod === 'COD' && res && res.customerName) {
+                codBlock.style.display = 'block';
+                document.getElementById('success-recipient').textContent = res.customerName;
+                document.getElementById('success-phone').textContent = res.customerPhone || '—';
+                document.getElementById('success-address').textContent = res.shippingAddress || '—';
+            } else {
+                codBlock.style.display = 'none';
+            }
+
+            overlay.classList.add('show');
+            overlay.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeOrderSuccessModal() {
+            var overlay = document.getElementById('order-success-overlay');
+            overlay.classList.remove('show');
+            overlay.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
         function closeCheckoutModal() {
             document.getElementById('checkout-overlay').classList.remove('show');
             document.getElementById('checkout-overlay').setAttribute('aria-hidden', 'true');
@@ -1198,20 +1516,11 @@
             try {
                 const res = await apiPost(API_ENDPOINTS.CHECKOUT, payload);
                 closeCheckoutModal();
-                var extra = '';
-                if (paymentMethod === 'COD' && res.customerName) {
-                    extra = '\nNgười nhận: ' + res.customerName +
-                        '\nSĐT: ' + res.customerPhone +
-                        '\nĐịa chỉ: ' + res.shippingAddress;
-                }
-                alert(
-                    (res.message || 'Thanh toán thành công!') + '\n' +
-                    'Mã đơn: #' + res.orderId + '\n' +
-                    'Hình thức: ' + paymentMethod + '\n' +
-                    'Tổng tiền: ' + Number(res.totalAmount).toLocaleString('vi-VN') + ' VNĐ' +
-                    extra
-                );
                 await loadMyCart();
+                if (typeof updateCartCount === 'function') {
+                    await updateCartCount();
+                }
+                showOrderSuccessModal(res, paymentMethod);
             } catch (e) {
                 alert('Thanh toán thất bại: ' + (e.message || e));
             } finally {
@@ -1223,8 +1532,18 @@
             if (ev.target === this) closeCheckoutModal();
         });
 
+        document.getElementById('order-success-overlay').addEventListener('click', function (ev) {
+            if (ev.target === this) closeOrderSuccessModal();
+        });
+
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') closeCheckoutModal();
+            if (e.key !== 'Escape') return;
+            var successOpen = document.getElementById('order-success-overlay').classList.contains('show');
+            if (successOpen) {
+                closeOrderSuccessModal();
+                return;
+            }
+            closeCheckoutModal();
         });
 
         async function updateQuantity(cartItemId) {

@@ -193,6 +193,24 @@ header {
     color: white;
 }
 
+.cart-icon #cart-count {
+    display: inline-block;
+    margin-left: 4px;
+    min-width: 1.1em;
+    text-align: center;
+}
+
+.cart-icon #cart-count.cart-count-bump {
+    animation: cartCountBump 0.45s ease;
+}
+
+@keyframes cartCountBump {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.5); color: #fbbf24; }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
 .user-menu {
     position: relative;
 }

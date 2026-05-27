@@ -1,0 +1,212 @@
+.promo-carousel {
+    position: relative;
+    width: 100%;
+    min-height: 420px;
+    overflow: hidden;
+    background: #0f172a;
+}
+
+.promo-carousel-inner {
+    position: relative;
+    width: 100%;
+    height: 420px;
+}
+
+.promo-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.65s ease, visibility 0.65s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+}
+
+.promo-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+}
+
+.promo-slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(118deg, rgba(13, 148, 136, 0.82), rgba(30, 58, 138, 0.78));
+    z-index: 0;
+}
+
+.promo-slide-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: #fff;
+    max-width: 720px;
+    padding: 24px 28px;
+}
+
+.promo-slide-badge {
+    display: inline-block;
+    background: #ff3b30;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+}
+
+.promo-slide-content h1 {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.promo-slide-content p {
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    opacity: 0.92;
+    margin-bottom: 18px;
+    line-height: 1.55;
+}
+
+.promo-price-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.promo-price-current {
+    font-size: clamp(1.25rem, 3vw, 1.65rem);
+    font-weight: 700;
+    color: #7dd3fc;
+}
+
+.promo-price-old {
+    font-size: 1rem;
+    text-decoration: line-through;
+    opacity: 0.75;
+}
+
+.promo-slide-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.promo-btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.promo-btn-primary {
+    background: #00d4ff;
+    color: #0f172a;
+    box-shadow: 0 8px 24px rgba(0, 212, 255, 0.35);
+}
+
+.promo-btn-primary:hover {
+    transform: scale(1.05);
+    background: #38e8ff;
+}
+
+.promo-btn-ghost {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.promo-btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.promo-carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: background 0.2s;
+}
+
+.promo-carousel-nav:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.promo-carousel-prev { left: 16px; }
+.promo-carousel-next { right: 16px; }
+
+.promo-carousel-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    display: flex;
+    gap: 8px;
+}
+
+.promo-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.25s, transform 0.25s;
+}
+
+.promo-dot.is-active {
+    background: #00d4ff;
+    border-color: #00d4ff;
+    transform: scale(1.15);
+}
+
+body.app-user-logged-in .promo-slide::before {
+    background: linear-gradient(118deg, rgba(13, 148, 136, 0.88), rgba(30, 58, 138, 0.85));
+}
+
+@media (max-width: 640px) {
+    .promo-carousel,
+    .promo-carousel-inner {
+        min-height: 380px;
+        height: 380px;
+    }
+
+    .promo-carousel-nav {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+
+    .promo-carousel-prev { left: 8px; }
+    .promo-carousel-next { right: 8px; }
+}

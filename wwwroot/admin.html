@@ -149,6 +149,26 @@
             color: #333;
             font-size: 13px;
         }
+        .form-label-block {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+        }
+        .promo-checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .promo-checkbox-row label {
+            margin-bottom: 0;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .promo-checkbox-row input[type="checkbox"] {
+            width: auto;
+        }
         input, textarea, select {
             width: 100%;
             padding: 10px 12px;
@@ -470,7 +490,7 @@
                     <input type="number" id="stock" min="0" required>
                 </div>
                 <div class="form-group">
-                    <label>Ảnh sản phẩm *</label>
+                    <span class="form-label-block">Ảnh sản phẩm *</span>
                     <div class="image-upload-block">
                         <div id="image-paste-zone" class="image-paste-zone" tabindex="-1" title="Click khung xem trước rồi Ctrl+V để dán ảnh">
                             <div class="image-preview-wrap">
@@ -509,6 +529,98 @@
                 </div>
             </div>
         </div>
+
+        <section class="admin-section" aria-labelledby="promo-section-title">
+            <h2 class="admin-section-title" id="promo-section-title">
+                <i class="fa-solid fa-images"></i> Carousel khuyến mãi (trang chủ)
+            </h2>
+            <p style="font-size: 13px; color: #64748b; margin: -8px 0 16px;">
+                Thêm sản phẩm lên banner carousel trang chủ. Thứ tự hiển thị theo <strong>Sort</strong> (số nhỏ lên trước).
+            </p>
+            <div class="layout-grid">
+                <div class="panel">
+                    <h2><i class="fa-solid fa-list"></i> Danh sách khuyến mãi</h2>
+                    <div class="toolbar" style="margin-bottom: 12px;">
+                        <button type="button" class="btn-refresh" onclick="loadPromoTable()">
+                            <i class="fa-solid fa-rotate"></i> Làm mới
+                        </button>
+                    </div>
+                    <div id="promo-table-loading" class="empty-hint" style="display:none;">Đang tải...</div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ảnh</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Nhãn</th>
+                                    <th>Giá KM</th>
+                                    <th>Sort</th>
+                                    <th>Trạng thái</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="promo-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div id="promo-table-empty" class="empty-hint" style="display:none;">
+                        Chưa có slide khuyến mãi. Thêm ở form bên phải.
+                    </div>
+                </div>
+
+                <div class="panel" id="promo-form-panel">
+                    <h2>
+                        <i class="fa-solid fa-bullhorn"></i> Thêm / sửa khuyến mãi
+                        <span id="promo-mode-badge" class="badge-mode">Thêm mới</span>
+                    </h2>
+                    <div id="promo-success-message" class="success" style="display:none;">
+                        <i class="fa-solid fa-check"></i> <span id="promo-success-text"></span>
+                    </div>
+                    <div id="promo-error-message" class="error" style="display:none;">
+                        <i class="fa-solid fa-circle-exclamation"></i> <span id="promo-error-text"></span>
+                    </div>
+                    <input type="hidden" id="promo-id" value="">
+                    <div class="form-group">
+                        <label for="promo-productId">Sản phẩm *</label>
+                        <select id="promo-productId" required>
+                            <option value="">Đang tải…</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="promo-headline">Tiêu đề slide (để trống = tên sản phẩm)</label>
+                        <input type="text" id="promo-headline" placeholder="VD: Giảm sốc cuối tuần">
+                    </div>
+                    <div class="form-group">
+                        <label for="promo-subtitle">Mô tả ngắn</label>
+                        <textarea id="promo-subtitle" placeholder="Dòng mô tả dưới tiêu đề" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="promo-badgeText">Nhãn (badge)</label>
+                        <input type="text" id="promo-badgeText" value="HOT" maxlength="32">
+                    </div>
+                    <div class="form-group">
+                        <label for="promo-promoPrice">Giá khuyến mãi hiển thị (VNĐ)</label>
+                        <input type="number" id="promo-promoPrice" min="0" step="1000" placeholder="Để trống = giá gốc">
+                    </div>
+                    <div class="form-group">
+                        <label for="promo-sortOrder">Thứ tự (sort)</label>
+                        <input type="number" id="promo-sortOrder" value="0" min="0">
+                    </div>
+                    <div class="form-group promo-checkbox-row">
+                        <input type="checkbox" id="promo-isActive" checked>
+                        <label for="promo-isActive">Hiển thị trên carousel</label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-primary" onclick="submitPromoForm()">
+                            <i class="fa-solid fa-floppy-disk"></i> <span id="promo-submit-label">Lưu khuyến mãi</span>
+                        </button>
+                        <button type="button" class="btn-secondary" id="promo-btn-cancel" style="display:none;" onclick="resetPromoForm()">
+                            Hủy — thêm mới
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="admin-section panel" aria-labelledby="customers-section-title">
             <h2 class="admin-section-title" id="customers-section-title">
                 <i class="fa-solid fa-ranking-star"></i> Khách hàng &amp; xếp hạng mua hàng
@@ -557,6 +669,7 @@
     <script src="api.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/header.js"></script>
+    <script src="js/admin-promotions.js"></script>
     <script>
         let editingId = null;
         let adminProductsCache = [];
@@ -1044,6 +1157,8 @@
             await fillCategorySelect();
             resetForm();
             await loadProductTable();
+            if (typeof fillPromoProductSelect === 'function') await fillPromoProductSelect();
+            if (typeof loadPromoTable === 'function') await loadPromoTable();
             await loadCustomerRankings();
             await maybeOpenEditFromQuery();
         });

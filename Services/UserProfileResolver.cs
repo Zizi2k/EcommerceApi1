@@ -50,6 +50,8 @@ namespace EcommerceApi.Services
                 }
                 if (avatarUrl != null)
                     user.AvatarUrl = string.IsNullOrWhiteSpace(avatarUrl) ? null : avatarUrl.Trim();
+                if (backgroundUrl != null)
+                    user.BackgroundUrl = string.IsNullOrWhiteSpace(backgroundUrl) ? null : backgroundUrl.Trim();
 
                 await _db.SaveChangesAsync();
                 return FromDbUser(user);
@@ -85,7 +87,7 @@ namespace EcommerceApi.Services
                 Username = user.Email,
                 DisplayName = display,
                 AvatarUrl = avatar,
-                BackgroundUrl = null
+                BackgroundUrl = string.IsNullOrWhiteSpace(user.BackgroundUrl) ? null : user.BackgroundUrl.Trim()
             };
         }
     }

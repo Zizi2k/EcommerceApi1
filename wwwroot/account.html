@@ -162,19 +162,6 @@
             }
         }
 
-        async function updateCartCountMember() {
-            try {
-                var el = document.getElementById('cart-count');
-                if (!el) return;
-                var cartItems = await apiGet(API_ENDPOINTS.CART);
-                var total = cartItems.reduce(function (s, it) { return s + it.quantity; }, 0);
-                el.textContent = total;
-            } catch (e) {
-                var el2 = document.getElementById('cart-count');
-                if (el2) el2.textContent = '0';
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', function () {
             if (!getToken()) {
                 window.location.href = 'login.html';
@@ -186,7 +173,7 @@
                 syncMemberProfile();
             });
             applyUserBackground();
-            updateCartCountMember();
+            updateCartCount();
         });
     </script>
 </body>

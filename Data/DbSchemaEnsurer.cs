@@ -66,6 +66,32 @@ IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Users_Email' AND objec
     CREATE UNIQUE INDEX [IX_Users_Email] ON [Users]([Email]);
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Users_GoogleId' AND object_id = OBJECT_ID('Users'))
     CREATE INDEX [IX_Users_GoogleId] ON [Users]([GoogleId]);
+IF COL_LENGTH('Users', 'BackgroundUrl') IS NULL
+    ALTER TABLE [Users] ADD [BackgroundUrl] nvarchar(2048) NULL;
+");
+        }
+
+        public static void EnsurePromotionalProductsTable(ApplicationDbContext context)
+        {
+            context.Database.ExecuteSqlRaw(@"
+IF OBJECT_ID(N'[PromotionalProducts]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [PromotionalProducts](
+        [Id] int IDENTITY(1,1) NOT NULL,
+        [ProductId] int NOT NULL,
+        [Headline] nvarchar(256) NULL,
+        [Subtitle] nvarchar(512) NULL,
+        [BadgeText] nvarchar(64) NULL,
+        [PromoPrice] decimal(18,2) NULL,
+        [SortOrder] int NOT NULL CONSTRAINT [DF_PromotionalProducts_SortOrder] DEFAULT 0,
+        [IsActive] bit NOT NULL CONSTRAINT [DF_PromotionalProducts_IsActive] DEFAULT 1,
+        [CreatedAtUtc] datetime2 NOT NULL CONSTRAINT [DF_PromotionalProducts_CreatedAtUtc] DEFAULT SYSUTCDATETIME(),
+        CONSTRAINT [PK_PromotionalProducts] PRIMARY KEY ([Id]),
+        CONSTRAINT [FK_PromotionalProducts_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [Products]([Id]) ON DELETE CASCADE
+    );
+    CREATE INDEX [IX_PromotionalProducts_ProductId] ON [PromotionalProducts]([ProductId]);
+    CREATE INDEX [IX_PromotionalProducts_IsActive_SortOrder] ON [PromotionalProducts]([IsActive], [SortOrder]);
+END;
 ");
         }
     }

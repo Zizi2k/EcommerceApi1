@@ -113,6 +113,7 @@ using (var scope = app.Services.CreateScope())
     context.Database.Migrate();
     DbSchemaEnsurer.EnsureOrderCustomerColumns(context);
     DbSchemaEnsurer.EnsureUsersForGoogleLogin(context);
+    DbSchemaEnsurer.EnsurePromotionalProductsTable(context);
 
     if (!context.Categories.Any())
     {
@@ -133,6 +134,26 @@ using (var scope = app.Services.CreateScope())
             context.Products.Add(p);
     }
     context.SaveChanges();
+
+    if (!context.PromotionalProducts.Any())
+    {
+        var seedProducts = context.Products.OrderBy(p => p.Id).Take(3).ToList();
+        var order = 0;
+        foreach (var p in seedProducts)
+        {
+            context.PromotionalProducts.Add(new EcommerceApi.Models.PromotionalProduct
+            {
+                ProductId = p.Id,
+                Headline = p.Name,
+                Subtitle = "Ưu đãi đặc biệt — mua ngay hôm nay",
+                BadgeText = "HOT",
+                PromoPrice = Math.Round(p.Price * 0.9m, 0),
+                SortOrder = order++,
+                IsActive = true
+            });
+        }
+        context.SaveChanges();
+    }
 }
 
 

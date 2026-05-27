@@ -13,6 +13,7 @@ namespace EcommerceApi.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<PromotionalProduct> PromotionalProducts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +26,18 @@ namespace EcommerceApi.Data
                 .WithMany()
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PromotionalProduct>(entity =>
+            {
+                entity.ToTable("PromotionalProducts");
+                entity.Property(p => p.Headline).HasMaxLength(256);
+                entity.Property(p => p.Subtitle).HasMaxLength(512);
+                entity.Property(p => p.BadgeText).HasMaxLength(64);
+                entity.HasOne(p => p.Product)
+                    .WithMany()
+                    .HasForeignKey(p => p.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             modelBuilder.Entity<User>(entity =>
             {
@@ -39,6 +52,7 @@ namespace EcommerceApi.Data
                 entity.Property(u => u.GoogleSub).HasMaxLength(128);
                 entity.Property(u => u.GoogleId).HasMaxLength(128);
                 entity.Property(u => u.AvatarUrl).HasMaxLength(2048);
+                entity.Property(u => u.BackgroundUrl).HasMaxLength(2048);
             });
         }
     }

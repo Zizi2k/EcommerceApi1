@@ -14,6 +14,7 @@
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string? GoogleSub { get; set; }
         public string? AvatarUrl { get; set; }
+        public string? BackgroundUrl { get; set; }
         public string? GoogleId { get; set; }
     }
 }

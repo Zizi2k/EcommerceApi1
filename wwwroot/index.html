@@ -14,6 +14,7 @@
 
     <!-- Header/Footer CSS -->
     <link rel="stylesheet" href="css/header-footer.css">
+    <link rel="stylesheet" href="css/promo-carousel.css">
 
     <style>
         * {
@@ -26,94 +27,6 @@
             font-family: 'Poppins', sans-serif;
             background: #f4f7fb;
             color: #222;
-        }
-
-        /* HERO */
-        .hero {
-            height: 420px;
-            background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1920');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            padding: 20px;
-        }
-
-        .hero-content h1 {
-            font-size: 52px;
-            margin-bottom: 15px;
-        }
-
-        .hero-content p {
-            font-size: 18px;
-            opacity: 0.9;
-            margin-bottom: 25px;
-        }
-
-        .hero-btn {
-            padding: 14px 30px;
-            border: none;
-            background: #00d4ff;
-            color: white;
-            font-size: 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-            .hero-btn:hover {
-                background: #0099cc;
-                transform: scale(1.05);
-            }
-
-        body.app-user-logged-in .hero {
-            background: linear-gradient(118deg, rgba(13, 148, 136, 0.85), rgba(30, 58, 138, 0.82)), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1920');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .member-welcome-strip {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            padding: 12px 20px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #f0fdfa;
-            background: linear-gradient(90deg, #0f766e, #1d4ed8);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        .member-welcome-strip-inner {
-            max-width: 1300px;
-            width: 100%;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .member-welcome-strip a {
-            margin-left: auto;
-            color: #fff;
-            font-weight: 600;
-            text-decoration: none;
-            white-space: nowrap;
-            padding: 6px 14px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.18);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            transition: background 0.2s;
-        }
-
-        .member-welcome-strip a:hover {
-            background: rgba(255, 255, 255, 0.28);
         }
 
         /* CONTAINER */
@@ -161,6 +74,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            cursor: pointer;
         }
 
             .product-card:hover {
@@ -448,14 +362,6 @@
 
         /* RESPONSIVE */
         @media(max-width: 768px) {
-            .hero-content h1 {
-                font-size: 34px;
-            }
-
-            .hero-content p {
-                font-size: 15px;
-            }
-
             .filter-grid {
                 grid-template-columns: 1fr;
             }
@@ -563,21 +469,16 @@
         </div>
     </header>
 
-    <div id="member-welcome-strip" class="member-welcome-strip" style="display: none;" role="status" aria-live="polite">
-        <div class="member-welcome-strip-inner">
-            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
-            <span class="member-welcome-text"></span>
-            <a href="account.html">Khu vực cá nhân <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-        </div>
-    </div>
-
-    <!-- HERO -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Công Nghệ Hiện Đại</h1>
-            <p>Khám phá những sản phẩm công nghệ mới nhất với giá tốt nhất</p>
-            <button class="hero-btn">Mua Ngay</button>
-        </div>
+    <!-- CAROUSEL KHUYẾN MÃI -->
+    <section class="promo-carousel" id="promo-carousel" aria-label="Sản phẩm khuyến mãi">
+        <div class="promo-carousel-inner" id="promo-carousel-inner"></div>
+        <button type="button" class="promo-carousel-nav promo-carousel-prev" id="promo-carousel-prev" aria-label="Slide trước">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button type="button" class="promo-carousel-nav promo-carousel-next" id="promo-carousel-next" aria-label="Slide sau">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <div class="promo-carousel-dots" id="promo-carousel-dots" role="tablist" aria-label="Chọn slide"></div>
     </section>
 
     <!-- PRODUCT -->
@@ -642,7 +543,7 @@
         <div class="footer-container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4><i class="fa-solid fa-store"></i> Group 1 Store</h4>
+                    <h4><i class="fa-solid fa-store"></i> Group 1 Store DotNet</h4>
                     <p>Cửa hàng công nghệ hàng đầu với đa dạng sản phẩm chất lượng cao.</p>
                     <div class="footer-social">
                         <a href="#" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
@@ -671,23 +572,27 @@
                 <div class="footer-section">
                     <h4><i class="fa-solid fa-phone"></i> Liên hệ</h4>
                     <p>
-                        <i class="fa-solid fa-envelope"></i> 
-                        <a href="mailto:info@group1store.com" style="color: #ccc;">info@group1store.com</a>
+                        
+                        <i class="fa-solid fa-envelope"></i>  <a href="mailto:info@group1store.com" style="color: #ccc;">zizi2k2510@gmail.com</a>
                     </p>
                     <p>
-                        <i class="fa-solid fa-phone"></i> 
-                        <a href="tel:0123456789" style="color: #ccc;">0123 456 789</a>
+
+                        <i class="fa-solid fa-phone"></i> <a href="tel:0343823980" style="color: #ccc;">0343680001</a>
                     </p>
                     <p>
-                        <i class="fa-solid fa-map-marker-alt"></i> 
-                        <span style="color: #ccc;">123 Đường ABC, TP. HCM, Việt Nam</span>
+                        <i class="fa-solid fa-map-marker-alt"></i>
+                        <span style="color: #ccc;">Đường Nguyễn Khuyến, Phường Trảng Dài, Thành phố Đồng Nai</span>
                     </p>
+                    
                 </div>
             </div>
 
             <div class="footer-bottom">
                 <p>&copy; 2026 Group 1 Store. All rights reserved.</p>
                 <p>Thiết kế bởi Group 1 | HTML • CSS • JavaScript</p>
+                <p>
+                    <span style="color: #ccc;">Sản phẩm không mang tính thương mại hóa chỉ phục vụ trong việc học tập</span>
+                </p>
             </div>
         </div>
     </footer>
@@ -696,6 +601,7 @@
     <script src="api.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/header.js"></script>
+    <script src="js/promo-carousel.js"></script>
     <script>
 
         // PAGINATION & FILTERING VARIABLES
@@ -784,10 +690,13 @@
                 const catLine = categoryLabel(p);
                 const catHtml = catLine ? `<p class="product-category">${escapeHtml(catLine)}</p>` : '';
                 const editBtn = (typeof isAdminUser === 'function' && isAdminUser())
-                    ? `<button type="button" class="btn-edit-card" onclick="editProductFromStore(${p.id})" title="Sửa sản phẩm"><i class="fa-solid fa-pen"></i> Sửa</button>`
+                    ? `<button type="button" class="btn-edit-card" onclick="event.stopPropagation(); editProductFromStore(${p.id})" title="Sửa sản phẩm"><i class="fa-solid fa-pen"></i> Sửa</button>`
                     : '';
                 html += `
-                    <div class="product-card">
+                    <div class="product-card" role="link" tabindex="0"
+                         onclick="goToProduct(${p.id})"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goToProduct(${p.id});}"
+                         aria-label="Xem chi tiết ${escapeHtml(p.name)}">
                         <div class="product-image">
                             <span class="discount-badge">HOT</span>
                             <img src="${p.imageUrl || 'https://via.placeholder.com/300'}" alt="${escapeHtml(p.name)}" onerror="this.src='https://via.placeholder.com/300x240?text=No+Image'">
@@ -800,7 +709,7 @@
                                 <div class="price">${Number(p.price).toLocaleString()} VNĐ</div>
                                 <div class="product-actions">
                                     ${editBtn}
-                                    <button type="button" class="btn-add" onclick="addToCart(${p.id})" title="Thêm vào giỏ hàng"><i class="fa-solid fa-cart-plus"></i> Thêm</button>
+                                    <button type="button" class="btn-add" onclick="event.stopPropagation(); addToCart(${p.id})" title="Thêm vào giỏ hàng"><i class="fa-solid fa-cart-plus"></i> Thêm</button>
                                 </div>
                             </div>
                         </div>
@@ -931,6 +840,10 @@
             }
         }
 
+        function goToProduct(productId) {
+            window.location.href = 'product.html?id=' + encodeURIComponent(productId);
+        }
+
         // ADD TO CART
         async function addToCart(productId) {
             if (!checkAuth()) return;
@@ -942,7 +855,7 @@
                 });
 
                 alert("Đã thêm vào giỏ hàng!");
-                updateCartCount();
+                await updateCartCount(1);
             } catch (error) {
                 alert("Không thể thêm vào giỏ! " + error.message);
             }
@@ -962,40 +875,8 @@
             window.location.href = "admin.html?edit=" + encodeURIComponent(productId);
         }
 
-        // UPDATE CART COUNT
-        async function updateCartCount() {
-            try {
-                const token = getToken();
-                if (!token) {
-                    document.getElementById('cart-count').textContent = '0';
-                    return;
-                }
-
-                const cartItems = await apiGet(API_ENDPOINTS.CART);
-                const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-                document.getElementById('cart-count').textContent = totalCount;
-            } catch (error) {
-                console.error("Lỗi cập nhật số lượng giỏ hàng:", error);
-            }
-        }
-
         // LOAD
         window.onload = function() {
-            (function syncStoreMemberUi() {
-                if (!getToken()) return;
-                var name = localStorage.getItem('userName');
-                var strip = document.getElementById('member-welcome-strip');
-                var sub = document.querySelector('.hero-content p');
-                if (name && sub) {
-                    sub.textContent = 'Chào ' + name + '! Khám phá sản phẩm và ưu đãi dành cho bạn.';
-                }
-                if (strip && name) {
-                    strip.style.display = 'flex';
-                    var tx = strip.querySelector('.member-welcome-text');
-                    if (tx) tx.textContent = 'Bạn đang đăng nhập với tài khoản: ' + name;
-                }
-            })();
-
             loadCategoryFilterOptions();
             loadProducts();
             updateCartCount();

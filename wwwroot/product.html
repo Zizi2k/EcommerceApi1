@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chi tiết sản phẩm - Group 1 Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="css/header-footer.css" />
+    <link rel="stylesheet" href="css/product-detail.css" />
+</head>
+<body class="product-detail-page">
+
+    <header>
+        <div class="header-container">
+            <div class="logo" onclick="navigateToHome()" title="Về cửa hàng">
+                <i class="fa-solid fa-store"></i> Group <span>1 Store</span>
+            </div>
+
+            <button class="menu-toggle" type="button" aria-label="Mở menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <nav class="nav-menu">
+                <a href="index.html" title="Trang chủ">
+                    <i class="fa-solid fa-home"></i> Cửa hàng
+                </a>
+                <a href="index.html#products" title="Sản phẩm">
+                    <i class="fa-solid fa-box"></i> Sản phẩm
+                </a>
+                <a href="cart.html" title="Giỏ hàng">
+                    <i class="fa-solid fa-cart-shopping"></i> Giỏ hàng
+                </a>
+                <a href="admin.html" class="nav-dropdown-item--module nav-admin-only" title="Quản lý">
+                    <i class="fa-solid fa-sliders"></i> Quản lý
+                </a>
+            </nav>
+
+            <div class="header-right">
+                <button class="cart-icon" onclick="navigateToCart()" title="Giỏ hàng" type="button">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span id="cart-count">0</span>
+                </button>
+
+                <div class="user-menu">
+                    <button class="user-btn" id="user-btn" type="button" style="display: none;" title="Tài khoản">
+                        <span class="user-btn-mark">
+                            <img class="user-avatar-img" alt="" width="30" height="30" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+                            <i class="user-avatar-fallback fa-solid fa-user" aria-hidden="true"></i>
+                        </span>
+                        <span class="user-btn-text">Tài khoản</span>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown">
+                        <a href="account.html"><i class="fa-solid fa-gauge-high"></i> Khu cá nhân</a>
+                        <a href="settings.html"><i class="fa-solid fa-gear"></i> Cài đặt</a>
+                        <a href="#" onclick="logout(); return false;"><i class="fa-solid fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                    <button class="user-btn" id="login-nav" onclick="navigateToLogin()" style="display: none;" title="Đăng nhập">
+                        <i class="fa-solid fa-sign-in-alt"></i> Đăng nhập
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="product-detail-main">
+        <nav class="product-breadcrumb" aria-label="Đường dẫn">
+            <a href="index.html"><i class="fa-solid fa-home"></i> Trang chủ</a>
+            <span class="sep">/</span>
+            <a href="index.html#products">Sản phẩm</a>
+            <span class="sep">/</span>
+            <span class="current" id="breadcrumb-name">Chi tiết</span>
+        </nav>
+
+        <div id="product-detail-root">
+            <div class="product-detail-loading">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Đang tải thông tin sản phẩm...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fa-solid fa-store"></i> Group 1 Store</h3>
+                    <p>Cửa hàng công nghệ uy tín — laptop, điện thoại, phụ kiện chính hãng.</p>
+                </div>
+                <div class="footer-section">
+                    <h4><i class="fa-solid fa-sitemap"></i> Menu</h4>
+                    <a href="index.html">Trang chủ</a>
+                    <a href="index.html#products">Sản phẩm</a>
+                    <a href="cart.html">Giỏ hàng</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Group 1 Store. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="product-toast" class="product-toast" role="status" aria-live="polite"></div>
+
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/product-detail.js"></script>
+</body>
+</html>

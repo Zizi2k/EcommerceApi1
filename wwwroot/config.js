@@ -16,6 +16,8 @@ const API_ENDPOINTS = {
     CART_ADD: `${API_BASE_URL}/Cart/add`,
     CHECKOUT: `${API_BASE_URL}/Checkout`,
     ADMIN_CUSTOMERS: `${API_BASE_URL}/auth/admin/customers`,
+    PROMOTIONS: `${API_BASE_URL}/Promotions`,
+    PROMOTIONS_ALL: `${API_BASE_URL}/Promotions/all`,
 };
 
 /** Danh mục cố định id 1–11 (khớp DB / migration). Dùng khi API không trả categoryName. */

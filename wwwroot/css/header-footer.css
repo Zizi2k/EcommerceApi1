@@ -1,5 +1,5 @@
-/* ========== HEADER STYLES ========== */
-header {
+/* ========== HEADER STYLES (chỉ header trang, không áp section giới thiệu) ========== */
+header.site-header {
     background: linear-gradient(135deg, #111827, #1f2937);
     padding: 0;
     position: sticky;
@@ -545,6 +545,6 @@ footer {
 }
 
 /* Đã đăng nhập: nhấn mạnh nhẹ header trên trang cửa hàng (không áp cho member-page) */
-body.app-user-logged-in:not(.member-page) header {
+body.app-user-logged-in:not(.member-page) header.site-header {
     box-shadow: 0 4px 22px rgba(13, 148, 136, 0.2);
 }

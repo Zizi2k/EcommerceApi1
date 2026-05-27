@@ -14,6 +14,8 @@ namespace EcommerceApi.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<PromotionalProduct> PromotionalProducts { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<ProductReview> ProductReviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

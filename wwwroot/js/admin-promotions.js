@@ -94,6 +94,8 @@
 
         loading.style.display = 'block';
         empty.style.display = 'none';
+        var emptyMsgReset = document.getElementById('promo-table-empty-msg');
+        if (emptyMsgReset) emptyMsgReset.textContent = 'Chưa có slide khuyến mãi. Thêm slide mới ở form bên phải.';
         tbody.innerHTML = '';
 
         try {
@@ -102,7 +104,11 @@
             promoCache = list;
             loading.style.display = 'none';
 
+            var countEl = document.getElementById('promo-count-text');
+            if (countEl) countEl.textContent = list.length + ' slide';
+
             if (!list.length) {
+                if (countEl) countEl.textContent = '0 slide';
                 empty.style.display = 'block';
                 return;
             }
@@ -112,17 +118,20 @@
                 var img = escHtml(p.imageUrl || '');
                 var name = escHtml(p.productName || p.headline || '—');
                 var status = p.isActive
-                    ? '<span style="color:#059669;font-weight:600;">Đang hiện</span>'
-                    : '<span style="color:#94a3b8;">Ẩn</span>';
+                    ? '<span class="promo-status promo-status--on">Đang hiện</span>'
+                    : '<span class="promo-status promo-status--off">Ẩn</span>';
+                var badge = p.badgeText
+                    ? '<span class="promo-badge-pill">' + escHtml(p.badgeText) + '</span>'
+                    : '—';
                 var price = p.promoPrice != null
                     ? Number(p.promoPrice).toLocaleString('vi-VN') + ' ₫'
                     : '—';
                 return '<tr>' +
                     '<td><img class="thumb" src="' + (img || 'https://via.placeholder.com/48') + '" alt="" onerror="this.src=\'https://via.placeholder.com/48\'"></td>' +
                     '<td class="cell-name"><strong>' + name + '</strong><small>' + escHtml((p.subtitle || '').slice(0, 50)) + '</small></td>' +
-                    '<td>' + escHtml(p.badgeText || '') + '</td>' +
-                    '<td>' + price + '</td>' +
-                    '<td>' + (p.sortOrder != null ? p.sortOrder : 0) + '</td>' +
+                    '<td>' + badge + '</td>' +
+                    '<td><strong>' + price + '</strong></td>' +
+                    '<td><span class="promo-sort-num">' + (p.sortOrder != null ? p.sortOrder : 0) + '</span></td>' +
                     '<td>' + status + '</td>' +
                     '<td class="actions">' +
                     '<button type="button" class="btn-icon btn-edit" title="Sửa" onclick="editPromoById(' + p.id + ')"><i class="fa-solid fa-pen"></i></button>' +
@@ -132,7 +141,10 @@
         } catch (err) {
             loading.style.display = 'none';
             empty.style.display = 'block';
-            empty.textContent = 'Không tải được: ' + (err.message || err);
+            var countErr = document.getElementById('promo-count-text');
+            if (countErr) countErr.textContent = '—';
+            var emptyMsg = document.getElementById('promo-table-empty-msg');
+            if (emptyMsg) emptyMsg.textContent = 'Không tải được: ' + (err.message || err);
         }
     }
 

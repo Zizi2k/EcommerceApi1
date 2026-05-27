@@ -8,7 +8,7 @@ namespace EcommerceApi.DTOs
         [Required]
         public string PaymentMethod { get; set; } = string.Empty;
 
-        /// <summary>Bắt buộc khi thanh toán COD (tiền mặt).</summary>
+        /// <summary>Bắt buộc với mọi hình thức thanh toán.</summary>
         public string? CustomerName { get; set; }
 
         public string? CustomerPhone { get; set; }

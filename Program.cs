@@ -12,7 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(o => o.JsonSerializerOptions.PropertyNameCaseInsensitive = true);
 builder.Services.Configure<FormOptions>(o =>
 {
     o.MultipartBodyLengthLimit = 10 * 1024 * 1024; // 10 MB
@@ -65,6 +66,12 @@ builder.Services.Configure<GoogleAuthSettings>(settings =>
     settings.ClientSecret = resolved.ClientSecret;
 });
 
+builder.Services.Configure<AdminSettings>(settings =>
+{
+    var resolved = AdminSettings.FromConfiguration(builder.Configuration);
+    settings.Emails = resolved.Emails;
+});
+
 var googleAuth = GoogleAuthSettings.FromConfiguration(builder.Configuration);
 
 var authBuilder = builder.Services.AddAuthentication("Bearer")
@@ -104,6 +111,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddSingleton<IDemoUserStore, DemoUserStore>();
 builder.Services.AddScoped<CustomerRankingService>();
 builder.Services.AddScoped<UserProfileResolver>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<ProductReviewService>();
 var app = builder.Build();
 
 // Seed database
@@ -115,6 +124,9 @@ using (var scope = app.Services.CreateScope())
     DbSchemaEnsurer.EnsureOrderCustomerColumns(context);
     DbSchemaEnsurer.EnsureUsersForGoogleLogin(context);
     DbSchemaEnsurer.EnsurePromotionalProductsTable(context);
+    DbSchemaEnsurer.EnsureOrderAdminReviewColumns(context);
+    DbSchemaEnsurer.EnsureNotificationsTable(context);
+    DbSchemaEnsurer.EnsureProductReviewsTable(context);
 
     if (!context.Categories.Any())
     {

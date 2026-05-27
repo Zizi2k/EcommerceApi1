@@ -5,6 +5,8 @@ const API_BASE_URL = `${window.location.protocol}//${window.location.host}/api`;
 const API_ENDPOINTS = {
     LOGIN: `${API_BASE_URL}/auth/login`,
     REGISTER: `${API_BASE_URL}/auth/register`,
+    REGISTER_SEND_OTP: `${API_BASE_URL}/auth/register/send-otp`,
+    REGISTER_VERIFY_OTP: `${API_BASE_URL}/auth/register/verify-otp`,
     PROFILE_ME: `${API_BASE_URL}/auth/profile/me`,
     PROFILE: `${API_BASE_URL}/auth/profile`,
     PROFILE_PASSWORD: `${API_BASE_URL}/auth/profile/password`,

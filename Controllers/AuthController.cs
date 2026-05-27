@@ -16,12 +16,18 @@ namespace EcommerceApi.Controllers
         private readonly IDemoUserStore _users;
         private readonly CustomerRankingService _customerRanking;
         private readonly UserProfileResolver _profiles;
+        private readonly PhoneVerificationService _phoneVerification;
 
-        public AuthController(IDemoUserStore users, CustomerRankingService customerRanking, UserProfileResolver profiles)
+        public AuthController(
+            IDemoUserStore users,
+            CustomerRankingService customerRanking,
+            UserProfileResolver profiles,
+            PhoneVerificationService phoneVerification)
         {
             _users = users;
             _customerRanking = customerRanking;
             _profiles = profiles;
+            _phoneVerification = phoneVerification;
         }
 
         [HttpPost("login")]
@@ -46,11 +52,63 @@ namespace EcommerceApi.Controllers
             if (!string.IsNullOrEmpty(dto.ConfirmPassword) && dto.Password != dto.ConfirmPassword)
                 return BadRequest(new { message = "Mật khẩu xác nhận không khớp." });
 
+            var normalizedPhone = PhoneVerificationService.NormalizePhone(dto.Phone);
+            if (!PhoneVerificationService.IsValidVietnamPhone(normalizedPhone))
+                return BadRequest(new { message = "Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0)." });
+            if (!_phoneVerification.TryConsumeToken(dto.OtpToken, 0, normalizedPhone, out _))
+                return BadRequest(new { message = "Số điện thoại chưa được xác thực OTP hoặc mã đã hết hạn." });
+
             var user = dto.Username.Trim();
             if (!_users.TryRegister(user, dto.Password ?? "", dto.DisplayName, out var error))
                 return BadRequest(new { message = error });
 
             return Ok(BuildAuthResponse(user));
+        }
+
+        [HttpPost("register/send-otp")]
+        public IActionResult SendRegisterOtp([FromBody] SendPhoneOtpDto dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.Phone))
+                return BadRequest(new { message = "Thiếu số điện thoại." });
+            try
+            {
+                var normalized = PhoneVerificationService.NormalizePhone(dto.Phone);
+                var code = _phoneVerification.SendOtp(normalized);
+                return Ok(new
+                {
+                    message = "Đã gửi mã OTP. Mã có hiệu lực 5 phút.",
+                    phone = normalized,
+                    expiresInSeconds = 300,
+                    demoCode = code
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("register/verify-otp")]
+        public IActionResult VerifyRegisterOtp([FromBody] VerifyPhoneOtpDto dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.Phone))
+                return BadRequest(new { message = "Thiếu số điện thoại." });
+            try
+            {
+                var normalized = PhoneVerificationService.NormalizePhone(dto.Phone);
+                var token = _phoneVerification.VerifyOtp(normalized, dto.Code, 0);
+                return Ok(new
+                {
+                    message = "Xác thực số điện thoại thành công.",
+                    phone = normalized,
+                    otpToken = token,
+                    verifiedInSeconds = 1200
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         private object BuildAuthResponse(string user)

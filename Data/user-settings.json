@@ -4,7 +4,9 @@
     "khach": "123456",
     "user": "123456",
     "trang_moi": "123456",
-    "Duy": "123456"
+    "Duy": "123456",
+    "ThanhHien": "123456",
+    "Hien_Kiet": "123456"
   },
   "Profiles": {
     "admin": {
@@ -25,6 +27,16 @@
     "Duy": {
       "DisplayName": "Duy",
       "AvatarUrl": "/uploads/profiles/c4028395c74a41f491dd5b18bd12e259.jpg",
+      "BackgroundUrl": null
+    },
+    "ThanhHien": {
+      "DisplayName": "Hi\u1EC1n H\u00F3ng H\u00E1ch",
+      "AvatarUrl": "https://api.dicebear.com/7.x/avataaars/svg?seed=ThanhHien",
+      "BackgroundUrl": null
+    },
+    "Hien_Kiet": {
+      "DisplayName": "Hi\u1EC1n H\u00F3ng H\u00E1ch",
+      "AvatarUrl": "https://api.dicebear.com/7.x/avataaars/svg?seed=Hien_Kiet",
       "BackgroundUrl": null
     }
   }

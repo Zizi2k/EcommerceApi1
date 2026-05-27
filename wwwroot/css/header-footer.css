@@ -1,5 +1,5 @@
-/* ========== HEADER STYLES ========== */
-header {
+/* ========== HEADER STYLES (chỉ header trang, không áp section giới thiệu) ========== */
+header.site-header {
     background: linear-gradient(135deg, #111827, #1f2937);
     padding: 0;
     position: sticky;
@@ -191,6 +191,24 @@ header {
     transform: translateY(-2px);
     background: #00d4ff;
     color: white;
+}
+
+.cart-icon #cart-count {
+    display: inline-block;
+    margin-left: 4px;
+    min-width: 1.1em;
+    text-align: center;
+}
+
+.cart-icon #cart-count.cart-count-bump {
+    animation: cartCountBump 0.45s ease;
+}
+
+@keyframes cartCountBump {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.5); color: #fbbf24; }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1); }
 }
 
 .user-menu {
@@ -527,6 +545,6 @@ footer {
 }
 
 /* Đã đăng nhập: nhấn mạnh nhẹ header trên trang cửa hàng (không áp cho member-page) */
-body.app-user-logged-in:not(.member-page) header {
+body.app-user-logged-in:not(.member-page) header.site-header {
     box-shadow: 0 4px 22px rgba(13, 148, 136, 0.2);
 }

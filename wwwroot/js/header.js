@@ -80,6 +80,13 @@ function initializeHeader() {
         el.style.display = token && typeof isAdminUser === 'function' && isAdminUser() ? '' : 'none';
     });
 
+    if (token) {
+        updateCartCount();
+    } else {
+        var cartBadge = document.getElementById('cart-count');
+        if (cartBadge) cartBadge.textContent = '0';
+    }
+
     // Setup event listeners
     setupHeaderListeners();
 }
@@ -218,6 +225,44 @@ function navigateToAdmin() {
 /** Trang khu vực thành viên (sau đăng nhập) */
 function navigateToAccount() {
     window.location.href = 'account.html';
+}
+
+/**
+ * Cập nhật badge số lượng giỏ trên header.
+ * @param {number} [addedDelta] — nếu > 0: tăng số ngay (optimistic) rồi đồng bộ API.
+ */
+async function updateCartCount(addedDelta) {
+    var el = document.getElementById('cart-count');
+    if (!el) return;
+
+    var token = getToken();
+    if (!token) {
+        el.textContent = '0';
+        return;
+    }
+
+    if (typeof addedDelta === 'number' && addedDelta > 0) {
+        var current = parseInt(el.textContent, 10);
+        var base = Number.isFinite(current) ? current : 0;
+        el.textContent = String(base + addedDelta);
+        el.classList.remove('cart-count-bump');
+        void el.offsetWidth;
+        el.classList.add('cart-count-bump');
+        setTimeout(function () {
+            el.classList.remove('cart-count-bump');
+        }, 500);
+    }
+
+    try {
+        var cartItems = await apiGet(API_ENDPOINTS.CART);
+        var items = Array.isArray(cartItems) ? cartItems : [];
+        var totalCount = items.reduce(function (sum, item) {
+            return sum + (Number(item.quantity) || 0);
+        }, 0);
+        el.textContent = String(totalCount);
+    } catch (error) {
+        console.error('Lỗi cập nhật số lượng giỏ hàng:', error);
+    }
 }
 
 // Initialize on DOM ready

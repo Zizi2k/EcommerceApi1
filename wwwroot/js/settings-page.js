@@ -57,7 +57,10 @@ function fillFormFromProfile(profile) {
     if (avatarEl) avatarEl.value = profile.avatarUrl || '';
     if (bgEl) bgEl.value = profile.backgroundUrl || '';
     if (sidebarName) sidebarName.textContent = profile.displayName || profile.username || 'Tài khoản';
-    if (loginId) loginId.textContent = profile.username ? ('@' + profile.username) : '—';
+    if (loginId) {
+        var u = profile.username || '';
+        loginId.textContent = u ? (u.indexOf('@') >= 0 ? u : '@' + u) : '—';
+    }
 
     updateAvatarPreview(profile.avatarUrl);
     updateBgPreview(profile.backgroundUrl);
@@ -121,7 +124,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.body.classList.add('app-user-logged-in');
     initializeHeader();
 
-    var profile = await fetchAndCacheProfile();
+    var profile = null;
+    try {
+        profile = await fetchAndCacheProfile();
+    } catch (e) {
+        console.warn('load profile', e);
+    }
     if (profile) {
         fillFormFromProfile(profile);
     } else {
@@ -131,6 +139,12 @@ document.addEventListener('DOMContentLoaded', async function () {
             avatarUrl: localStorage.getItem('userAvatar') || '',
             backgroundUrl: localStorage.getItem('userBackground') || ''
         });
+        if (getToken()) {
+            showSettingsAlert(
+                'Không tải được hồ sơ từ server (có thể API chưa chạy). Bạn vẫn xem dữ liệu đã lưu trên trình duyệt; lưu hồ sơ cần chạy lại EcommerceApi.',
+                true
+            );
+        }
     }
     applyUserBackground();
 

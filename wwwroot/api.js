@@ -117,6 +117,9 @@ async function apiCall(url, options = {}) {
         }
     } catch (error) {
         console.error('API Error:', error);
+        if (error instanceof TypeError && (error.message === 'Failed to fetch' || error.message === 'Load failed')) {
+            throw new Error('Không kết nối được máy chủ API. Hãy mở Task Manager, dừng EcommerceApi (nếu có), chạy lại: dotnet run --launch-profile https — sau đó Ctrl+F5 trang này.');
+        }
         throw error;
     }
 }

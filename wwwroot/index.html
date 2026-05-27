@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="js/theme.js"></script>
     <title>Group 1 Store - Cửa hàng công nghệ hàng đầu</title>
 
     <!-- Google Font -->
@@ -13,7 +14,11 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
     <!-- Header/Footer CSS -->
+    <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="css/header-footer.css">
+    <link rel="stylesheet" href="css/promo-carousel.css">
+    <link rel="stylesheet" href="css/about-trust.css">
+    <link rel="stylesheet" href="css/product-filter.css">
 
     <style>
         * {
@@ -26,94 +31,6 @@
             font-family: 'Poppins', sans-serif;
             background: #f4f7fb;
             color: #222;
-        }
-
-        /* HERO */
-        .hero {
-            height: 420px;
-            background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1920');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            padding: 20px;
-        }
-
-        .hero-content h1 {
-            font-size: 52px;
-            margin-bottom: 15px;
-        }
-
-        .hero-content p {
-            font-size: 18px;
-            opacity: 0.9;
-            margin-bottom: 25px;
-        }
-
-        .hero-btn {
-            padding: 14px 30px;
-            border: none;
-            background: #00d4ff;
-            color: white;
-            font-size: 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-            .hero-btn:hover {
-                background: #0099cc;
-                transform: scale(1.05);
-            }
-
-        body.app-user-logged-in .hero {
-            background: linear-gradient(118deg, rgba(13, 148, 136, 0.85), rgba(30, 58, 138, 0.82)), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1920');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .member-welcome-strip {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            padding: 12px 20px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #f0fdfa;
-            background: linear-gradient(90deg, #0f766e, #1d4ed8);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        .member-welcome-strip-inner {
-            max-width: 1300px;
-            width: 100%;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .member-welcome-strip a {
-            margin-left: auto;
-            color: #fff;
-            font-weight: 600;
-            text-decoration: none;
-            white-space: nowrap;
-            padding: 6px 14px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.18);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            transition: background 0.2s;
-        }
-
-        .member-welcome-strip a:hover {
-            background: rgba(255, 255, 255, 0.28);
         }
 
         /* CONTAINER */
@@ -161,6 +78,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            cursor: pointer;
         }
 
             .product-card:hover {
@@ -303,93 +221,6 @@
             background: #fde68a;
             border-color: #d97706;
         }
-        .filter-section {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-
-        .filter-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #111827;
-        }
-
-        .filter-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        .filter-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .filter-item label {
-            font-size: 13px;
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .filter-item input,
-        .filter-item select {
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: 'Poppins', sans-serif;
-        }
-
-            .filter-item input:focus,
-            .filter-item select:focus {
-                outline: none;
-                border-color: #00d4ff;
-                box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
-            }
-
-        .filter-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-
-        .btn-filter,
-        .btn-reset {
-            padding: 11px 25px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: 0.3s;
-            font-size: 14px;
-        }
-
-        .btn-filter {
-            background: linear-gradient(135deg, #00c6ff, #0072ff);
-            color: white;
-        }
-
-            .btn-filter:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(0, 114, 255, 0.4);
-            }
-
-        .btn-reset {
-            background: #f0f0f0;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-
-            .btn-reset:hover {
-                background: #e8e8e8;
-            }
-
         /* PAGINATION */
         .pagination-section {
             display: flex;
@@ -448,18 +279,6 @@
 
         /* RESPONSIVE */
         @media(max-width: 768px) {
-            .hero-content h1 {
-                font-size: 34px;
-            }
-
-            .hero-content p {
-                font-size: 15px;
-            }
-
-            .filter-grid {
-                grid-template-columns: 1fr;
-            }
-
             .product-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 15px;
@@ -488,16 +307,13 @@
                 grid-template-columns: 1fr;
             }
 
-            .filter-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
 <body>
 
     <!-- HEADER -->
-    <header>
+    <header class="site-header">
         <div class="header-container">
             <div class="logo" onclick="navigateToHome()" title="Trang chủ">
                 <i class="fa-solid fa-store"></i> Group <span>1 Store</span>
@@ -563,20 +379,35 @@
         </div>
     </header>
 
-    <div id="member-welcome-strip" class="member-welcome-strip" style="display: none;" role="status" aria-live="polite">
-        <div class="member-welcome-strip-inner">
-            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
-            <span class="member-welcome-text"></span>
-            <a href="account.html">Khu vực cá nhân <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-        </div>
-    </div>
-
-    <!-- HERO -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Công Nghệ Hiện Đại</h1>
-            <p>Khám phá những sản phẩm công nghệ mới nhất với giá tốt nhất</p>
-            <button class="hero-btn">Mua Ngay</button>
+    <!-- KHU VỰC SALE: carousel trái | bảng giá phải -->
+    <section class="promo-showcase" aria-label="Sản phẩm đang sale">
+        <div class="promo-showcase-grid">
+            <div class="promo-showcase-left">
+                <div class="promo-carousel" id="promo-carousel">
+                    <div class="promo-carousel-inner" id="promo-carousel-inner"></div>
+                    <button type="button" class="promo-carousel-nav promo-carousel-prev" id="promo-carousel-prev" aria-label="Slide trước">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button type="button" class="promo-carousel-next promo-carousel-nav" id="promo-carousel-next" aria-label="Slide sau">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <div class="promo-carousel-dots" id="promo-carousel-dots" role="tablist" aria-label="Chọn slide"></div>
+                </div>
+            </div>
+            <aside class="promo-showcase-right">
+                <div class="promo-rank-panel promo-rank-panel--top">
+                    <div class="promo-rank-panel__head">
+                        <i class="fa-solid fa-arrow-trend-up"></i> Giá sale cao nhất
+                    </div>
+                    <div id="promo-list-top" class="promo-sale-list"></div>
+                </div>
+                <div class="promo-rank-panel promo-rank-panel--bottom">
+                    <div class="promo-rank-panel__head">
+                        <i class="fa-solid fa-arrow-trend-down"></i> Giá sale thấp hơn
+                    </div>
+                    <div id="promo-list-bottom" class="promo-sale-list"></div>
+                </div>
+            </aside>
         </div>
     </section>
 
@@ -585,32 +416,81 @@
 
         <h2 class="section-title">Sản Phẩm Nổi Bật</h2>
 
-        <!-- FILTER SECTION -->
-        <div class="filter-section">
-            <div class="filter-title"><i class="fa-solid fa-filter"></i> Bộ Lọc Sản Phẩm</div>
-            <div class="filter-grid">
-                <div class="filter-item">
-                    <label for="search-input">🔍 Tìm Kiếm</label>
-                    <input type="text" id="search-input" placeholder="Nhập tên sản phẩm...">
+        <!-- FILTER -->
+        <div class="product-filter" id="product-filter" role="search" aria-label="Bộ lọc sản phẩm">
+            <div class="product-filter__head">
+                <div class="product-filter__title">
+                    <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+                    <div>
+                        <h3>Tìm &amp; lọc sản phẩm</h3>
+                        <p>Giống trải nghiệm cửa hàng trực tuyến — nhanh, rõ ràng, dễ dùng</p>
+                    </div>
                 </div>
-                <div class="filter-item">
-                    <label for="category-filter">📦 Danh Mục</label>
-                    <select id="category-filter">
-                        <option value="">Tất cả danh mục</option>
-                    </select>
-                </div>
-                <div class="filter-item">
-                    <label for="min-price">💰 Giá Tối Thiểu (VNĐ)</label>
-                    <input type="number" id="min-price" placeholder="0" min="0">
-                </div>
-                <div class="filter-item">
-                    <label for="max-price">💰 Giá Tối Đa (VNĐ)</label>
-                    <input type="number" id="max-price" placeholder="100000000" min="0">
+                <span class="product-filter__result-hint" id="filter-result-hint">Nhập từ khóa hoặc chọn bộ lọc</span>
+            </div>
+
+            <div class="product-filter__search-wrap">
+                <div class="product-filter__search">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input type="search" id="search-input" placeholder="Tìm laptop, điện thoại, phụ kiện..." autocomplete="off" enterkeyhint="search">
+                    <button type="button" class="product-filter__search-btn" id="btn-search-quick" aria-label="Tìm kiếm">
+                        <i class="fa-solid fa-search"></i> Tìm kiếm
+                    </button>
                 </div>
             </div>
-            <div class="filter-buttons">
-                <button class="btn-filter" onclick="applyFilters()"><i class="fa-solid fa-search"></i> Tìm Kiếm</button>
-                <button class="btn-reset" onclick="resetFilters()"><i class="fa-solid fa-redo"></i> Reset</button>
+
+            <div class="product-filter__body">
+                <div class="product-filter__field">
+                    <label for="category-filter"><i class="fa-solid fa-layer-group"></i> Danh mục</label>
+                    <div class="product-filter__select-wrap">
+                        <select id="category-filter" aria-label="Chọn danh mục">
+                            <option value="">Tất cả danh mục</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                    </div>
+                </div>
+
+                <div class="product-filter__price">
+                    <div class="product-filter__price-header">
+                        <label><i class="fa-solid fa-tags"></i> Khoảng giá (VNĐ)</label>
+                        <span class="product-filter__price-display" id="price-range-display">0 ₫ — 100.000.000 ₫+</span>
+                    </div>
+                    <div class="product-filter__presets" role="group" aria-label="Chọn nhanh khoảng giá">
+                        <button type="button" class="product-filter__preset" data-min="0" data-max="5000000">Dưới 5 triệu</button>
+                        <button type="button" class="product-filter__preset" data-min="5000000" data-max="15000000">5 – 15 triệu</button>
+                        <button type="button" class="product-filter__preset" data-min="15000000" data-max="30000000">15 – 30 triệu</button>
+                        <button type="button" class="product-filter__preset" data-min="30000000" data-max="100000000">Trên 30 triệu</button>
+                    </div>
+                    <div class="product-filter__range-track">
+                        <div class="product-filter__range-fill" id="price-range-fill"></div>
+                        <div class="product-filter__range-inputs">
+                            <input type="range" id="price-range-min" min="0" max="100000000" step="100000" value="0" aria-label="Giá tối thiểu">
+                            <input type="range" id="price-range-max" min="0" max="100000000" step="100000" value="100000000" aria-label="Giá tối đa">
+                        </div>
+                    </div>
+                    <div class="product-filter__price-inputs">
+                        <div class="product-filter__price-box">
+                            <span>Từ</span>
+                            <input type="number" id="min-price" placeholder="0" min="0" aria-label="Giá tối thiểu">
+                        </div>
+                        <div class="product-filter__price-box">
+                            <span>Đến</span>
+                            <input type="number" id="max-price" placeholder="Không giới hạn" min="0" aria-label="Giá tối đa">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-filter__footer">
+                <div class="product-filter__chips" id="filter-active-chips" hidden></div>
+                <div class="product-filter__buttons">
+                    <button type="button" class="product-filter__btn product-filter__btn--apply" id="btn-apply-filters">
+                        <i class="fa-solid fa-filter"></i> Áp dụng bộ lọc
+                    </button>
+                    <button type="button" class="product-filter__btn product-filter__btn--reset" id="btn-reset-filters">
+                        <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -627,22 +507,83 @@
 
     </div>
 
-    <!-- ABOUT SECTION -->
-    <div class="container" id="about">
-        <h2 class="section-title">Về Group 1 Store</h2>
-        <p style="text-align: center; color: #666; line-height: 1.8; max-width: 800px; margin: 0 auto;">
-            Group 1 Store là cửa hàng công nghệ hàng đầu với hơn 10 năm kinh nghiệm. 
-            Chúng tôi cam kết cung cấp các sản phẩm công nghệ chất lượng cao với giá tốt nhất 
-            và dịch vụ khách hàng xuất sắc.
-        </p>
-    </div>
+    <!-- ABOUT — tin cậy khách hàng -->
+    <section class="about-trust" id="about" aria-labelledby="about-title">
+        <div class="about-trust-inner">
+            <div class="about-trust-header reveal">
+                <span class="about-trust-eyebrow">
+                    <i class="fa-solid fa-shield-heart" aria-hidden="true"></i>
+                    Uy tín &amp; chất lượng
+                </span>
+                <h2 id="about-title">Về Group 1 Store</h2>
+                <p class="about-trust-lead">
+                    <strong>Group 1 Store</strong> là điểm đến tin cậy cho thiết bị công nghệ với hơn
+                    <strong>10 năm</strong> kinh nghiệm. Chúng tôi cam kết sản phẩm chính hãng, giá minh bạch
+                    và hỗ trợ tận tâm — để mỗi lần mua sắm của bạn đều an tâm.
+                </p>
+            </div>
+
+            <div class="about-trust-stats">
+                <article class="about-stat-card reveal reveal-delay-1">
+                    <div class="about-stat-icon" aria-hidden="true"><i class="fa-solid fa-calendar-check"></i></div>
+                    <span class="about-stat-value" data-count="10" data-suffix="+">0</span>
+                    <span class="about-stat-label">Năm kinh nghiệm</span>
+                </article>
+                <article class="about-stat-card reveal reveal-delay-2">
+                    <div class="about-stat-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></div>
+                    <span class="about-stat-value" data-count="5000" data-suffix="+">0</span>
+                    <span class="about-stat-label">Khách hàng tin dùng</span>
+                </article>
+                <article class="about-stat-card reveal reveal-delay-3">
+                    <div class="about-stat-icon" aria-hidden="true"><i class="fa-solid fa-certificate"></i></div>
+                    <span class="about-stat-value" data-count="100" data-suffix="%">0</span>
+                    <span class="about-stat-label">Hàng chính hãng</span>
+                </article>
+                <article class="about-stat-card reveal reveal-delay-4">
+                    <div class="about-stat-icon" aria-hidden="true"><i class="fa-solid fa-headset"></i></div>
+                    <span class="about-stat-value about-stat-value--static">24/7</span>
+                    <span class="about-stat-label">Hỗ trợ khách hàng</span>
+                </article>
+            </div>
+
+            <div class="about-trust-pillars">
+                <article class="about-pillar reveal reveal-delay-1">
+                    <div class="about-pillar-icon" aria-hidden="true"><i class="fa-solid fa-gem"></i></div>
+                    <h3>Chất lượng đảm bảo</h3>
+                    <p>Sản phẩm được kiểm tra kỹ, nguồn gốc rõ ràng, bảo hành theo tiêu chuẩn nhà sản xuất.</p>
+                </article>
+                <article class="about-pillar reveal reveal-delay-2">
+                    <div class="about-pillar-icon" aria-hidden="true"><i class="fa-solid fa-tags"></i></div>
+                    <h3>Giá tốt nhất</h3>
+                    <p>Chính sách giá minh bạch, khuyến mãi thường xuyên — mua đúng giá trị nhận được.</p>
+                </article>
+                <article class="about-pillar reveal reveal-delay-3">
+                    <div class="about-pillar-icon" aria-hidden="true"><i class="fa-solid fa-handshake"></i></div>
+                    <h3>Dịch vụ tận tâm</h3>
+                    <p>Tư vấn trước và sau bán, đổi trả linh hoạt theo chính sách cửa hàng.</p>
+                </article>
+                <article class="about-pillar reveal reveal-delay-4">
+                    <div class="about-pillar-icon" aria-hidden="true"><i class="fa-solid fa-truck-fast"></i></div>
+                    <h3>Giao hàng nhanh</h3>
+                    <p>Đóng gói cẩn thận, giao đúng hẹn — theo dõi đơn hàng dễ dàng trên hệ thống.</p>
+                </article>
+            </div>
+
+            <div class="about-trust-badges reveal">
+                <span class="about-badge"><i class="fa-solid fa-lock" aria-hidden="true"></i> Thanh toán an toàn</span>
+                <span class="about-badge"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Đổi trả trong 7 ngày</span>
+                <span class="about-badge"><i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i> Bảo hành chính hãng</span>
+                <span class="about-badge"><i class="fa-solid fa-star" aria-hidden="true"></i> Đánh giá 4.8/5 từ khách</span>
+            </div>
+        </div>
+    </section>
 
     <!-- FOOTER -->
     <footer>
         <div class="footer-container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4><i class="fa-solid fa-store"></i> Group 1 Store</h4>
+                    <h4><i class="fa-solid fa-store"></i> Group 1 Store DotNet</h4>
                     <p>Cửa hàng công nghệ hàng đầu với đa dạng sản phẩm chất lượng cao.</p>
                     <div class="footer-social">
                         <a href="#" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
@@ -671,23 +612,27 @@
                 <div class="footer-section">
                     <h4><i class="fa-solid fa-phone"></i> Liên hệ</h4>
                     <p>
-                        <i class="fa-solid fa-envelope"></i> 
-                        <a href="mailto:info@group1store.com" style="color: #ccc;">info@group1store.com</a>
+                        
+                        <i class="fa-solid fa-envelope"></i>  <a href="mailto:info@group1store.com" style="color: #ccc;">zizi2k2510@gmail.com</a>
                     </p>
                     <p>
-                        <i class="fa-solid fa-phone"></i> 
-                        <a href="tel:0123456789" style="color: #ccc;">0123 456 789</a>
+
+                        <i class="fa-solid fa-phone"></i> <a href="tel:0343823980" style="color: #ccc;">0343680001</a>
                     </p>
                     <p>
-                        <i class="fa-solid fa-map-marker-alt"></i> 
-                        <span style="color: #ccc;">123 Đường ABC, TP. HCM, Việt Nam</span>
+                        <i class="fa-solid fa-map-marker-alt"></i>
+                        <span style="color: #ccc;">Đường Nguyễn Khuyến, Phường Trảng Dài, Thành phố Đồng Nai</span>
                     </p>
+                    
                 </div>
             </div>
 
             <div class="footer-bottom">
                 <p>&copy; 2026 Group 1 Store. All rights reserved.</p>
                 <p>Thiết kế bởi Group 1 | HTML • CSS • JavaScript</p>
+                <p>
+                    <span style="color: #ccc;">Sản phẩm không mang tính thương mại hóa chỉ phục vụ trong việc học tập</span>
+                </p>
             </div>
         </div>
     </footer>
@@ -696,6 +641,7 @@
     <script src="api.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/header.js"></script>
+    <script src="js/promo-carousel.js"></script>
     <script>
 
         // PAGINATION & FILTERING VARIABLES
@@ -784,10 +730,13 @@
                 const catLine = categoryLabel(p);
                 const catHtml = catLine ? `<p class="product-category">${escapeHtml(catLine)}</p>` : '';
                 const editBtn = (typeof isAdminUser === 'function' && isAdminUser())
-                    ? `<button type="button" class="btn-edit-card" onclick="editProductFromStore(${p.id})" title="Sửa sản phẩm"><i class="fa-solid fa-pen"></i> Sửa</button>`
+                    ? `<button type="button" class="btn-edit-card" onclick="event.stopPropagation(); editProductFromStore(${p.id})" title="Sửa sản phẩm"><i class="fa-solid fa-pen"></i> Sửa</button>`
                     : '';
                 html += `
-                    <div class="product-card">
+                    <div class="product-card" role="link" tabindex="0"
+                         onclick="goToProduct(${p.id})"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goToProduct(${p.id});}"
+                         aria-label="Xem chi tiết ${escapeHtml(p.name)}">
                         <div class="product-image">
                             <span class="discount-badge">HOT</span>
                             <img src="${p.imageUrl || 'https://via.placeholder.com/300'}" alt="${escapeHtml(p.name)}" onerror="this.src='https://via.placeholder.com/300x240?text=No+Image'">
@@ -800,7 +749,7 @@
                                 <div class="price">${Number(p.price).toLocaleString()} VNĐ</div>
                                 <div class="product-actions">
                                     ${editBtn}
-                                    <button type="button" class="btn-add" onclick="addToCart(${p.id})" title="Thêm vào giỏ hàng"><i class="fa-solid fa-cart-plus"></i> Thêm</button>
+                                    <button type="button" class="btn-add" onclick="event.stopPropagation(); addToCart(${p.id})" title="Thêm vào giỏ hàng"><i class="fa-solid fa-cart-plus"></i> Thêm</button>
                                 </div>
                             </div>
                         </div>
@@ -820,6 +769,10 @@
                 document.getElementById('pagination-info').textContent = `Trang ${currentPage}/${totalPages}`;
                 document.getElementById('prev-btn').disabled = currentPage === 1;
                 document.getElementById('next-btn').disabled = currentPage === totalPages;
+            }
+
+            if (window.ProductFilter?.updateResultHint) {
+                ProductFilter.updateResultHint(totalCount);
             }
         }
 
@@ -931,6 +884,10 @@
             }
         }
 
+        function goToProduct(productId) {
+            window.location.href = 'product.html?id=' + encodeURIComponent(productId);
+        }
+
         // ADD TO CART
         async function addToCart(productId) {
             if (!checkAuth()) return;
@@ -942,7 +899,7 @@
                 });
 
                 alert("Đã thêm vào giỏ hàng!");
-                updateCartCount();
+                await updateCartCount(1);
             } catch (error) {
                 alert("Không thể thêm vào giỏ! " + error.message);
             }
@@ -962,40 +919,8 @@
             window.location.href = "admin.html?edit=" + encodeURIComponent(productId);
         }
 
-        // UPDATE CART COUNT
-        async function updateCartCount() {
-            try {
-                const token = getToken();
-                if (!token) {
-                    document.getElementById('cart-count').textContent = '0';
-                    return;
-                }
-
-                const cartItems = await apiGet(API_ENDPOINTS.CART);
-                const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-                document.getElementById('cart-count').textContent = totalCount;
-            } catch (error) {
-                console.error("Lỗi cập nhật số lượng giỏ hàng:", error);
-            }
-        }
-
         // LOAD
         window.onload = function() {
-            (function syncStoreMemberUi() {
-                if (!getToken()) return;
-                var name = localStorage.getItem('userName');
-                var strip = document.getElementById('member-welcome-strip');
-                var sub = document.querySelector('.hero-content p');
-                if (name && sub) {
-                    sub.textContent = 'Chào ' + name + '! Khám phá sản phẩm và ưu đãi dành cho bạn.';
-                }
-                if (strip && name) {
-                    strip.style.display = 'flex';
-                    var tx = strip.querySelector('.member-welcome-text');
-                    if (tx) tx.textContent = 'Bạn đang đăng nhập với tài khoản: ' + name;
-                }
-            })();
-
             loadCategoryFilterOptions();
             loadProducts();
             updateCartCount();
@@ -1012,6 +937,8 @@
         };
 
     </script>
+    <script src="js/product-filter.js"></script>
+    <script src="js/about-trust.js"></script>
 
 </body>
 </html>

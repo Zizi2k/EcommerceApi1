@@ -1,0 +1,387 @@
+/* Giao diện sáng / tối — biến dùng chung */
+:root,
+html[data-theme="light"] {
+    --th-bg: #f4f7fb;
+    --th-bg-elevated: #ffffff;
+    --th-bg-muted: #eef2f7;
+    --th-text: #0f172a;
+    --th-text-muted: #64748b;
+    --th-border: rgba(148, 163, 184, 0.35);
+    --th-accent: #0072ff;
+    --th-accent-soft: #00d4ff;
+    --th-card-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    --th-input-bg: #ffffff;
+    --th-input-border: #ddd;
+}
+
+html[data-theme="dark"] {
+    --th-bg: #0f172a;
+    --th-bg-elevated: #1e293b;
+    --th-bg-muted: #334155;
+    --th-text: #f1f5f9;
+    --th-text-muted: #94a3b8;
+    --th-border: rgba(148, 163, 184, 0.22);
+    --th-accent: #38bdf8;
+    --th-accent-soft: #22d3ee;
+    --th-card-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    --th-input-bg: #1e293b;
+    --th-input-border: #475569;
+    color-scheme: dark;
+}
+
+html[data-theme="light"] {
+    color-scheme: light;
+}
+
+/* Nút chuyển theme */
+.theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(0, 212, 255, 0.25);
+    border-color: #00d4ff;
+    transform: translateY(-1px);
+}
+
+.theme-toggle-btn.is-dark {
+    background: rgba(251, 191, 36, 0.2);
+    border-color: rgba(251, 191, 36, 0.45);
+}
+
+.theme-toggle-btn--floating {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9999;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 520px) {
+    .theme-toggle-label {
+        display: none;
+    }
+    .theme-toggle-btn {
+        padding: 8px 11px;
+    }
+}
+
+/* Trang cửa hàng (không phải member-page) */
+html[data-theme="dark"] body:not(.member-page):not(.admin-page) {
+    background: var(--th-bg) !important;
+    color: var(--th-text);
+}
+
+html[data-theme="dark"] body.has-user-background {
+    background-image: linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.95)), var(--user-bg, none) !important;
+}
+
+html[data-theme="dark"] .section-title {
+    color: var(--th-text) !important;
+}
+
+html[data-theme="dark"] .container {
+    color: var(--th-text);
+}
+
+html[data-theme="dark"] .product-card {
+    background: var(--th-bg-elevated) !important;
+    box-shadow: var(--th-card-shadow) !important;
+    border: 1px solid var(--th-border);
+}
+
+html[data-theme="dark"] .product-name {
+    color: var(--th-text) !important;
+}
+
+html[data-theme="dark"] .product-desc {
+    color: var(--th-text-muted) !important;
+}
+
+html[data-theme="dark"] .product-category {
+    color: var(--th-accent) !important;
+}
+
+html[data-theme="dark"] .product-image {
+    background: var(--th-bg-muted) !important;
+}
+
+html[data-theme="dark"] .no-products {
+    color: var(--th-text-muted) !important;
+}
+
+html[data-theme="dark"] .pagination-container button {
+    background: var(--th-bg-elevated);
+    color: var(--th-text);
+    border-color: var(--th-border);
+}
+
+/* Promo showcase */
+html[data-theme="dark"] .promo-rank-panel {
+    background: var(--th-bg-elevated) !important;
+    border-color: var(--th-border) !important;
+}
+
+html[data-theme="dark"] .promo-rank-panel__head {
+    background: linear-gradient(90deg, #134e4a, #1e3a5f) !important;
+    color: var(--th-text) !important;
+    border-color: var(--th-border) !important;
+}
+
+html[data-theme="dark"] .promo-sale-item {
+    background: var(--th-bg-muted) !important;
+    border-color: var(--th-border) !important;
+}
+
+html[data-theme="dark"] .promo-sale-item__name {
+    color: var(--th-text) !important;
+}
+
+html[data-theme="dark"] .promo-sale-item__img {
+    background: var(--th-bg-elevated) !important;
+    border-color: var(--th-border) !important;
+}
+
+html[data-theme="dark"] .promo-carousel {
+    background: var(--th-bg-muted) !important;
+}
+
+html[data-theme="dark"] .promo-slide {
+    background: var(--th-bg-elevated) !important;
+}
+
+html[data-theme="dark"] .promo-slide-visual {
+    background: var(--th-bg-muted) !important;
+}
+
+html[data-theme="dark"] .promo-carousel-nav {
+    background: var(--th-bg-elevated) !important;
+    color: var(--th-text) !important;
+}
+
+/* Product detail */
+html[data-theme="dark"] body.product-detail-page {
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
+    color: var(--th-text);
+}
+
+html[data-theme="dark"] .product-detail-card,
+html[data-theme="dark"] .product-detail-loading,
+html[data-theme="dark"] .product-detail-error {
+    background: var(--th-bg-elevated) !important;
+    border-color: var(--th-border);
+}
+
+html[data-theme="dark"] .product-detail-title,
+html[data-theme="dark"] .product-detail-desc,
+html[data-theme="dark"] .product-breadcrumb {
+    color: var(--th-text-muted) !important;
+}
+
+html[data-theme="dark"] .product-detail-title {
+    color: var(--th-text) !important;
+}
+
+html[data-theme="dark"] .product-detail-gallery {
+    background: var(--th-bg-muted) !important;
+}
+
+html[data-theme="dark"] .order-detail-row .label {
+    color: var(--th-text-muted) !important;
+}
+
+html[data-theme="dark"] .order-detail-row .value {
+    color: var(--th-text) !important;
+}
+
+html[data-theme="dark"] .detail-grid {
+    border-color: var(--th-border) !important;
+}
+
+html[data-theme="dark"] .order-detail-row {
+    border-color: var(--th-border) !important;
+}
+
+html[data-theme="dark"] .qty-control {
+    background: var(--th-input-bg) !important;
+    border-color: var(--th-input-border) !important;
+}
+
+html[data-theme="dark"] .qty-control input,
+html[data-theme="dark"] .qty-control button {
+    color: var(--th-text) !important;
+    background: var(--th-bg-muted) !important;
+}
+
+html[data-theme="dark"] .btn-product-secondary {
+    background: var(--th-bg-elevated) !important;
+    border-color: var(--th-border) !important;
+    color: var(--th-text) !important;
+}
+
+/* Cart page */
+html[data-theme="dark"] body:not(.member-page) .main-content {
+    color: var(--th-text);
+}
+
+html[data-theme="dark"] .page-title {
+    color: var(--th-text) !important;
+}
+
+html[data-theme="dark"] .cart-list-panel,
+html[data-theme="dark"] .cart-summary-aside > div,
+html[data-theme="dark"] .cart-list-panel {
+    background: var(--th-bg-elevated) !important;
+    border-color: var(--th-border) !important;
+}
+
+html[data-theme="dark"] .cart-line {
+    border-color: var(--th-border) !important;
+}
+
+html[data-theme="dark"] .cart-line__title,
+html[data-theme="dark"] .cart-list-head h2 {
+    color: var(--th-text) !important;
+}
+
+html[data-theme="dark"] .cart-line__unit,
+html[data-theme="dark"] .cart-list-head span {
+    color: var(--th-text-muted) !important;
+}
+
+html[data-theme="dark"] .cart-breadcrumb {
+    color: var(--th-text-muted) !important;
+}
+
+html[data-theme="dark"] .checkout-modal {
+    background: var(--th-bg-elevated) !important;
+    color: var(--th-text);
+}
+
+html[data-theme="dark"] .checkout-modal-header h2 {
+    color: var(--th-text) !important;
+}
+
+html[data-theme="dark"] .payment-option {
+    background: var(--th-bg-muted) !important;
+    border-color: var(--th-border) !important;
+}
+
+html[data-theme="dark"] .payment-option strong {
+    color: var(--th-text) !important;
+}
+
+html[data-theme="dark"] .cod-field input,
+html[data-theme="dark"] .cod-field textarea {
+    background: var(--th-input-bg) !important;
+    color: var(--th-text) !important;
+    border-color: var(--th-input-border) !important;
+}
+
+html[data-theme="dark"] .cod-field label {
+    color: var(--th-text-muted) !important;
+}
+
+/* Member pages — chế độ sáng */
+html[data-theme="light"] body.member-page {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+}
+
+html[data-theme="light"] body.member-page header {
+    background: linear-gradient(135deg, #111827, #1f2937) !important;
+}
+
+html[data-theme="light"] .member-sidebar {
+    background: #fff !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08) !important;
+}
+
+html[data-theme="light"] .member-sidebar h1,
+html[data-theme="light"] .member-main-header h2 {
+    color: #0f172a !important;
+}
+
+html[data-theme="light"] .member-main-header p,
+html[data-theme="light"] .member-sidebar-nav a {
+    color: #475569 !important;
+}
+
+html[data-theme="light"] .member-sidebar-nav a.is-active {
+    background: #eff6ff !important;
+    color: #0369a1 !important;
+}
+
+html[data-theme="light"] .member-card {
+    background: #fff !important;
+    border-color: #e2e8f0 !important;
+    color: #0f172a !important;
+}
+
+html[data-theme="light"] .member-card p {
+    color: #64748b !important;
+}
+
+html[data-theme="light"] .settings-panel {
+    background: #fff !important;
+    border-color: #e2e8f0 !important;
+}
+
+html[data-theme="light"] .settings-panel h3 {
+    color: #0f172a !important;
+}
+
+html[data-theme="light"] .settings-field label {
+    color: #475569 !important;
+}
+
+html[data-theme="light"] .settings-field input {
+    background: #fff !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+html[data-theme="light"] .settings-btn.secondary {
+    background: #f1f5f9 !important;
+    color: #334155 !important;
+    border-color: #cbd5e1 !important;
+}
+
+/* Login / register */
+html[data-theme="dark"] body.login-page {
+    background: #0f172a !important;
+}
+
+html[data-theme="dark"] .login-wrap,
+html[data-theme="dark"] .contents {
+    filter: none;
+}
+
+html[data-theme="dark"] .login-wrap .form-block {
+    background: #1e293b !important;
+    color: #f1f5f9;
+}
+
+html[data-theme="dark"] .login-wrap h3,
+html[data-theme="dark"] .login-wrap label {
+    color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] .login-wrap .form-control {
+    background: #334155 !important;
+    border-color: #475569 !important;
+    color: #f1f5f9 !important;
+}

@@ -1,0 +1,394 @@
+/* Khu vực khuyến mãi: trái carousel | phải xếp giá cao → thấp */
+.promo-showcase {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 24px 20px 8px;
+}
+
+.promo-showcase-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 20px;
+    align-items: stretch;
+    min-height: 460px;
+}
+
+.promo-showcase-left {
+    min-width: 0;
+}
+
+.promo-showcase-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+
+.promo-rank-panel {
+    flex: 1;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.promo-rank-panel__head {
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+    background: linear-gradient(90deg, #f0fdfa, #eff6ff);
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.promo-rank-panel__head i {
+    color: #0284c7;
+}
+
+.promo-sale-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.promo-sale-item {
+    display: grid;
+    grid-template-columns: 72px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.promo-sale-item:hover {
+    border-color: #00d4ff;
+    box-shadow: 0 4px 14px rgba(0, 114, 255, 0.12);
+    transform: translateX(2px);
+}
+
+.promo-sale-item__img {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    object-fit: contain;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+}
+
+.promo-sale-item__name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.promo-sale-item__badge {
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    background: #ff3b30;
+    padding: 2px 8px;
+    border-radius: 999px;
+    display: inline-block;
+    margin-bottom: 4px;
+}
+
+.promo-sale-item__prices {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.promo-sale-item__now {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0072ff;
+}
+
+.promo-sale-item__old {
+    font-size: 11px;
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+
+.promo-sale-empty {
+    padding: 16px;
+    text-align: center;
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* Carousel trái — ảnh sắc, không phủ mờ full màn */
+.promo-carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 460px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #f1f5f9;
+    box-shadow: 0 10px 32px rgba(15, 23, 42, 0.1);
+}
+
+.promo-carousel-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 460px;
+}
+
+.promo-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.55s ease, visibility 0.55s;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: #fff;
+    z-index: 0;
+}
+
+.promo-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+}
+
+.promo-slide-visual {
+    position: relative;
+    background: linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    min-height: 0;
+}
+
+.promo-slide-visual img {
+    width: 100%;
+    max-width: 320px;
+    max-height: 380px;
+    object-fit: contain;
+    filter: none;
+    image-rendering: auto;
+}
+
+.promo-slide-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 28px 24px;
+    background: linear-gradient(160deg, #0f766e 0%, #1d4ed8 100%);
+    color: #fff;
+}
+
+.promo-slide-badge {
+    display: inline-block;
+    align-self: flex-start;
+    background: #ff3b30;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+}
+
+.promo-slide-info h2 {
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 10px;
+}
+
+.promo-slide-info p {
+    font-size: 14px;
+    opacity: 0.92;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.promo-price-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.promo-price-current {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #7dd3fc;
+}
+
+.promo-price-old {
+    font-size: 0.95rem;
+    text-decoration: line-through;
+    opacity: 0.8;
+}
+
+.promo-slide-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.promo-btn {
+    padding: 11px 20px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+}
+
+.promo-btn-primary {
+    background: #00d4ff;
+    color: #0f172a;
+}
+
+.promo-btn-primary:hover {
+    transform: scale(1.04);
+}
+
+.promo-btn-ghost {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.promo-btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.28);
+}
+
+.promo-carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    color: #0f172a;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transition: background 0.2s, color 0.2s;
+}
+
+.promo-carousel-nav:hover {
+    background: #00d4ff;
+    color: #0f172a;
+}
+
+.promo-carousel-prev { left: 12px; }
+.promo-carousel-next { right: 12px; }
+
+.promo-carousel-dots {
+    position: absolute;
+    bottom: 14px;
+    left: 25%;
+    transform: translateX(-50%);
+    z-index: 5;
+    display: flex;
+    gap: 8px;
+}
+
+.promo-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 2px solid #94a3b8;
+    background: #fff;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.promo-dot.is-active {
+    background: #0072ff;
+    border-color: #0072ff;
+    transform: scale(1.15);
+}
+
+@media (max-width: 1024px) {
+    .promo-showcase-grid {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+
+    .promo-showcase-right {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .promo-rank-panel {
+        flex: 1 1 280px;
+        max-height: 320px;
+    }
+
+    .promo-carousel,
+    .promo-carousel-inner {
+        min-height: 400px;
+    }
+
+    .promo-slide {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+
+    .promo-slide-visual {
+        min-height: 220px;
+        padding: 16px;
+    }
+
+    .promo-slide-visual img {
+        max-height: 200px;
+    }
+
+    .promo-carousel-dots {
+        left: 50%;
+        bottom: auto;
+        top: 42%;
+    }
+}
+
+@media (max-width: 640px) {
+    .promo-showcase-right {
+        flex-direction: column;
+    }
+
+    .promo-rank-panel {
+        max-height: none;
+    }
+}

@@ -27,6 +27,84 @@
             margin: 24px auto 40px;
             width: 100%;
         }
+        .admin-shell {
+            display: grid;
+            grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+            gap: 18px;
+            align-items: start;
+        }
+        .admin-sidebar {
+            position: sticky;
+            top: 96px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 8px 26px rgba(15, 23, 42, 0.08);
+            padding: 14px;
+        }
+        .admin-sidebar h3 {
+            font-size: 13px;
+            color: #475569;
+            margin: 2px 2px 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .admin-nav {
+            display: grid;
+            gap: 8px;
+        }
+        .admin-nav-btn {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #fff;
+            color: #334155;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: left;
+            padding: 11px 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: border-color 0.18s, background 0.18s, color 0.18s, transform 0.18s;
+        }
+        .admin-nav-btn:hover {
+            border-color: #93c5fd;
+            background: #f8fbff;
+            color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+        .admin-nav-btn.is-active {
+            border-color: #2563eb;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            color: #1e3a8a;
+        }
+        .admin-pane {
+            display: none;
+        }
+        .admin-pane.is-active {
+            display: block;
+        }
+        .admin-content {
+            min-width: 0;
+        }
+        @media (max-width: 992px) {
+            .admin-shell {
+                grid-template-columns: 1fr;
+            }
+            .admin-sidebar {
+                position: static;
+            }
+            .admin-nav {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 640px) {
+            .admin-nav {
+                grid-template-columns: 1fr;
+            }
+        }
         .page-title {
             font-size: 28px;
             color: #111827;
@@ -43,30 +121,35 @@
             align-items: center;
             margin-bottom: 16px;
         }
-        /* Nút + Thêm Sản Phẩm (đồng bộ phong cách header cửa hàng) */
         .btn-them-san-pham {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            padding: 10px 18px;
-            border: none;
-            border-radius: 8px;
+            padding: 11px 20px;
+            border: 1px solid #166534;
+            border-radius: 12px;
             cursor: pointer;
             font-family: inherit;
             font-weight: 600;
             font-size: 14px;
-            background: #14532d;
-            color: #86efac;
-            box-shadow: 0 2px 8px rgba(20, 83, 45, 0.35);
-            transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+            letter-spacing: 0.01em;
+            background: linear-gradient(135deg, #166534 0%, #14532d 100%);
+            color: #ecfdf5;
+            box-shadow: 0 8px 22px rgba(20, 83, 45, 0.24);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
             width: auto;
         }
         .btn-them-san-pham:hover {
-            filter: brightness(1.08);
+            filter: brightness(1.05);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(20, 83, 45, 0.45);
+            box-shadow: 0 12px 24px rgba(20, 83, 45, 0.3);
         }
-        .btn-them-san-pham i { font-size: 15px; color: #4ade80; }
+        .btn-them-san-pham:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.3), 0 12px 24px rgba(20, 83, 45, 0.3);
+        }
+        .btn-them-san-pham i { font-size: 15px; color: #86efac; }
         .btn-refresh {
             padding: 10px 18px;
             border: 1px solid #ddd;
@@ -236,14 +319,30 @@
             border-left: 4px solid #dc3545;
         }
         .back-link {
-            display: inline-block;
-            margin-top: 12px;
-            color: #0072ff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 16px;
+            border-radius: 12px;
+            border: 1px solid #bfdbfe;
+            background: #f8fbff;
+            color: #1d4ed8;
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
+            transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
         }
-        .back-link:hover { text-decoration: underline; }
+        .back-link:hover {
+            background: #eff6ff;
+            border-color: #93c5fd;
+            color: #1e40af;
+            transform: translateY(-1px);
+        }
+        .back-link:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
         .empty-hint {
             text-align: center;
             padding: 40px 16px;
@@ -424,7 +523,24 @@
         </div>
     </header>
 
-    <div class="main-content product-admin-wrap">
+    <div class="main-content product-admin-wrap admin-shell">
+        <aside class="admin-sidebar" aria-label="Điều hướng quản trị">
+            <h3>Quản trị</h3>
+            <nav class="admin-nav">
+                <button type="button" class="admin-nav-btn is-active" data-admin-target="products-pane">
+                    <i class="fa-solid fa-boxes-stacked"></i> Quản lý sản phẩm
+                </button>
+                <button type="button" class="admin-nav-btn" data-admin-target="promotions-pane">
+                    <i class="fa-solid fa-images"></i> Khuyến mãi
+                </button>
+                <button type="button" class="admin-nav-btn" data-admin-target="orders-pane">
+                    <i class="fa-solid fa-truck-fast"></i> Quản lý đơn hàng
+                </button>
+            </nav>
+        </aside>
+
+        <div class="admin-content">
+        <section class="admin-pane is-active" id="products-pane">
         <div class="product-page-head">
             <h1 class="page-title">
                 <i class="fa-solid fa-boxes-stacked"></i>
@@ -533,9 +649,16 @@
                             <input type="number" id="price" min="0" step="1000" required>
                         </div>
                         <div class="form-group">
+                            <label for="costPrice">Giá vốn (VNĐ)</label>
+                            <input type="number" id="costPrice" min="0" step="1000" placeholder="Nếu trống sẽ tạm tính 70% giá bán">
+                        </div>
+                    </div>
+                    <div class="product-form-row-2">
+                        <div class="form-group">
                             <label for="stock">Tồn kho *</label>
                             <input type="number" id="stock" min="0" required>
                         </div>
+                        <div class="form-group"></div>
                     </div>
                     <div class="form-group">
                         <label for="categoryId">Danh mục</label>
@@ -580,8 +703,9 @@
                 </div>
             </div>
         </div>
+        </section>
 
-        <section class="admin-section promo-admin-section" aria-labelledby="promo-section-title">
+        <section class="admin-section promo-admin-section admin-pane" id="promotions-pane" aria-labelledby="promo-section-title">
             <div class="promo-section-head">
                 <h2 class="admin-section-title" id="promo-section-title">
                     <i class="fa-solid fa-images"></i> Carousel khuyến mãi (trang chủ)
@@ -698,7 +822,7 @@
             </div>
         </section>
 
-        <section class="admin-section orders-admin-section" aria-labelledby="orders-section-title">
+        <section class="admin-section orders-admin-section admin-pane" id="orders-pane" aria-labelledby="orders-section-title">
             <div class="orders-section-head">
                 <h2 class="admin-section-title" id="orders-section-title">
                     <i class="fa-solid fa-truck-fast"></i> Quản lý đơn hàng
@@ -807,9 +931,66 @@
                     </div>
                 </div>
             </div>
+
+            <div class="order-report-panel">
+                <div class="order-report-head">
+                    <h3><i class="fa-solid fa-chart-line"></i> Báo cáo tháng (đơn đã giao)</h3>
+                    <div class="order-report-actions">
+                        <input type="month" id="order-report-month" title="Chọn tháng báo cáo">
+                        <button type="button" class="btn-order-report" onclick="loadMonthlyOrderReport()">
+                            <i class="fa-solid fa-rotate"></i> Tải báo cáo
+                        </button>
+                        <button type="button" class="btn-order-report btn-order-report--export" onclick="exportMonthlyOrderReportExcel()">
+                            <i class="fa-solid fa-file-excel"></i> Xuất Excel
+                        </button>
+                    </div>
+                </div>
+                <div class="order-report-summary">
+                    <div class="order-report-kpi">
+                        <span class="label">Đơn đã giao</span>
+                        <strong id="report-delivered-orders">0</strong>
+                    </div>
+                    <div class="order-report-kpi">
+                        <span class="label">Tổng số lượng</span>
+                        <strong id="report-total-quantity">0</strong>
+                    </div>
+                    <div class="order-report-kpi">
+                        <span class="label">Doanh thu</span>
+                        <strong id="report-total-revenue">0 ₫</strong>
+                    </div>
+                    <div class="order-report-kpi">
+                        <span class="label">Tổng vốn</span>
+                        <strong id="report-total-capital">0 ₫</strong>
+                    </div>
+                    <div class="order-report-kpi">
+                        <span class="label">Lãi</span>
+                        <strong id="report-total-profit">0 ₫</strong>
+                    </div>
+                </div>
+                <div id="order-report-msg" class="order-msg"></div>
+                <div class="order-report-table-wrap">
+                    <table class="order-report-table">
+                        <thead>
+                            <tr>
+                                <th>Mã SP</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Số lượng</th>
+                                <th>Doanh thu</th>
+                                <th>Vốn</th>
+                                <th>Lãi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-report-body"></tbody>
+                    </table>
+                </div>
+                <div id="order-report-empty" class="product-empty" style="display:none;">
+                    <i class="fa-solid fa-inbox fa-2x" aria-hidden="true"></i>
+                    Không có đơn đã giao trong tháng này.
+                </div>
+            </div>
         </section>
 
-        <section class="admin-section panel" aria-labelledby="customers-section-title">
+        <section class="admin-section panel admin-pane" id="orders-pane-customers" aria-labelledby="customers-section-title">
             <h2 class="admin-section-title" id="customers-section-title">
                 <i class="fa-solid fa-ranking-star"></i> Khách hàng &amp; xếp hạng mua hàng
             </h2>
@@ -843,6 +1024,7 @@
                 Chưa có đơn hàng nào. Khách mua qua giỏ hàng sẽ hiển thị tại đây.
             </div>
         </section>
+        </div>
     </div>
 
     <footer>
@@ -1040,6 +1222,9 @@
             e.style.display = error ? 'block' : 'none';
             if (success) st.textContent = success;
             if (error) et.textContent = error;
+            if (success && window.AppNotify && typeof window.AppNotify.success === 'function') {
+                window.AppNotify.success(success);
+            }
         }
 
         function updateModeUI() {
@@ -1060,12 +1245,44 @@
         }
 
         function goToAddProduct() {
+            switchAdminPane('products-pane');
             resetForm();
             scrollToProductForm();
             const nameInput = document.getElementById('name');
             if (nameInput) {
                 setTimeout(function () { nameInput.focus(); }, 400);
             }
+        }
+
+        function switchAdminPane(targetId) {
+            var panes = document.querySelectorAll('.admin-pane');
+            panes.forEach(function (pane) {
+                pane.classList.remove('is-active');
+            });
+
+            var target = document.getElementById(targetId);
+            if (target) target.classList.add('is-active');
+            if (targetId === 'orders-pane') {
+                var customersPane = document.getElementById('orders-pane-customers');
+                if (customersPane) customersPane.classList.add('is-active');
+            }
+
+            var navButtons = document.querySelectorAll('.admin-nav-btn');
+            navButtons.forEach(function (btn) {
+                btn.classList.toggle('is-active', btn.getAttribute('data-admin-target') === targetId);
+            });
+        }
+
+        function wireAdminSidebarNav() {
+            var navButtons = document.querySelectorAll('.admin-nav-btn');
+            navButtons.forEach(function (btn) {
+                if (btn._wired) return;
+                btn._wired = true;
+                btn.addEventListener('click', function () {
+                    var target = btn.getAttribute('data-admin-target') || 'products-pane';
+                    switchAdminPane(target);
+                });
+            });
         }
 
         function scrollToProductForm() {
@@ -1106,6 +1323,7 @@
             document.getElementById('name').value = '';
             document.getElementById('description').value = '';
             document.getElementById('price').value = '';
+            document.getElementById('costPrice').value = '';
             document.getElementById('stock').value = '';
             document.getElementById('imageUrl').value = '';
             syncImagePreview();
@@ -1144,6 +1362,7 @@
             document.getElementById('name').value = p.name || '';
             document.getElementById('description').value = p.description || '';
             document.getElementById('price').value = p.price != null ? p.price : '';
+            document.getElementById('costPrice').value = p.costPrice != null ? p.costPrice : '';
             document.getElementById('stock').value = p.stock != null ? p.stock : '';
             document.getElementById('imageUrl').value = p.imageUrl || '';
             syncImagePreview();
@@ -1372,6 +1591,8 @@
             const name = document.getElementById('name').value.trim();
             const description = document.getElementById('description').value.trim();
             const price = parseFloat(document.getElementById('price').value);
+            const costPriceRaw = document.getElementById('costPrice').value;
+            const costPrice = costPriceRaw === '' ? NaN : parseFloat(costPriceRaw);
             const stock = parseInt(document.getElementById('stock').value, 10);
             const imageUrl = document.getElementById('imageUrl').value.trim();
             const categoryId = parseInt(document.getElementById('categoryId').value, 10) || 1;
@@ -1384,8 +1605,12 @@
                 setMessages('', 'Giá và số lượng không được âm.');
                 return null;
             }
+            if (!isNaN(costPrice) && costPrice < 0) {
+                setMessages('', 'Giá vốn không được âm.');
+                return null;
+            }
 
-            const body = { name, description, price, stock, imageUrl, categoryId };
+            const body = { name, description, price, stock, imageUrl, categoryId, costPrice: isNaN(costPrice) ? 0 : costPrice };
             if (includeId && editingId != null) {
                 body.id = editingId;
             }
@@ -1498,6 +1723,8 @@
                 window.location.href = 'index.html';
                 return;
             }
+            wireAdminSidebarNav();
+            switchAdminPane('products-pane');
             initializeHeader();
             wireProductImageUi();
             wireProductPickerUi();
@@ -1507,6 +1734,7 @@
             if (typeof fillPromoProductSelect === 'function') await fillPromoProductSelect();
             if (typeof loadPromoTable === 'function') await loadPromoTable();
             if (typeof loadAdminOrders === 'function') await loadAdminOrders();
+            if (typeof loadMonthlyOrderReport === 'function') await loadMonthlyOrderReport();
             await loadCustomerRankings();
             await maybeOpenEditFromQuery();
         });

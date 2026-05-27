@@ -20,6 +20,7 @@ const API_ENDPOINTS = {
     ORDERS: `${API_BASE_URL}/Orders`,
     ADMIN_CUSTOMERS: `${API_BASE_URL}/auth/admin/customers`,
     ADMIN_ORDERS: `${API_BASE_URL}/Admin/orders`,
+    ADMIN_ORDERS_REPORT_MONTHLY: `${API_BASE_URL}/Admin/orders/reports/monthly`,
     NOTIFICATIONS: `${API_BASE_URL}/Notifications`,
     NOTIFICATIONS_UNREAD: `${API_BASE_URL}/Notifications/unread-count`,
     NOTIFICATIONS_READ_ALL: `${API_BASE_URL}/Notifications/read-all`,

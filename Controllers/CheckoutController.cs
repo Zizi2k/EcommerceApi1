@@ -85,7 +85,10 @@ namespace EcommerceApi.Controllers
                 {
                     ProductId = c.ProductId,
                     Quantity = c.Quantity,
-                    UnitPrice = c.Product!.Price
+                    UnitPrice = c.Product!.Price,
+                    UnitCost = c.Product.CostPrice > 0
+                        ? c.Product.CostPrice
+                        : decimal.Round(c.Product.Price * 0.7m, 2)
                 }).ToList()
             };
 

@@ -196,7 +196,11 @@ function logout() {
     if (typeof applyUserBackground === 'function') {
         applyUserBackground();
     }
-    alert("Đã đăng xuất thành công!");
+    if (window.AppNotify && typeof window.AppNotify.success === 'function') {
+        window.AppNotify.success('Đăng xuất thành công.');
+    } else {
+        alert("Đã đăng xuất thành công!");
+    }
     window.location.href = 'login.html';
 }
 

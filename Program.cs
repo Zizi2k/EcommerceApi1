@@ -127,6 +127,7 @@ using (var scope = app.Services.CreateScope())
     DbSchemaEnsurer.EnsureOrderAdminReviewColumns(context);
     DbSchemaEnsurer.EnsureNotificationsTable(context);
     DbSchemaEnsurer.EnsureProductReviewsTable(context);
+    DbSchemaEnsurer.EnsureCostAndProfitColumns(context);
 
     if (!context.Categories.Any())
     {

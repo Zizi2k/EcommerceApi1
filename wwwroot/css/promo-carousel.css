@@ -180,15 +180,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 0;
     min-height: 0;
 }
 
 .promo-slide-visual img {
     width: 100%;
-    max-width: 320px;
-    max-height: 380px;
-    object-fit: contain;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
     filter: none;
     image-rendering: auto;
 }
@@ -369,11 +370,11 @@
 
     .promo-slide-visual {
         min-height: 220px;
-        padding: 16px;
+        padding: 0;
     }
 
     .promo-slide-visual img {
-        max-height: 200px;
+        height: 100%;
     }
 
     .promo-carousel-dots {

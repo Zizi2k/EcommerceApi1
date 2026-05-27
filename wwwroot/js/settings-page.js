@@ -1,6 +1,9 @@
 function showSettingsAlert(text, isError) {
     var el = document.getElementById('settings-alert');
     if (!el) return;
+    if (!isError && window.AppNotify && typeof window.AppNotify.success === 'function') {
+        window.AppNotify.success(text);
+    }
     el.textContent = text;
     el.className = 'settings-alert ' + (isError ? 'error' : 'success');
     el.hidden = false;

@@ -424,7 +424,6 @@
                     <i class="fa-solid fa-sliders" aria-hidden="true"></i>
                     <div>
                         <h3>Tìm &amp; lọc sản phẩm</h3>
-                        <p>Giống trải nghiệm cửa hàng trực tuyến — nhanh, rõ ràng, dễ dùng</p>
                     </div>
                 </div>
                 <span class="product-filter__result-hint" id="filter-result-hint">Nhập từ khóa hoặc chọn bộ lọc</span>
@@ -904,7 +903,11 @@
                     quantity: 1
                 });
 
-                alert("Đã thêm vào giỏ hàng!");
+                if (window.AppNotify && typeof window.AppNotify.success === 'function') {
+                    window.AppNotify.success('Đã thêm sản phẩm vào giỏ hàng.');
+                } else {
+                    alert("Đã thêm vào giỏ hàng!");
+                }
                 await updateCartCount(1);
             } catch (error) {
                 alert("Không thể thêm vào giỏ! " + error.message);

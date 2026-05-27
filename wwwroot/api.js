@@ -7,6 +7,59 @@ function getToken() {
     return localStorage.getItem('userToken');
 }
 
+function ensureAppNotify() {
+    if (window.AppNotify) return window.AppNotify;
+
+    var styleId = 'app-notify-style';
+    if (!document.getElementById(styleId)) {
+        var style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = '.app-notify-wrap{position:fixed;top:20px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:10px;pointer-events:none}.app-notify{min-width:280px;max-width:420px;padding:12px 14px;border-radius:12px;display:flex;align-items:flex-start;gap:10px;font-family:Poppins,sans-serif;box-shadow:0 12px 30px rgba(15,23,42,.18);border:1px solid transparent;background:#fff;color:#0f172a;opacity:0;transform:translateY(-8px);transition:opacity .2s ease,transform .2s ease}.app-notify.show{opacity:1;transform:translateY(0)}.app-notify i{margin-top:2px}.app-notify__title{font-size:14px;font-weight:700;line-height:1.25}.app-notify__text{font-size:13px;line-height:1.4;margin-top:2px}.app-notify--success{background:linear-gradient(135deg,#ecfdf5 0%,#f0fdf4 100%);border-color:#86efac;color:#14532d}.app-notify--success i{color:#16a34a}@media (max-width:560px){.app-notify-wrap{left:12px;right:12px;top:12px}.app-notify{min-width:0;max-width:none}}';
+        document.head.appendChild(style);
+    }
+
+    function getWrap() {
+        var wrap = document.getElementById('app-notify-wrap');
+        if (!wrap) {
+            wrap = document.createElement('div');
+            wrap.id = 'app-notify-wrap';
+            wrap.className = 'app-notify-wrap';
+            document.body.appendChild(wrap);
+        }
+        return wrap;
+    }
+
+    function push(type, title, message, timeoutMs) {
+        var wrap = getWrap();
+        var card = document.createElement('div');
+        card.className = 'app-notify app-notify--' + type;
+        card.innerHTML = '<i class="fa-solid fa-circle-check" aria-hidden="true"></i>' +
+            '<div><div class="app-notify__title">' + title + '</div><div class="app-notify__text">' + message + '</div></div>';
+        wrap.appendChild(card);
+
+        requestAnimationFrame(function () {
+            card.classList.add('show');
+        });
+
+        var delay = typeof timeoutMs === 'number' ? timeoutMs : 2400;
+        setTimeout(function () {
+            card.classList.remove('show');
+            setTimeout(function () {
+                if (card.parentNode) card.parentNode.removeChild(card);
+            }, 220);
+        }, delay);
+    }
+
+    window.AppNotify = {
+        success: function (message, timeoutMs) {
+            push('success', 'Thành công', message || 'Thao tác đã hoàn tất.', timeoutMs);
+        }
+    };
+    return window.AppNotify;
+}
+
+ensureAppNotify();
+
 /** Payload JWT (phần giữa), không xác thực chữ ký — chỉ đọc role hiển thị UI. */
 function parseJwtPayload(token) {
     if (!token || typeof token !== 'string') return null;

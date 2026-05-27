@@ -37,7 +37,7 @@
     }
 
     function normalizeSlide(raw) {
-        var headline = (raw.headline && raw.headline.trim()) || raw.productName || 'Sản phẩm khuyến mãi';
+        var headline = (raw.productName && raw.productName.trim()) || (raw.headline && raw.headline.trim()) || 'Sản phẩm khuyến mãi';
         var subtitle = (raw.subtitle && raw.subtitle.trim()) || raw.description || '';
         var badge = (raw.badgeText && raw.badgeText.trim()) || 'SALE';
         var displayPrice = getDisplayPrice(raw);

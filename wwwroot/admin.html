@@ -676,9 +676,7 @@
                                 <img id="image-preview" alt="Xem trước ảnh" width="280" height="120" decoding="async">
                                 <div id="image-paste-capture" class="image-paste-capture" contenteditable="true" spellcheck="false" tabindex="0" role="textbox" aria-label="Dán ảnh: click vào khung xám rồi nhấn Ctrl+V"></div>
                             </div>
-                            <p class="image-paste-hint">
-                                <i class="fa-solid fa-paste"></i> <strong>Click khung xem trước</strong> (ô xám) rồi <kbd>Ctrl</kbd>+<kbd>V</kbd> để dán ảnh trực tiếp vào đây. Hoặc dán khi đang ở ô tên / mô tả / URL; hoặc chọn file từ thiết bị.
-                            </p>
+                            <p class="image-paste-hint"></p>
                         </div>
                         <div class="image-upload-actions">
                             <input type="file" id="imageFileInput" class="visually-hidden-file" accept="image/jpeg,image/png,image/webp,image/gif" aria-label="Chọn ảnh từ thiết bị">
@@ -734,6 +732,7 @@
                                         <th>Sản phẩm</th>
                                         <th>Nhãn</th>
                                         <th>Giá KM</th>
+                                        <th>Flash Sale</th>
                                         <th>Thứ tự</th>
                                         <th>Trạng thái</th>
                                         <th aria-label="Thao tác"></th>
@@ -778,7 +777,7 @@
                         <div class="promo-form-block">
                             <div class="promo-form-block__title">Nội dung slide</div>
                             <div class="form-group">
-                                <label for="promo-headline">Tiêu đề (để trống = tên SP)</label>
+                                <label for="promo-headline">Tiêu đề</label>
                                 <input type="text" id="promo-headline" placeholder="VD: Giảm sốc cuối tuần">
                             </div>
                             <div class="form-group">
@@ -806,6 +805,40 @@
                             <div class="form-group promo-checkbox-row">
                                 <input type="checkbox" id="promo-isActive" checked>
                                 <label for="promo-isActive">Hiển thị trên carousel trang chủ</label>
+                            </div>
+                        </div>
+
+                        <div class="promo-form-block">
+                            <div class="promo-form-block__title">Flash Sale</div>
+                            <div class="form-group promo-checkbox-row">
+                                <input type="checkbox" id="promo-isFlashSale">
+                                <label for="promo-isFlashSale">Tham gia flash sale</label>
+                            </div>
+                            <div class="promo-form-row-2">
+                                <div class="form-group">
+                                    <label for="promo-flashType">Loại flash sale</label>
+                                    <select id="promo-flashType">
+                                        <option value="DailySlot">Theo khung giờ mỗi ngày</option>
+                                        <option value="Event">Theo lễ/tết (admin setup)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="promo-daily-slot-wrap">
+                                    <label for="promo-dailyStartTime">Giờ bắt đầu - kết thúc (mỗi ngày)</label>
+                                    <div class="promo-form-row-2">
+                                        <input type="time" id="promo-dailyStartTime" value="14:00">
+                                        <input type="time" id="promo-dailyEndTime" value="17:00">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="promo-form-row-2" id="promo-event-range-wrap" style="display:none;">
+                                <div class="form-group">
+                                    <label for="promo-eventStartUtc">Bắt đầu (UTC)</label>
+                                    <input type="datetime-local" id="promo-eventStartUtc">
+                                </div>
+                                <div class="form-group">
+                                    <label for="promo-eventEndUtc">Kết thúc (UTC)</label>
+                                    <input type="datetime-local" id="promo-eventEndUtc">
+                                </div>
                             </div>
                         </div>
 

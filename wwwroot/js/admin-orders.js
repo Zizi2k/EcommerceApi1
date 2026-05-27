@@ -455,6 +455,9 @@
             showOrderMsg('Đã cập nhật trạng thái đơn #' + selectedOrderId + '.', false);
             if (typeof refreshNotifications === 'function') refreshNotifications();
             await loadAdminOrders();
+            if (typeof loadCustomerRankings === 'function') {
+                await loadCustomerRankings();
+            }
             var sel = document.getElementById('order-picker-select');
             if (sel) sel.value = String(selectedOrderId);
             onOrderPickerChange();

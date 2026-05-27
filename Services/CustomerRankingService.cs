@@ -1,5 +1,6 @@
 using EcommerceApi.Data;
 using EcommerceApi.DTOs;
+using EcommerceApi.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceApi.Services
@@ -20,7 +21,7 @@ namespace EcommerceApi.Services
             var orders = await _context.Orders
                 .AsNoTracking()
                 .Include(o => o.Items)
-                .Where(o => o.Status == "Completed" || o.Status == "PendingPayment")
+                .Where(o => o.Status == OrderStatuses.Delivered || o.Status == "delivered")
                 .ToListAsync();
 
             var grouped = orders

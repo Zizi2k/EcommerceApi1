@@ -115,6 +115,11 @@ BEGIN
         [PromoPrice] decimal(18,2) NULL,
         [SortOrder] int NOT NULL CONSTRAINT [DF_PromotionalProducts_SortOrder] DEFAULT 0,
         [IsActive] bit NOT NULL CONSTRAINT [DF_PromotionalProducts_IsActive] DEFAULT 1,
+        [IsFlashSale] bit NOT NULL CONSTRAINT [DF_PromotionalProducts_IsFlashSale] DEFAULT 0,
+        [FlashSaleType] nvarchar(24) NOT NULL CONSTRAINT [DF_PromotionalProducts_FlashSaleType] DEFAULT N'None',
+        [DailySlotKey] nvarchar(24) NULL,
+        [EventStartUtc] datetime2 NULL,
+        [EventEndUtc] datetime2 NULL,
         [CreatedAtUtc] datetime2 NOT NULL CONSTRAINT [DF_PromotionalProducts_CreatedAtUtc] DEFAULT SYSUTCDATETIME(),
         CONSTRAINT [PK_PromotionalProducts] PRIMARY KEY ([Id]),
         CONSTRAINT [FK_PromotionalProducts_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [Products]([Id]) ON DELETE CASCADE
@@ -122,6 +127,41 @@ BEGIN
     CREATE INDEX [IX_PromotionalProducts_ProductId] ON [PromotionalProducts]([ProductId]);
     CREATE INDEX [IX_PromotionalProducts_IsActive_SortOrder] ON [PromotionalProducts]([IsActive], [SortOrder]);
 END;
+
+IF COL_LENGTH('PromotionalProducts', 'IsFlashSale') IS NULL
+    ALTER TABLE [PromotionalProducts] ADD [IsFlashSale] bit NOT NULL CONSTRAINT [DF_PromotionalProducts_IsFlashSale2] DEFAULT 0;
+IF COL_LENGTH('PromotionalProducts', 'FlashSaleType') IS NULL
+    ALTER TABLE [PromotionalProducts] ADD [FlashSaleType] nvarchar(24) NOT NULL CONSTRAINT [DF_PromotionalProducts_FlashSaleType2] DEFAULT N'None';
+IF COL_LENGTH('PromotionalProducts', 'DailySlotKey') IS NULL
+    ALTER TABLE [PromotionalProducts] ADD [DailySlotKey] nvarchar(24) NULL;
+IF COL_LENGTH('PromotionalProducts', 'DailyStartMinute') IS NULL
+    ALTER TABLE [PromotionalProducts] ADD [DailyStartMinute] int NULL;
+IF COL_LENGTH('PromotionalProducts', 'DailyEndMinute') IS NULL
+    ALTER TABLE [PromotionalProducts] ADD [DailyEndMinute] int NULL;
+IF COL_LENGTH('PromotionalProducts', 'EventStartUtc') IS NULL
+    ALTER TABLE [PromotionalProducts] ADD [EventStartUtc] datetime2 NULL;
+IF COL_LENGTH('PromotionalProducts', 'EventEndUtc') IS NULL
+    ALTER TABLE [PromotionalProducts] ADD [EventEndUtc] datetime2 NULL;
+");
+
+            context.Database.ExecuteSqlRaw(@"
+UPDATE [PromotionalProducts]
+SET [DailyStartMinute] =
+    CASE [DailySlotKey]
+        WHEN N'MORNING' THEN 540
+        WHEN N'NOON' THEN 840
+        WHEN N'EVENING' THEN 1200
+        ELSE [DailyStartMinute]
+    END,
+    [DailyEndMinute] =
+    CASE [DailySlotKey]
+        WHEN N'MORNING' THEN 720
+        WHEN N'NOON' THEN 1020
+        WHEN N'EVENING' THEN 1380
+        ELSE [DailyEndMinute]
+    END
+WHERE [FlashSaleType] = N'DailySlot'
+AND ([DailyStartMinute] IS NULL OR [DailyEndMinute] IS NULL);
 ");
         }
 

@@ -26,6 +26,7 @@ const API_ENDPOINTS = {
     NOTIFICATIONS_READ_ALL: `${API_BASE_URL}/Notifications/read-all`,
     PROMOTIONS: `${API_BASE_URL}/Promotions`,
     PROMOTIONS_ALL: `${API_BASE_URL}/Promotions/all`,
+    PROMOTIONS_FLASH_SALE: `${API_BASE_URL}/Promotions/flash-sale`,
 };
 
 /** Danh mục cố định id 1–11 (khớp DB / migration). Dùng khi API không trả categoryName. */

@@ -2,6 +2,35 @@
     var editingPromoId = null;
     var promoCache = [];
 
+    function toDatetimeLocalValue(utcIso) {
+        if (!utcIso) return '';
+        var d = new Date(utcIso);
+        if (isNaN(d.getTime())) return '';
+        var local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+        return local.toISOString().slice(0, 16);
+    }
+
+    function toUtcIso(localValue) {
+        if (!localValue) return null;
+        var d = new Date(localValue);
+        if (isNaN(d.getTime())) return null;
+        return d.toISOString();
+    }
+
+    function updateFlashSaleUi() {
+        var enabled = document.getElementById('promo-isFlashSale');
+        var typeEl = document.getElementById('promo-flashType');
+        var dailyWrap = document.getElementById('promo-daily-slot-wrap');
+        var eventWrap = document.getElementById('promo-event-range-wrap');
+        if (!enabled || !typeEl || !dailyWrap || !eventWrap) return;
+
+        var on = enabled.checked;
+        var type = typeEl.value || 'DailySlot';
+        typeEl.disabled = !on;
+        dailyWrap.style.display = on && type === 'DailySlot' ? '' : 'none';
+        eventWrap.style.display = on && type === 'Event' ? '' : 'none';
+    }
+
     function escHtml(s) {
         return String(s == null ? '' : s)
             .replace(/&/g, '&amp;')
@@ -67,8 +96,15 @@
         document.getElementById('promo-promoPrice').value = '';
         document.getElementById('promo-sortOrder').value = '0';
         document.getElementById('promo-isActive').checked = true;
+        document.getElementById('promo-isFlashSale').checked = false;
+        document.getElementById('promo-flashType').value = 'DailySlot';
+        document.getElementById('promo-dailyStartTime').value = '14:00';
+        document.getElementById('promo-dailyEndTime').value = '17:00';
+        document.getElementById('promo-eventStartUtc').value = '';
+        document.getElementById('promo-eventEndUtc').value = '';
         setPromoMessages('', '');
         updatePromoModeUI();
+        updateFlashSaleUi();
     }
 
     function fillPromoForm(p) {
@@ -81,8 +117,19 @@
         document.getElementById('promo-promoPrice').value = p.promoPrice != null ? p.promoPrice : '';
         document.getElementById('promo-sortOrder').value = p.sortOrder != null ? p.sortOrder : 0;
         document.getElementById('promo-isActive').checked = p.isActive !== false;
+        document.getElementById('promo-isFlashSale').checked = p.isFlashSale === true;
+        document.getElementById('promo-flashType').value = p.flashSaleType || 'DailySlot';
+        document.getElementById('promo-dailyStartTime').value = p.dailyStartMinute != null
+            ? String(Math.floor(p.dailyStartMinute / 60)).padStart(2, '0') + ':' + String(p.dailyStartMinute % 60).padStart(2, '0')
+            : '14:00';
+        document.getElementById('promo-dailyEndTime').value = p.dailyEndMinute != null
+            ? String(Math.floor(p.dailyEndMinute / 60)).padStart(2, '0') + ':' + String(p.dailyEndMinute % 60).padStart(2, '0')
+            : '17:00';
+        document.getElementById('promo-eventStartUtc').value = toDatetimeLocalValue(p.eventStartUtc);
+        document.getElementById('promo-eventEndUtc').value = toDatetimeLocalValue(p.eventEndUtc);
         setPromoMessages('', '');
         updatePromoModeUI();
+        updateFlashSaleUi();
         document.getElementById('promo-form-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -126,11 +173,30 @@
                 var price = p.promoPrice != null
                     ? Number(p.promoPrice).toLocaleString('vi-VN') + ' ₫'
                     : '—';
+                var flash = '—';
+                if (p.isFlashSale) {
+                    if (p.flashSaleType === 'DailySlot') {
+                        if (p.dailyStartMinute != null && p.dailyEndMinute != null) {
+                            var sh = String(Math.floor(p.dailyStartMinute / 60)).padStart(2, '0');
+                            var sm = String(p.dailyStartMinute % 60).padStart(2, '0');
+                            var eh = String(Math.floor(p.dailyEndMinute / 60)).padStart(2, '0');
+                            var em = String(p.dailyEndMinute % 60).padStart(2, '0');
+                            flash = 'Khung giờ: ' + sh + ':' + sm + ' - ' + eh + ':' + em;
+                        } else {
+                            flash = 'Khung giờ: —';
+                        }
+                    } else if (p.flashSaleType === 'Event') {
+                        flash = 'Lễ/Tết';
+                    } else {
+                        flash = 'Có';
+                    }
+                }
                 return '<tr>' +
                     '<td><img class="thumb" src="' + (img || 'https://via.placeholder.com/48') + '" alt="" onerror="this.src=\'https://via.placeholder.com/48\'"></td>' +
                     '<td class="cell-name"><strong>' + name + '</strong><small>' + escHtml((p.subtitle || '').slice(0, 50)) + '</small></td>' +
                     '<td>' + badge + '</td>' +
                     '<td><strong>' + price + '</strong></td>' +
+                    '<td>' + escHtml(flash) + '</td>' +
                     '<td><span class="promo-sort-num">' + (p.sortOrder != null ? p.sortOrder : 0) + '</span></td>' +
                     '<td>' + status + '</td>' +
                     '<td class="actions">' +
@@ -181,8 +247,27 @@
             promoPrice: document.getElementById('promo-promoPrice').value
                 ? parseFloat(document.getElementById('promo-promoPrice').value) : null,
             sortOrder: parseInt(document.getElementById('promo-sortOrder').value, 10) || 0,
-            isActive: document.getElementById('promo-isActive').checked
+            isActive: document.getElementById('promo-isActive').checked,
+            isFlashSale: document.getElementById('promo-isFlashSale').checked,
+            flashSaleType: document.getElementById('promo-flashType').value,
+            dailyStartTime: document.getElementById('promo-dailyStartTime').value,
+            dailyEndTime: document.getElementById('promo-dailyEndTime').value,
+            eventStartUtc: toUtcIso(document.getElementById('promo-eventStartUtc').value),
+            eventEndUtc: toUtcIso(document.getElementById('promo-eventEndUtc').value)
         };
+
+        if (payload.isFlashSale && payload.flashSaleType === 'Event' && payload.eventStartUtc && payload.eventEndUtc) {
+            if (new Date(payload.eventEndUtc) <= new Date(payload.eventStartUtc)) {
+                setPromoMessages('', 'Thời gian kết thúc phải sau thời gian bắt đầu.');
+                return;
+            }
+        }
+        if (payload.isFlashSale && payload.flashSaleType === 'DailySlot') {
+            if (!payload.dailyStartTime || !payload.dailyEndTime || payload.dailyStartTime === payload.dailyEndTime) {
+                setPromoMessages('', 'Vui lòng nhập giờ bắt đầu/kết thúc hợp lệ.');
+                return;
+            }
+        }
 
         try {
             if (editingPromoId != null) {
@@ -206,8 +291,13 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         if (!document.getElementById('promo-form-panel')) return;
+        var flashToggle = document.getElementById('promo-isFlashSale');
+        var flashType = document.getElementById('promo-flashType');
+        if (flashToggle) flashToggle.addEventListener('change', updateFlashSaleUi);
+        if (flashType) flashType.addEventListener('change', updateFlashSaleUi);
         fillPromoProductSelect();
         loadPromoTable();
         updatePromoModeUI();
+        updateFlashSaleUi();
     });
 })();

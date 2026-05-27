@@ -543,6 +543,7 @@
         .payment-option {
             display: flex;
             align-items: flex-start;
+            flex-wrap: wrap;
             gap: 12px;
             padding: 12px 14px;
             border: 2px solid #e5e7eb;
@@ -598,6 +599,94 @@
 
         .payment-hint.show {
             display: block;
+        }
+
+        /* VNPay QR */
+        .vnpay-qr-wrap {
+            display: none;
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        .vnpay-qr-wrap.is-visible {
+            display: block;
+            animation: vnpayQrIn 0.2s ease;
+        }
+
+        @keyframes vnpayQrIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .vnpay-qr-card {
+            width: 100%;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .vnpay-qr-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            background: #fff;
+            object-fit: contain;
+            padding: 8px;
+            border: 1px solid rgba(0, 114, 255, 0.14);
+            flex-shrink: 0;
+        }
+
+        .vnpay-qr-meta {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .vnpay-qr-meta strong {
+            display: block;
+            font-size: 14px;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .vnpay-qr-amount {
+            font-weight: 800;
+            color: #0072ff;
+            margin-bottom: 4px;
+        }
+
+        .vnpay-qr-meta .sub {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .vnpay-qr-missing {
+            display: none;
+            margin-top: 6px;
+            font-size: 12px;
+            color: #ef4444;
+            line-height: 1.4;
+        }
+
+        html[data-theme="dark"] .vnpay-qr-card {
+            background: var(--th-bg-elevated);
+            border-color: var(--th-border);
+        }
+
+        html[data-theme="dark"] .vnpay-qr-meta strong {
+            color: var(--th-text);
+        }
+
+        html[data-theme="dark"] .vnpay-qr-amount {
+            color: var(--th-accent-soft);
+        }
+
+        html[data-theme="dark"] .vnpay-qr-meta .sub {
+            color: var(--th-text-muted);
         }
 
         .btn-confirm-pay {
@@ -1215,6 +1304,12 @@
             { id: 'Card', title: 'Thẻ quốc tế', desc: 'Visa, Mastercard, JCB.', hint: 'Demo: không nhập thẻ thật. Chỉ ghi nhận phương thức và hoàn tất đơn trong hệ thống.' }
         ];
 
+        // VNPay QR (ảnh do bạn cung cấp)
+        // Đặt file tại: wwwroot/images/vnpay-qr.png
+        const VN_PAY_QR_IMAGE_URL = 'images/vnpay-qr.png';
+        const VN_PAY_QR_MISSING_TEXT = 'Chưa tìm thấy file QR tại wwwroot/images/vnpay-qr.png.';
+        const LAST_PAYMENT_METHOD_KEY = 'lastPaymentMethod';
+
         window.onload = function() {
             initializeHeader();
             loadMyCart();
@@ -1337,10 +1432,24 @@
             list.innerHTML = PAYMENT_OPTIONS.map(function (o, i) {
                 const sel = i === 0 ? ' selected' : '';
                 const chk = i === 0 ? ' checked' : '';
+                const vnQr = o.id === 'VNPay'
+                    ? ('<div class="vnpay-qr-wrap" id="vnpay-qr-wrap">' +
+                        '<div class="vnpay-qr-card">' +
+                        '<img class="vnpay-qr-img" id="vnpay-qr-img" src="' + VN_PAY_QR_IMAGE_URL + '" alt="QR VNPay">' +
+                        '<div class="vnpay-qr-meta">' +
+                        '<strong>Quét mã VNPay để thanh toán</strong>' +
+                        '<div class="vnpay-qr-amount" id="vnpay-qr-amount">—</div>' +
+                        '<div class="sub">Dùng mã QR để thanh toán (demo). Hệ thống sẽ ghi nhận như đã thanh toán online.</div>' +
+                        '<div class="vnpay-qr-missing" id="vnpay-qr-missing">' + VN_PAY_QR_MISSING_TEXT + '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>')
+                    : '';
                 return (
                     '<div class="payment-option' + sel + '" data-id="' + o.id + '" onclick="selectPaymentMethod(\'' + o.id + '\')">' +
                     '<input type="radio" name="paymethod" id="pay-' + o.id + '" value="' + o.id + '"' + chk + '>' +
                     '<label for="pay-' + o.id + '"><strong>' + o.title + '</strong><small>' + o.desc + '</small></label>' +
+                    vnQr +
                     '</div>'
                 );
             }).join('');
@@ -1353,6 +1462,8 @@
             });
             const r = document.getElementById('pay-' + id);
             if (r) r.checked = true;
+
+            localStorage.setItem(LAST_PAYMENT_METHOD_KEY, id);
             updatePaymentHint(id);
         }
 
@@ -1363,6 +1474,53 @@
             hintEl.textContent = opt.hint;
             hintEl.classList.add('show');
             toggleCodCustomerSection(id === 'COD');
+            toggleVnPayQr(id === 'VNPay');
+        }
+
+        function toggleVnPayQr(show) {
+            const wrap = document.getElementById('vnpay-qr-wrap');
+            if (!wrap) return;
+            wrap.classList.toggle('is-visible', !!show);
+
+            if (show) {
+                updateVnPayAmount();
+                setupVnPayQrImage();
+            }
+        }
+
+        function updateVnPayAmount() {
+            const el = document.getElementById('vnpay-qr-amount');
+            if (!el) return;
+            if (typeof lastCartTotal === 'number') {
+                el.textContent = 'Số tiền: ' + lastCartTotal.toLocaleString('vi-VN') + ' VNĐ';
+            } else {
+                el.textContent = 'Số tiền: —';
+            }
+        }
+
+        function setupVnPayQrImage() {
+            const img = document.getElementById('vnpay-qr-img');
+            const missing = document.getElementById('vnpay-qr-missing');
+            if (!img || !missing) return;
+
+            img.onload = function () {
+                missing.style.display = 'none';
+                img.style.display = 'block';
+            };
+            img.onerror = function () {
+                missing.style.display = 'block';
+                img.style.display = 'none';
+            };
+
+            if (img.complete) {
+                if (img.naturalWidth > 0) {
+                    missing.style.display = 'none';
+                    img.style.display = 'block';
+                } else {
+                    missing.style.display = 'block';
+                    img.style.display = 'none';
+                }
+            }
         }
 
         function toggleCodCustomerSection(show) {
@@ -1430,6 +1588,19 @@
 
             renderPaymentMethodRadios();
             resetCodCheckoutState();
+
+            // Tự động bật lại VNPay (và QR) nếu lần trước khách đã chọn
+            const lastMethod = localStorage.getItem(LAST_PAYMENT_METHOD_KEY);
+            if (lastMethod && PAYMENT_OPTIONS.some(function (x) { return x.id === lastMethod; })) {
+                selectPaymentMethod(lastMethod);
+            } else {
+                toggleVnPayQr(false);
+            }
+
+            // Cập nhật số tiền hiển thị trên khối VNPay QR
+            updateVnPayAmount();
+            setupVnPayQrImage();
+
             document.getElementById('checkout-overlay').classList.add('show');
             document.getElementById('checkout-overlay').setAttribute('aria-hidden', 'false');
         }
@@ -1481,6 +1652,7 @@
             }
             resetCodCheckoutState();
             toggleCodCustomerSection(false);
+            toggleVnPayQr(false);
         }
 
         async function confirmCheckout() {

@@ -1203,18 +1203,18 @@
                 <div class="checkout-total-line" id="checkout-modal-total">Tổng: 0 VNĐ</div>
                 <div id="checkout-items-preview" class="checkout-items-preview" style="display: none;" aria-label="Sản phẩm trong đơn"></div>
                 <div id="cod-customer-section" class="cod-customer-section is-visible" aria-hidden="false">
-                    <h3><i class="fa-solid fa-user"></i> Thông tin khách hàng</h3>
+                    <h3><i class="fa-solid fa-user"></i> Thông tin giao hàng <span style="font-weight:500;font-size:12px;color:#64748b;">(bắt buộc)</span></h3>
                     <div class="cod-field">
                         <label for="cod-customer-name">Họ tên người nhận *</label>
-                        <input type="text" id="cod-customer-name" autocomplete="name" placeholder="Nguyễn Văn A">
+                        <input type="text" id="cod-customer-name" autocomplete="name" placeholder="Nguyễn Văn A" required>
                     </div>
                     <div class="cod-field">
                         <label for="cod-customer-phone">Số điện thoại *</label>
-                        <input type="tel" id="cod-customer-phone" autocomplete="tel" placeholder="0912345678" maxlength="11">
+                        <input type="tel" id="cod-customer-phone" autocomplete="tel" placeholder="0912345678" maxlength="11" required>
                     </div>
                     <div class="cod-field">
                         <label for="cod-shipping-address">Địa chỉ giao hàng *</label>
-                        <textarea id="cod-shipping-address" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"></textarea>
+                        <textarea id="cod-shipping-address" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành" required></textarea>
                     </div>
                 </div>
                 <div class="payment-methods-title">Chọn hình thức thanh toán</div>
@@ -1252,15 +1252,15 @@
                     </div>
                 </div>
                 <div id="success-cod-details" class="success-cod-block" style="display: none;">
-                    <h4><i class="fa-solid fa-truck"></i> Giao hàng COD</h4>
+                    <h4><i class="fa-solid fa-truck"></i> Thông tin giao hàng</h4>
                     <p>Người nhận: <strong id="success-recipient">—</strong></p>
                     <p>SĐT: <strong id="success-phone">—</strong></p>
                     <p>Địa chỉ: <strong id="success-address">—</strong></p>
                 </div>
             </div>
             <div class="order-success-actions">
-                <a href="index.html#products" class="btn-success-primary" id="success-shop-btn">
-                    <i class="fa-solid fa-bag-shopping"></i> Tiếp tục mua sắm
+                <a href="account.html#my-orders-title" class="btn-success-primary" id="success-shop-btn">
+                    <i class="fa-solid fa-truck-fast"></i> Theo dõi đơn hàng
                 </a>
                 <button type="button" class="btn-success-secondary" onclick="closeOrderSuccessModal()">Đóng</button>
             </div>
@@ -1297,11 +1297,11 @@
         }
 
         const PAYMENT_OPTIONS = [
-            { id: 'COD', title: 'Tiền mặt (COD)', desc: 'Thanh toán khi nhận hàng tại nhà.', hint: 'Điền thông tin khách hàng phía trên, chọn tiền mặt rồi bấm Đặt hàng.' },
-            { id: 'BankTransfer', title: 'Chuyển khoản ngân hàng', desc: 'CK qua Internet Banking / quầy.', hint: 'Nội dung CK: SĐT + Mã đơn (demo). STK: 0123456789 — Ngân hàng TMCP Demo — Chủ TK: GROUP1 STORE.' },
-            { id: 'MoMo', title: 'Ví MoMo', desc: 'Quét QR hoặc thanh toán trong app MoMo.', hint: 'Số ví demo: 0901 234 567. Sau khi xác nhận, hệ thống ghi nhận thanh toán thành công (mô phỏng).' },
-            { id: 'VNPay', title: 'VNPay', desc: 'Thẻ ATM nội địa / QR VNPay.', hint: 'Luồng demo: không chuyển sang cổng thật. Đơn được ghi nhận như đã thanh toán online.' },
-            { id: 'Card', title: 'Thẻ quốc tế', desc: 'Visa, Mastercard, JCB.', hint: 'Demo: không nhập thẻ thật. Chỉ ghi nhận phương thức và hoàn tất đơn trong hệ thống.' }
+            { id: 'COD', title: 'Tiền mặt (COD)', desc: 'Thanh toán khi nhận hàng tại nhà.', hint: 'Điền đủ thông tin giao hàng phía trên, chọn COD rồi bấm Đặt hàng.' },
+            { id: 'BankTransfer', title: 'Chuyển khoản ngân hàng', desc: 'CK qua Internet Banking / quầy.', hint: 'Điền đủ thông tin giao hàng. Nội dung CK: SĐT + Mã đơn. STK demo: 0123456789 — GROUP1 STORE.' },
+            { id: 'MoMo', title: 'Ví MoMo', desc: 'Quét QR hoặc thanh toán trong app MoMo.', hint: 'Điền đủ thông tin giao hàng. Ví demo: 0901 234 567 (mô phỏng thanh toán).' },
+            { id: 'VNPay', title: 'VNPay', desc: 'Thẻ ATM nội địa / QR VNPay.', hint: 'Điền đủ thông tin giao hàng. Quét QR VNPay rồi bấm Đặt hàng (demo).' },
+            { id: 'Card', title: 'Thẻ quốc tế', desc: 'Visa, Mastercard, JCB.', hint: 'Điền đủ thông tin giao hàng trước khi hoàn tất đơn (demo, không nhập thẻ thật).' }
         ];
 
         // VNPay QR (ảnh do bạn cung cấp)
@@ -1473,8 +1473,16 @@
             if (!opt || !hintEl) return;
             hintEl.textContent = opt.hint;
             hintEl.classList.add('show');
-            toggleCodCustomerSection(id === 'COD');
+            ensureCustomerSectionVisible();
             toggleVnPayQr(id === 'VNPay');
+        }
+
+        function ensureCustomerSectionVisible() {
+            const sec = document.getElementById('cod-customer-section');
+            if (!sec) return;
+            sec.classList.add('is-visible');
+            sec.style.display = 'block';
+            sec.setAttribute('aria-hidden', 'false');
         }
 
         function toggleVnPayQr(show) {
@@ -1523,28 +1531,41 @@
             }
         }
 
-        function toggleCodCustomerSection(show) {
-            const sec = document.getElementById('cod-customer-section');
-            if (!sec) return;
-            if (show) {
-                sec.classList.add('is-visible');
-                sec.style.display = 'block';
-                sec.setAttribute('aria-hidden', 'false');
-                setTimeout(function () {
-                    sec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }, 80);
-            } else {
-                sec.classList.remove('is-visible');
-                sec.style.display = 'none';
-                sec.setAttribute('aria-hidden', 'true');
-            }
-        }
-
         function resetCodCheckoutState() {
             ['cod-customer-name', 'cod-customer-phone', 'cod-shipping-address'].forEach(function (id) {
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
+            var savedName = localStorage.getItem('userName');
+            var nameEl = document.getElementById('cod-customer-name');
+            if (nameEl && savedName) nameEl.value = savedName.trim();
+        }
+
+        function readCustomerCheckoutFields() {
+            const name = (document.getElementById('cod-customer-name').value || '').trim();
+            const phone = normalizePhoneInput(document.getElementById('cod-customer-phone').value);
+            const address = (document.getElementById('cod-shipping-address').value || '').trim();
+            return { name: name, phone: phone, address: address };
+        }
+
+        function validateCustomerCheckoutFields() {
+            const c = readCustomerCheckoutFields();
+            if (!c.name) {
+                alert('Vui lòng nhập họ tên người nhận.');
+                document.getElementById('cod-customer-name').focus();
+                return null;
+            }
+            if (!isValidVnPhone(c.phone)) {
+                alert('Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0).');
+                document.getElementById('cod-customer-phone').focus();
+                return null;
+            }
+            if (!c.address) {
+                alert('Vui lòng nhập địa chỉ giao hàng.');
+                document.getElementById('cod-shipping-address').focus();
+                return null;
+            }
+            return c;
         }
 
         function normalizePhoneInput(raw) {
@@ -1588,6 +1609,7 @@
 
             renderPaymentMethodRadios();
             resetCodCheckoutState();
+            ensureCustomerSectionVisible();
 
             // Tự động bật lại VNPay (và QR) nếu lần trước khách đã chọn
             const lastMethod = localStorage.getItem(LAST_PAYMENT_METHOD_KEY);
@@ -1621,7 +1643,7 @@
                 Number(res && res.totalAmount != null ? res.totalAmount : 0).toLocaleString('vi-VN') + ' VNĐ';
 
             var codBlock = document.getElementById('success-cod-details');
-            if (paymentMethod === 'COD' && res && res.customerName) {
+            if (res && res.customerName) {
                 codBlock.style.display = 'block';
                 document.getElementById('success-recipient').textContent = res.customerName;
                 document.getElementById('success-phone').textContent = res.customerPhone || '—';
@@ -1651,7 +1673,6 @@
                 prev.style.display = 'none';
             }
             resetCodCheckoutState();
-            toggleCodCustomerSection(false);
             toggleVnPayQr(false);
         }
 
@@ -1663,28 +1684,15 @@
                 return;
             }
             const paymentMethod = selected.value;
-            var payload = { paymentMethod: paymentMethod };
+            const customer = validateCustomerCheckoutFields();
+            if (!customer) return;
 
-            if (paymentMethod === 'COD') {
-                const name = (document.getElementById('cod-customer-name').value || '').trim();
-                const phone = normalizePhoneInput(document.getElementById('cod-customer-phone').value);
-                const address = (document.getElementById('cod-shipping-address').value || '').trim();
-                if (!name) {
-                    alert('Vui lòng nhập họ tên người nhận.');
-                    return;
-                }
-                if (!isValidVnPhone(phone)) {
-                    alert('Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0).');
-                    return;
-                }
-                if (!address) {
-                    alert('Vui lòng nhập địa chỉ giao hàng.');
-                    return;
-                }
-                payload.customerName = name;
-                payload.customerPhone = phone;
-                payload.shippingAddress = address;
-            }
+            var payload = {
+                paymentMethod: paymentMethod,
+                customerName: customer.name,
+                customerPhone: customer.phone,
+                shippingAddress: customer.address
+            };
 
             btn.disabled = true;
             try {
@@ -1693,6 +1701,9 @@
                 await loadMyCart();
                 if (typeof updateCartCount === 'function') {
                     await updateCartCount();
+                }
+                if (typeof refreshNotifications === 'function') {
+                    refreshNotifications();
                 }
                 showOrderSuccessModal(res, paymentMethod);
             } catch (e) {

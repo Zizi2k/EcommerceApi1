@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/header-footer.css">
+    <link rel="stylesheet" href="css/admin-promo.css">
+    <link rel="stylesheet" href="css/admin-products.css">
+    <link rel="stylesheet" href="css/admin-orders.css">
+    <link rel="stylesheet" href="css/product-reviews.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -420,77 +424,129 @@
         </div>
     </header>
 
-    <div class="main-content">
-        <h1 class="page-title">
-            <i class="fa-solid fa-boxes-stacked"></i>
-            Quản lý sản phẩm
-            <span id="mode-badge" class="badge-mode">Thêm mới</span>
-        </h1>
-
-        <div class="toolbar">
-            <button type="button" class="btn-them-san-pham" onclick="goToAddProduct()" title="Mở form thêm sản phẩm">
-                <i class="fa-solid fa-plus"></i> Thêm Sản Phẩm
-            </button>
-            <button type="button" class="btn-refresh" onclick="loadProductTable()">
-                <i class="fa-solid fa-rotate"></i> Làm mới danh sách
-            </button>
-            <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Về cửa hàng</a>
+    <div class="main-content product-admin-wrap">
+        <div class="product-page-head">
+            <h1 class="page-title">
+                <i class="fa-solid fa-boxes-stacked"></i>
+                Quản lý sản phẩm
+                <span id="mode-badge" class="badge-mode">Thêm mới</span>
+            </h1>
+            <div class="toolbar">
+                <button type="button" class="btn-them-san-pham" onclick="goToAddProduct()" title="Mở form thêm sản phẩm">
+                    <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+                </button>
+                <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Về cửa hàng</a>
+            </div>
         </div>
 
-        <div class="layout-grid">
-            <div class="panel">
-                <h2><i class="fa-solid fa-list"></i> Danh sách sản phẩm</h2>
-                <div id="table-loading" class="empty-hint" style="display:none;">Đang tải...</div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Ảnh</th>
-                                <th>Sản phẩm</th>
-                                <th>Giá</th>
-                                <th>Kho</th>
-                                <th>Danh mục</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="product-table-body"></tbody>
-                    </table>
+        <div class="products-layout">
+            <div class="product-panel product-panel--picker">
+                <div class="product-panel__head">
+                    <h3><i class="fa-solid fa-filter"></i> Chọn &amp; thao tác</h3>
+                    <span class="product-count-badge" id="product-count-badge">
+                        <span id="product-count-text">0 SP</span>
+                    </span>
+                    <button type="button" class="product-btn-refresh" onclick="loadProductTable()" title="Làm mới danh sách">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
                 </div>
-                <div id="table-empty" class="empty-hint" style="display:none;">
-                    <i class="fa-solid fa-inbox fa-2x" style="margin-bottom:12px;display:block;"></i>
-                    Chưa có sản phẩm hoặc không tải được dữ liệu.
+                <div class="product-panel__body">
+                    <div id="table-loading" class="empty-hint" style="display:none;">Đang tải...</div>
+                    <div id="table-empty" class="product-empty" style="display:none;">
+                        <i class="fa-solid fa-inbox fa-2x" aria-hidden="true"></i>
+                        <span id="table-empty-msg">Chưa có sản phẩm hoặc không tải được dữ liệu.</span>
+                    </div>
+
+                    <div id="product-picker-tools" style="display:none;">
+                        <div class="product-filters">
+                            <div class="form-group">
+                                <label for="product-filter-search">Tìm sản phẩm</label>
+                                <input type="search" id="product-filter-search" placeholder="Tên hoặc mô tả…" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="product-filter-category">Lọc danh mục</label>
+                                <select id="product-filter-category">
+                                    <option value="">Tất cả danh mục</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-picker-select">Chọn từ danh sách</label>
+                            <select id="product-picker-select" size="1">
+                                <option value="">— Chọn sản phẩm —</option>
+                            </select>
+                        </div>
+                        <div id="product-picker-preview" class="product-preview-card" style="display:none;" aria-live="polite">
+                            <img id="product-preview-img" src="" alt="" width="72" height="72">
+                            <div class="product-preview-card__body">
+                                <h4 id="product-preview-name"></h4>
+                                <p id="product-preview-desc"></p>
+                                <dl class="product-preview-meta">
+                                    <dt>Giá</dt>
+                                    <dd class="price" id="product-preview-price"></dd>
+                                    <dt>Kho</dt>
+                                    <dd id="product-preview-stock"></dd>
+                                    <dt>Danh mục</dt>
+                                    <dd id="product-preview-category"></dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="product-picker-actions">
+                            <button type="button" class="btn-product-edit" id="btn-edit-selected" disabled onclick="editSelectedProduct()">
+                                <i class="fa-solid fa-pen"></i> Sửa
+                            </button>
+                            <button type="button" class="btn-product-del" id="btn-delete-selected" disabled onclick="deleteSelectedProduct()">
+                                <i class="fa-solid fa-trash"></i> Xóa
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="panel" id="product-form-panel">
-                <h2 id="form-panel-title"><i class="fa-solid fa-pen-to-square"></i> Thêm / sửa</h2>
-                <div id="success-message" class="success">
+            <div class="product-panel product-panel--form" id="product-form-panel">
+                <div class="product-panel__head">
+                    <h3 id="form-panel-title"><i class="fa-solid fa-pen-to-square"></i> Thêm / sửa sản phẩm</h3>
+                </div>
+                <div class="product-panel__body">
+                <div id="success-message" class="success" style="display:none;">
                     <i class="fa-solid fa-check"></i> <span id="success-text"></span>
                 </div>
-                <div id="error-message" class="error">
+                <div id="error-message" class="error" style="display:none;">
                     <i class="fa-solid fa-circle-exclamation"></i> <span id="error-text"></span>
                 </div>
 
                 <input type="hidden" id="productId" value="">
 
-                <div class="form-group">
-                    <label for="name">Tên sản phẩm *</label>
-                    <input type="text" id="name" placeholder="Nhập tên" required autocomplete="off">
+                <div class="product-form-block">
+                    <div class="product-form-block__title">Thông tin cơ bản</div>
+                    <div class="form-group">
+                        <label for="name">Tên sản phẩm *</label>
+                        <input type="text" id="name" placeholder="Nhập tên" required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Mô tả *</label>
+                        <textarea id="description" placeholder="Mô tả chi tiết" required></textarea>
+                    </div>
+                    <div class="product-form-row-2">
+                        <div class="form-group">
+                            <label for="price">Giá (VNĐ) *</label>
+                            <input type="number" id="price" min="0" step="1000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="stock">Tồn kho *</label>
+                            <input type="number" id="stock" min="0" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryId">Danh mục</label>
+                        <select id="categoryId" required>
+                            <option value="1">Đang tải…</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="description">Mô tả *</label>
-                    <textarea id="description" placeholder="Mô tả" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="price">Giá (VNĐ) *</label>
-                    <input type="number" id="price" min="0" step="1000" required>
-                </div>
-                <div class="form-group">
-                    <label for="stock">Tồn kho *</label>
-                    <input type="number" id="stock" min="0" required>
-                </div>
-                <div class="form-group">
-                    <span class="form-label-block">Ảnh sản phẩm *</span>
+
+                <div class="product-form-block">
+                    <span class="form-label-block product-form-block__title" style="display:block;margin-bottom:12px;">Ảnh sản phẩm *</span>
                     <div class="image-upload-block">
                         <div id="image-paste-zone" class="image-paste-zone" tabindex="-1" title="Click khung xem trước rồi Ctrl+V để dán ảnh">
                             <div class="image-preview-wrap">
@@ -512,12 +568,6 @@
                         <input type="text" id="imageUrl" placeholder="https://... hoặc /uploads/products/..." required autocomplete="off">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="categoryId">Danh mục</label>
-                    <select id="categoryId" required>
-                        <option value="1">Đang tải…</option>
-                    </select>
-                </div>
 
                 <div class="form-actions">
                     <button type="button" class="btn-primary" onclick="submitProductForm()">
@@ -527,95 +577,233 @@
                         Hủy sửa — thêm mới
                     </button>
                 </div>
+                </div>
             </div>
         </div>
 
-        <section class="admin-section" aria-labelledby="promo-section-title">
-            <h2 class="admin-section-title" id="promo-section-title">
-                <i class="fa-solid fa-images"></i> Carousel khuyến mãi (trang chủ)
-            </h2>
-            <p style="font-size: 13px; color: #64748b; margin: -8px 0 16px;">
-                Thêm sản phẩm lên banner carousel trang chủ. Thứ tự hiển thị theo <strong>Sort</strong> (số nhỏ lên trước).
-            </p>
-            <div class="layout-grid">
-                <div class="panel">
-                    <h2><i class="fa-solid fa-list"></i> Danh sách khuyến mãi</h2>
-                    <div class="toolbar" style="margin-bottom: 12px;">
-                        <button type="button" class="btn-refresh" onclick="loadPromoTable()">
+        <section class="admin-section promo-admin-section" aria-labelledby="promo-section-title">
+            <div class="promo-section-head">
+                <h2 class="admin-section-title" id="promo-section-title">
+                    <i class="fa-solid fa-images"></i> Carousel khuyến mãi (trang chủ)
+                </h2>
+                <span class="promo-count-badge" id="promo-count-badge">
+                    <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                    <span id="promo-count-text">0 slide</span>
+                </span>
+            </div>
+
+            <div class="promo-layout">
+                <div class="promo-panel promo-panel--list">
+                    <div class="promo-panel__head">
+                        <h3><i class="fa-solid fa-list"></i> Danh sách khuyến mãi</h3>
+                        <button type="button" class="promo-btn-refresh" onclick="loadPromoTable()">
                             <i class="fa-solid fa-rotate"></i> Làm mới
                         </button>
                     </div>
-                    <div id="promo-table-loading" class="empty-hint" style="display:none;">Đang tải...</div>
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Ảnh</th>
-                                    <th>Sản phẩm</th>
-                                    <th>Nhãn</th>
-                                    <th>Giá KM</th>
-                                    <th>Sort</th>
-                                    <th>Trạng thái</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="promo-table-body"></tbody>
-                        </table>
-                    </div>
-                    <div id="promo-table-empty" class="empty-hint" style="display:none;">
-                        Chưa có slide khuyến mãi. Thêm ở form bên phải.
+                    <div class="promo-panel__body">
+                        <div id="promo-table-loading" class="empty-hint" style="display:none;">Đang tải...</div>
+                        <div class="promo-table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Ảnh</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Nhãn</th>
+                                        <th>Giá KM</th>
+                                        <th>Thứ tự</th>
+                                        <th>Trạng thái</th>
+                                        <th aria-label="Thao tác"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="promo-table-body"></tbody>
+                            </table>
+                        </div>
+                        <div id="promo-table-empty" class="promo-empty" style="display:none;">
+                            <i class="fa-solid fa-images" aria-hidden="true"></i>
+                            <span id="promo-table-empty-msg">Chưa có slide khuyến mãi. Thêm slide mới ở form bên phải.</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="panel" id="promo-form-panel">
-                    <h2>
-                        <i class="fa-solid fa-bullhorn"></i> Thêm / sửa khuyến mãi
-                        <span id="promo-mode-badge" class="badge-mode">Thêm mới</span>
-                    </h2>
-                    <div id="promo-success-message" class="success" style="display:none;">
-                        <i class="fa-solid fa-check"></i> <span id="promo-success-text"></span>
+                <div class="promo-panel promo-panel--form" id="promo-form-panel">
+                    <div class="promo-panel__head">
+                        <h3>
+                            <i class="fa-solid fa-bullhorn"></i> Thêm / sửa khuyến mãi
+                            <span id="promo-mode-badge" class="badge-mode">Thêm mới</span>
+                        </h3>
                     </div>
-                    <div id="promo-error-message" class="error" style="display:none;">
-                        <i class="fa-solid fa-circle-exclamation"></i> <span id="promo-error-text"></span>
+                    <div class="promo-panel__body">
+                        <div id="promo-success-message" class="success" style="display:none;">
+                            <i class="fa-solid fa-check"></i> <span id="promo-success-text"></span>
+                        </div>
+                        <div id="promo-error-message" class="error" style="display:none;">
+                            <i class="fa-solid fa-circle-exclamation"></i> <span id="promo-error-text"></span>
+                        </div>
+                        <input type="hidden" id="promo-id" value="">
+
+                        <div class="promo-form-block">
+                            <div class="promo-form-block__title">Sản phẩm</div>
+                            <div class="form-group">
+                                <label for="promo-productId">Chọn sản phẩm *</label>
+                                <select id="promo-productId" required>
+                                    <option value="">Đang tải…</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="promo-form-block">
+                            <div class="promo-form-block__title">Nội dung slide</div>
+                            <div class="form-group">
+                                <label for="promo-headline">Tiêu đề (để trống = tên SP)</label>
+                                <input type="text" id="promo-headline" placeholder="VD: Giảm sốc cuối tuần">
+                            </div>
+                            <div class="form-group">
+                                <label for="promo-subtitle">Mô tả ngắn</label>
+                                <textarea id="promo-subtitle" placeholder="Dòng mô tả dưới tiêu đề" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="promo-badgeText">Nhãn hiển thị</label>
+                                <input type="text" id="promo-badgeText" value="HOT" maxlength="32" placeholder="HOT, SALE…">
+                            </div>
+                        </div>
+
+                        <div class="promo-form-block">
+                            <div class="promo-form-block__title">Hiển thị</div>
+                            <div class="promo-form-row-2">
+                                <div class="form-group">
+                                    <label for="promo-promoPrice">Giá khuyến mãi (VNĐ)</label>
+                                    <input type="number" id="promo-promoPrice" min="0" step="1000" placeholder="Để trống = giá gốc">
+                                </div>
+                                <div class="form-group">
+                                    <label for="promo-sortOrder">Thứ tự</label>
+                                    <input type="number" id="promo-sortOrder" value="0" min="0" title="Số nhỏ hiển thị trước">
+                                </div>
+                            </div>
+                            <div class="form-group promo-checkbox-row">
+                                <input type="checkbox" id="promo-isActive" checked>
+                                <label for="promo-isActive">Hiển thị trên carousel trang chủ</label>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-primary" onclick="submitPromoForm()">
+                                <i class="fa-solid fa-floppy-disk"></i> <span id="promo-submit-label">Lưu khuyến mãi</span>
+                            </button>
+                            <button type="button" class="btn-secondary" id="promo-btn-cancel" style="display:none;" onclick="resetPromoForm()">
+                                Hủy — thêm mới
+                            </button>
+                        </div>
                     </div>
-                    <input type="hidden" id="promo-id" value="">
-                    <div class="form-group">
-                        <label for="promo-productId">Sản phẩm *</label>
-                        <select id="promo-productId" required>
-                            <option value="">Đang tải…</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="promo-headline">Tiêu đề slide (để trống = tên sản phẩm)</label>
-                        <input type="text" id="promo-headline" placeholder="VD: Giảm sốc cuối tuần">
-                    </div>
-                    <div class="form-group">
-                        <label for="promo-subtitle">Mô tả ngắn</label>
-                        <textarea id="promo-subtitle" placeholder="Dòng mô tả dưới tiêu đề" rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="promo-badgeText">Nhãn (badge)</label>
-                        <input type="text" id="promo-badgeText" value="HOT" maxlength="32">
-                    </div>
-                    <div class="form-group">
-                        <label for="promo-promoPrice">Giá khuyến mãi hiển thị (VNĐ)</label>
-                        <input type="number" id="promo-promoPrice" min="0" step="1000" placeholder="Để trống = giá gốc">
-                    </div>
-                    <div class="form-group">
-                        <label for="promo-sortOrder">Thứ tự (sort)</label>
-                        <input type="number" id="promo-sortOrder" value="0" min="0">
-                    </div>
-                    <div class="form-group promo-checkbox-row">
-                        <input type="checkbox" id="promo-isActive" checked>
-                        <label for="promo-isActive">Hiển thị trên carousel</label>
-                    </div>
-                    <div class="form-actions">
-                        <button type="button" class="btn-primary" onclick="submitPromoForm()">
-                            <i class="fa-solid fa-floppy-disk"></i> <span id="promo-submit-label">Lưu khuyến mãi</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-section orders-admin-section" aria-labelledby="orders-section-title">
+            <div class="orders-section-head">
+                <h2 class="admin-section-title" id="orders-section-title">
+                    <i class="fa-solid fa-truck-fast"></i> Quản lý đơn hàng
+                </h2>
+                <span class="product-count-badge" id="order-count-badge">
+                    <span id="order-count-text">0 đơn</span>
+                </span>
+            </div>
+
+            <div class="orders-layout">
+                <div class="order-panel order-panel--picker">
+                    <div class="order-panel__head">
+                        <h3><i class="fa-solid fa-list-check"></i> Chọn đơn</h3>
+                        <button type="button" class="product-btn-refresh" onclick="loadAdminOrders()" title="Làm mới">
+                            <i class="fa-solid fa-rotate"></i>
                         </button>
-                        <button type="button" class="btn-secondary" id="promo-btn-cancel" style="display:none;" onclick="resetPromoForm()">
-                            Hủy — thêm mới
-                        </button>
+                    </div>
+                    <div class="order-panel__body">
+                        <div id="orders-loading" class="empty-hint" style="display:none;">Đang tải...</div>
+                        <div id="orders-list-empty" class="product-empty" style="display:none;">
+                            <i class="fa-solid fa-box-open fa-2x" aria-hidden="true"></i>
+                            <span id="orders-list-empty-msg">Chưa có đơn hàng.</span>
+                        </div>
+                        <div id="order-picker-tools" style="display:none;">
+                            <div class="order-filters">
+                                <div class="form-group">
+                                    <label for="order-filter-search">Tìm đơn / khách</label>
+                                    <input type="search" id="order-filter-search" placeholder="Mã đơn, tên, SĐT…" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <label for="order-filter-status">Lọc trạng thái</label>
+                                    <select id="order-filter-status">
+                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="Preparing">Đang chuẩn bị</option>
+                                        <option value="Delivering">Đang giao</option>
+                                        <option value="Delivered">Đã giao</option>
+                                        <option value="Cancelled">Đã hủy</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="order-picker-select">Danh sách đơn</label>
+                                <select id="order-picker-select">
+                                    <option value="">— Chọn đơn hàng —</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-panel order-panel--detail">
+                    <div class="order-panel__head">
+                        <h3><i class="fa-solid fa-clipboard-list"></i> Chi tiết &amp; trạng thái</h3>
+                    </div>
+                    <div class="order-panel__body">
+                        <div id="order-detail-empty" class="product-empty">
+                            <i class="fa-solid fa-hand-pointer fa-2x" aria-hidden="true"></i>
+                            Chọn đơn hàng bên trái để xem và cập nhật trạng thái.
+                        </div>
+                        <div id="order-detail-panel" style="display:none;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+                                <h4 id="order-detail-title" style="margin:0;font-size:16px;">Đơn #—</h4>
+                                <span id="order-detail-status-badge" class="order-status-badge order-status-badge--preparing">—</span>
+                            </div>
+                            <div class="order-detail-card">
+                                <div id="order-detail-customer" class="order-detail-meta"></div>
+                                <div id="order-cancel-alert" class="order-cancel-alert" style="display:none;"></div>
+                                <div id="order-cancel-actions" class="order-cancel-actions" style="display:none;">
+                                    <button type="button" class="btn-cancel-accept" onclick="acceptOrderCancel()">
+                                        <i class="fa-solid fa-check"></i> Chấp nhận hủy
+                                    </button>
+                                    <button type="button" class="btn-cancel-reject" onclick="rejectOrderCancel()">
+                                        <i class="fa-solid fa-xmark"></i> Từ chối
+                                    </button>
+                                </div>
+                                <ul id="order-detail-items" class="order-items-list"></ul>
+                            </div>
+
+                            <div class="order-status-form">
+                                <label for="order-status-select">Cập nhật trạng thái</label>
+                                <div class="order-status-row">
+                                    <select id="order-status-select"></select>
+                                    <button type="button" class="btn-order-save" onclick="saveOrderStatus()">
+                                        <i class="fa-solid fa-check"></i> Lưu trạng thái
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="order-customer-review-block" class="order-customer-review-block" style="display:none;" aria-live="polite"></div>
+
+                            <div id="order-review-block" class="order-review-block is-locked">
+                                <h4><i class="fa-solid fa-star"></i> Đánh giá đơn hàng (admin)</h4>
+                                <p id="order-review-hint" class="order-review-hint">Chỉ đánh giá khi đơn ở trạng thái Đã giao.</p>
+                                <div id="order-review-existing" class="order-review-existing" style="display:none;"></div>
+                                <div id="order-star-row" class="order-star-row"></div>
+                                <div class="form-group">
+                                    <label for="order-review-note">Ghi chú đánh giá</label>
+                                    <textarea id="order-review-note" rows="3" placeholder="VD: Giao đúng hẹn, đóng gói cẩn thận…"></textarea>
+                                </div>
+                                <button type="button" class="btn-order-save" onclick="saveOrderReview()">
+                                    <i class="fa-solid fa-floppy-disk"></i> Lưu đánh giá
+                                </button>
+                            </div>
+                            <div id="order-admin-msg" class="order-msg"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -670,6 +858,8 @@
     <script src="js/profile.js"></script>
     <script src="js/header.js"></script>
     <script src="js/admin-promotions.js"></script>
+    <script src="js/product-ratings.js"></script>
+    <script src="js/admin-orders.js"></script>
     <script>
         let editingId = null;
         let adminProductsCache = [];
@@ -923,8 +1113,29 @@
             if (pasteCap) pasteCap.textContent = '';
             const catSel = document.getElementById('categoryId');
             if (catSel && catSel.options.length) catSel.selectedIndex = 0;
+            const picker = document.getElementById('product-picker-select');
+            if (picker) picker.value = '';
+            onProductPickerChange();
             setMessages('', '');
             updateModeUI();
+        }
+
+        function wireProductPickerUi() {
+            const search = document.getElementById('product-filter-search');
+            const catFilter = document.getElementById('product-filter-category');
+            const picker = document.getElementById('product-picker-select');
+            if (search && !search._wired) {
+                search._wired = true;
+                search.addEventListener('input', renderProductPicker);
+            }
+            if (catFilter && !catFilter._wired) {
+                catFilter._wired = true;
+                catFilter.addEventListener('change', renderProductPicker);
+            }
+            if (picker && !picker._wired) {
+                picker._wired = true;
+                picker.addEventListener('change', onProductPickerChange);
+            }
         }
 
         function fillForm(p) {
@@ -944,16 +1155,162 @@
             }
             setMessages('', '');
             updateModeUI();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setProductPickerSelection(p.id);
+            scrollToProductForm();
+        }
+
+        function getFilteredProducts() {
+            const q = (document.getElementById('product-filter-search')?.value || '').trim().toLowerCase();
+            const cat = document.getElementById('product-filter-category')?.value || '';
+            return adminProductsCache.filter(function (p) {
+                if (cat && String(p.categoryId) !== cat) return false;
+                if (!q) return true;
+                const name = (p.name || '').toLowerCase();
+                const desc = (p.description || '').toLowerCase();
+                return name.indexOf(q) >= 0 || desc.indexOf(q) >= 0;
+            });
+        }
+
+        function populateProductFilterCategories() {
+            const sel = document.getElementById('product-filter-category');
+            if (!sel) return;
+            const seen = new Map();
+            adminProductsCache.forEach(function (p) {
+                const id = p.categoryId != null ? String(p.categoryId) : '';
+                if (!id || seen.has(id)) return;
+                seen.set(id, resolveCategoryName(p.categoryId, p.categoryName) || ('#' + id));
+            });
+            const current = sel.value;
+            const rows = Array.from(seen.entries()).sort(function (a, b) {
+                return String(a[1]).localeCompare(String(b[1]), 'vi');
+            });
+            sel.innerHTML = '<option value="">Tất cả danh mục</option>' +
+                rows.map(function (row) {
+                    return '<option value="' + row[0] + '">' + escHtml(row[1]) + '</option>';
+                }).join('');
+            if (current) sel.value = current;
+        }
+
+        function onProductPickerChange() {
+            const sel = document.getElementById('product-picker-select');
+            const card = document.getElementById('product-picker-preview');
+            const editBtn = document.getElementById('btn-edit-selected');
+            const delBtn = document.getElementById('btn-delete-selected');
+            const id = sel && parseInt(sel.value, 10);
+            if (!card) return;
+
+            if (!id || isNaN(id)) {
+                card.style.display = 'none';
+                if (editBtn) editBtn.disabled = true;
+                if (delBtn) delBtn.disabled = true;
+                return;
+            }
+
+            const p = adminProductsCache.find(function (x) { return x.id === id; });
+            if (!p) {
+                card.style.display = 'none';
+                if (editBtn) editBtn.disabled = true;
+                if (delBtn) delBtn.disabled = true;
+                return;
+            }
+
+            const imgEl = document.getElementById('product-preview-img');
+            const url = p.imageUrl || 'https://via.placeholder.com/72';
+            if (imgEl) {
+                imgEl.src = url;
+                imgEl.alt = p.name || '';
+                imgEl.onerror = function () { this.src = 'https://via.placeholder.com/72'; };
+            }
+            const nameEl = document.getElementById('product-preview-name');
+            const descEl = document.getElementById('product-preview-desc');
+            const priceEl = document.getElementById('product-preview-price');
+            const stockEl = document.getElementById('product-preview-stock');
+            const catEl = document.getElementById('product-preview-category');
+            if (nameEl) nameEl.textContent = p.name || '—';
+            if (descEl) descEl.textContent = p.description || '—';
+            if (priceEl) priceEl.textContent = Number(p.price || 0).toLocaleString('vi-VN') + ' ₫';
+            if (stockEl) stockEl.textContent = p.stock != null ? p.stock : '—';
+            if (catEl) catEl.textContent = resolveCategoryName(p.categoryId, p.categoryName) || '—';
+
+            card.style.display = 'flex';
+            if (editBtn) editBtn.disabled = false;
+            if (delBtn) delBtn.disabled = false;
+        }
+
+        function renderProductPicker() {
+            const list = getFilteredProducts();
+            const sel = document.getElementById('product-picker-select');
+            const countEl = document.getElementById('product-count-text');
+            if (!sel) return;
+
+            const prevId = sel.value;
+            sel.innerHTML = '<option value="">— Chọn sản phẩm —</option>' +
+                list.map(function (p) {
+                    return '<option value="' + p.id + '">' + escHtml(p.name) + ' · ' +
+                        Number(p.price).toLocaleString('vi-VN') + ' ₫</option>';
+                }).join('');
+
+            if (countEl) {
+                countEl.textContent = adminProductsCache.length
+                    ? (list.length + ' / ' + adminProductsCache.length + ' SP')
+                    : '0 SP';
+            }
+
+            if (prevId && list.some(function (p) { return String(p.id) === prevId; })) {
+                sel.value = prevId;
+            } else if (editingId != null && list.some(function (p) { return p.id === editingId; })) {
+                sel.value = String(editingId);
+            } else {
+                sel.value = '';
+            }
+            onProductPickerChange();
+        }
+
+        function setProductPickerSelection(id) {
+            const sel = document.getElementById('product-picker-select');
+            if (!sel || !id) return;
+            if (!Array.from(sel.options).some(function (o) { return o.value === String(id); })) {
+                const p = adminProductsCache.find(function (x) { return x.id === id; });
+                if (p) {
+                    const opt = document.createElement('option');
+                    opt.value = String(p.id);
+                    opt.textContent = (p.name || '') + ' · ' + Number(p.price).toLocaleString('vi-VN') + ' ₫';
+                    sel.appendChild(opt);
+                }
+            }
+            sel.value = String(id);
+            onProductPickerChange();
+        }
+
+        function editSelectedProduct() {
+            const sel = document.getElementById('product-picker-select');
+            const id = sel && parseInt(sel.value, 10);
+            if (!id || isNaN(id)) {
+                setMessages('', 'Chọn một sản phẩm trong danh sách.');
+                return;
+            }
+            editProductById(id);
+        }
+
+        function deleteSelectedProduct() {
+            const sel = document.getElementById('product-picker-select');
+            const id = sel && parseInt(sel.value, 10);
+            if (!id || isNaN(id)) {
+                setMessages('', 'Chọn một sản phẩm để xóa.');
+                return;
+            }
+            deleteProduct(id);
         }
 
         async function loadProductTable() {
-            const tbody = document.getElementById('product-table-body');
             const loading = document.getElementById('table-loading');
             const empty = document.getElementById('table-empty');
-            loading.style.display = 'block';
-            empty.style.display = 'none';
-            tbody.innerHTML = '';
+            const tools = document.getElementById('product-picker-tools');
+            const emptyMsg = document.getElementById('table-empty-msg');
+            if (loading) loading.style.display = 'block';
+            if (empty) empty.style.display = 'none';
+            if (tools) tools.style.display = 'none';
+            if (emptyMsg) emptyMsg.textContent = 'Chưa có sản phẩm hoặc không tải được dữ liệu.';
 
             try {
                 const url = `${API_ENDPOINTS.PRODUCTS}?page=1&pageSize=500`;
@@ -965,40 +1322,29 @@
                     list = data;
                 }
 
-                loading.style.display = 'none';
-                if (!list.length) {
-                    empty.style.display = 'block';
-                    adminProductsCache = [];
-                    return;
-                }
-                empty.style.display = 'none';
+                if (loading) loading.style.display = 'none';
                 adminProductsCache = list;
 
-                tbody.innerHTML = list.map(p => {
-                    const safeName = escHtml(p.name);
-                    const fullDesc = String(p.description || '');
-                    const desc = escHtml(fullDesc.slice(0, 60));
-                    const img = escHtml(p.imageUrl || '');
-                    const catCell = escHtml(resolveCategoryName(p.categoryId, p.categoryName) || '—');
-                    return `
-                        <tr data-id="${p.id}">
-                            <td><img class="thumb" src="${img || 'https://via.placeholder.com/48'}" alt="" onerror="this.src='https://via.placeholder.com/48'"></td>
-                            <td class="cell-name"><strong>${safeName}</strong><small>${desc}${fullDesc.length > 60 ? '…' : ''}</small></td>
-                            <td>${Number(p.price).toLocaleString('vi-VN')} ₫</td>
-                            <td>${p.stock}</td>
-                            <td>${catCell}</td>
-                            <td class="actions">
-                                <button type="button" class="btn-icon btn-edit" title="Sửa" onclick="editProductById(${p.id})"><i class="fa-solid fa-pen"></i></button>
-                                <button type="button" class="btn-icon btn-del" title="Xóa" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
+                const countEl = document.getElementById('product-count-text');
+                if (!list.length) {
+                    if (empty) empty.style.display = 'block';
+                    if (countEl) countEl.textContent = '0 SP';
+                    renderProductPicker();
+                    return;
+                }
+
+                if (empty) empty.style.display = 'none';
+                populateProductFilterCategories();
+                if (tools) tools.style.display = 'block';
+                renderProductPicker();
             } catch (err) {
                 console.error(err);
-                loading.style.display = 'none';
-                empty.style.display = 'block';
-                empty.textContent = 'Không tải được danh sách: ' + (err.message || err);
+                if (loading) loading.style.display = 'none';
+                if (empty) empty.style.display = 'block';
+                if (emptyMsg) emptyMsg.textContent = 'Không tải được danh sách: ' + (err.message || err);
+                adminProductsCache = [];
+                const countEl = document.getElementById('product-count-text');
+                if (countEl) countEl.textContent = '—';
             }
         }
 
@@ -1154,11 +1500,13 @@
             }
             initializeHeader();
             wireProductImageUi();
+            wireProductPickerUi();
             await fillCategorySelect();
             resetForm();
             await loadProductTable();
             if (typeof fillPromoProductSelect === 'function') await fillPromoProductSelect();
             if (typeof loadPromoTable === 'function') await loadPromoTable();
+            if (typeof loadAdminOrders === 'function') await loadAdminOrders();
             await loadCustomerRankings();
             await maybeOpenEditFromQuery();
         });

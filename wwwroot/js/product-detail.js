@@ -82,6 +82,7 @@
             '<div class="product-detail-body">' +
             (cat ? '<p class="product-detail-category">' + escapeHtml(cat) + '</p>' : '') +
             '<h1 class="product-detail-title">' + escapeHtml(p.name) + '</h1>' +
+            (typeof formatProductRatingHtml === 'function' ? formatProductRatingHtml(p.averageRating, p.reviewCount) : '') +
             '<p class="product-detail-desc">' + escapeHtml(p.description || 'Sản phẩm công nghệ chất lượng cao từ Group 1 Store.') + '</p>' +
             '<div class="product-detail-meta">' + stockHtml +
             '<span class="product-meta-item"><i class="fa-solid fa-truck-fast"></i> Giao hàng toàn quốc</span>' +
@@ -102,7 +103,14 @@
             '<a href="index.html" class="btn-product-secondary"><i class="fa-solid fa-arrow-left"></i> Về trang chủ</a>' +
             '</div>' +
             '</div>' +
-            '</article>';
+            '</article>' +
+            '<section class="product-reviews-section" aria-labelledby="product-reviews-title">' +
+            '<h2 id="product-reviews-title"><i class="fa-solid fa-comments"></i> Đánh giá từ khách hàng</h2>' +
+            '<div class="product-reviews-list">' +
+            (typeof renderProductReviewsListHtml === 'function'
+                ? renderProductReviewsListHtml(p.reviews || [])
+                : '<p class="product-reviews-empty">Chưa có đánh giá.</p>') +
+            '</div></section>';
 
         var qtyInput = document.getElementById('qty-input');
         var btnMinus = document.getElementById('qty-minus');

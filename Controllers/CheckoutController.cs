@@ -19,12 +19,12 @@ namespace EcommerceApi.Controllers
             ["COD", "BankTransfer", "MoMo", "VNPay", "Card"];
 
         private readonly ApplicationDbContext _context;
-        private readonly IDemoUserStore _users;
+        private readonly INotificationService _notifications;
 
-        public CheckoutController(ApplicationDbContext context, IDemoUserStore users)
+        public CheckoutController(ApplicationDbContext context, INotificationService notifications)
         {
             _context = context;
-            _users = users;
+            _notifications = notifications;
         }
 
         private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -39,38 +39,19 @@ namespace EcommerceApi.Controllers
             if (!AllowedPaymentMethods.Contains(method, StringComparer.OrdinalIgnoreCase))
                 return BadRequest(new { message = "Hình thức thanh toán không hợp lệ.", allowed = AllowedPaymentMethods });
 
-            var isCod = string.Equals(method, "COD", StringComparison.OrdinalIgnoreCase);
-            string? customerName = null;
-            string? customerPhone = null;
-            string? shippingAddress = null;
+            var customerName = dto.CustomerName?.Trim();
+            var customerPhone = PhoneVerificationService.NormalizePhone(dto.CustomerPhone);
+            var shippingAddress = dto.ShippingAddress?.Trim();
 
-            if (isCod)
-            {
-                customerName = dto.CustomerName?.Trim();
-                customerPhone = PhoneVerificationService.NormalizePhone(dto.CustomerPhone);
-                shippingAddress = dto.ShippingAddress?.Trim();
-
-                if (string.IsNullOrWhiteSpace(customerName))
-                    return BadRequest(new { message = "Vui lòng nhập họ tên người nhận." });
-                if (!PhoneVerificationService.IsValidVietnamPhone(customerPhone))
-                    return BadRequest(new { message = "Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0)." });
-                if (string.IsNullOrWhiteSpace(shippingAddress))
-                    return BadRequest(new { message = "Vui lòng nhập địa chỉ giao hàng." });
-            }
+            if (string.IsNullOrWhiteSpace(customerName))
+                return BadRequest(new { message = "Vui lòng nhập họ tên người nhận." });
+            if (!PhoneVerificationService.IsValidVietnamPhone(customerPhone))
+                return BadRequest(new { message = "Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0)." });
+            if (string.IsNullOrWhiteSpace(shippingAddress))
+                return BadRequest(new { message = "Vui lòng nhập địa chỉ giao hàng." });
 
             var userId = GetUserId();
             var accountUsername = User.FindFirstValue(ClaimTypes.Name)?.Trim();
-            UserProfileData? profile = null;
-            if (!string.IsNullOrWhiteSpace(accountUsername))
-            {
-                try { profile = _users.GetProfile(accountUsername); }
-                catch { /* tài khoản ngoài demo */ }
-            }
-
-            if (!isCod && profile != null)
-            {
-                customerName = string.IsNullOrWhiteSpace(profile.DisplayName) ? accountUsername : profile.DisplayName;
-            }
 
             var cartItems = await _context.CartItems
                 .Where(c => c.UserId == userId)
@@ -94,7 +75,7 @@ namespace EcommerceApi.Controllers
                 AccountUsername = accountUsername,
                 TotalAmount = total,
                 PaymentMethod = method,
-                Status = "Completed",
+                Status = OrderStatuses.Preparing,
                 CreatedAtUtc = DateTime.UtcNow,
                 CustomerName = customerName,
                 CustomerPhone = customerPhone,
@@ -112,13 +93,22 @@ namespace EcommerceApi.Controllers
             _context.CartItems.RemoveRange(cartItems);
             await _context.SaveChangesAsync();
 
+            var customerLabel = customerName ?? accountUsername ?? "Khách";
+            await _notifications.NotifyAllAdminsAsync(
+                "Đơn hàng mới",
+                $"#{order.Id} — {customerLabel} — {total:N0} ₫ ({method})",
+                NotificationTypes.OrderPlaced,
+                order.Id,
+                "admin.html#orders-section-title");
+
             return Ok(new
             {
                 message = "Thanh toán thành công!",
                 orderId = order.Id,
                 totalAmount = total,
                 paymentMethod = method,
-                status = "Completed",
+                status = OrderStatuses.Preparing,
+                statusLabel = OrderStatuses.GetLabel(OrderStatuses.Preparing),
                 customerName = order.CustomerName,
                 customerPhone = order.CustomerPhone,
                 shippingAddress = order.ShippingAddress

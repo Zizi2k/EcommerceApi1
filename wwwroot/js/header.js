@@ -89,6 +89,24 @@ function initializeHeader() {
 
     // Setup event listeners
     setupHeaderListeners();
+    setupNotifications();
+}
+
+function setupNotifications() {
+    if (typeof window.initNotifications === 'function') {
+        window.initNotifications();
+        return;
+    }
+    if (document.getElementById('notif-script-loader')) return;
+    var s = document.createElement('script');
+    s.id = 'notif-script-loader';
+    s.src = 'js/notifications.js';
+    s.onload = function () {
+        if (typeof window.initNotifications === 'function') {
+            window.initNotifications();
+        }
+    };
+    document.body.appendChild(s);
 }
 
 /**

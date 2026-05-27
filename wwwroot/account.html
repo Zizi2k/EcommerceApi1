@@ -116,6 +116,78 @@
                     <span class="go">Mở cài đặt <i class="fa-solid fa-arrow-right"></i></span>
                 </a>
             </div>
+
+            <section class="my-orders-section" aria-labelledby="my-orders-title">
+                <div class="my-orders-head">
+                    <h3 id="my-orders-title"><i class="fa-solid fa-truck-fast"></i> Theo dõi đơn hàng của bạn</h3>
+                    <button type="button" id="btn-refresh-my-orders" class="my-orders-refresh" title="Làm mới">
+                        <i class="fa-solid fa-rotate"></i> Làm mới
+                    </button>
+                </div>
+                <div id="my-orders-loading" class="my-orders-loading">Đang tải đơn hàng...</div>
+                <div id="my-orders-no-data" class="my-orders-empty" style="display:none;">
+                    Bạn chưa có đơn hàng nào. Hãy đặt hàng từ giỏ để bắt đầu theo dõi.
+                </div>
+
+                <div id="my-orders-wrap" class="my-orders-wrap" style="display:none;">
+                    <div class="my-orders-picker">
+                        <label for="my-order-select">Danh sách đơn hàng</label>
+                        <div class="my-orders-picker-row">
+                            <select id="my-order-select">
+                                <option value="">-- Chọn đơn hàng --</option>
+                            </select>
+                            <span id="my-orders-count" class="my-orders-count">0 đơn</span>
+                        </div>
+                    </div>
+
+                    <div id="my-order-empty" class="my-order-empty">Chọn một đơn hàng để xem chi tiết.</div>
+                    <div id="my-order-detail" class="my-order-detail" style="display:none;">
+                        <div class="my-order-meta">
+                            <div><span>Mã đơn</span><strong id="my-order-id">#—</strong></div>
+                            <div><span>Thời gian</span><strong id="my-order-time">—</strong></div>
+                            <div><span>Trạng thái</span><strong id="my-order-status">—</strong></div>
+                            <div><span>Tổng tiền</span><strong id="my-order-total">—</strong></div>
+                            <div><span>Thanh toán</span><strong id="my-order-payment">—</strong></div>
+                            <div><span>Địa chỉ</span><strong id="my-order-shipping">—</strong></div>
+                        </div>
+
+                        <div class="my-order-tracking">
+                            <div class="track-step" id="track-prep">Đang chuẩn bị</div>
+                            <div class="track-step" id="track-ship">Đang giao</div>
+                            <div class="track-step" id="track-done">Đã giao</div>
+                        </div>
+
+                        <ul id="my-order-items" class="my-order-items"></ul>
+
+                        <div id="my-order-review-box" class="my-order-review-box is-locked">
+                            <h4><i class="fa-solid fa-star"></i> Đánh giá đơn hàng</h4>
+                            <p id="my-order-review-hint" class="my-order-review-hint">Đơn chưa giao thành công, chưa thể đánh giá.</p>
+                            <div id="my-order-reviewed" class="my-order-reviewed" style="display:none;"></div>
+                            <div id="my-order-star-row" class="my-order-star-row"></div>
+                            <label for="my-order-review-note">Ghi chú</label>
+                            <textarea id="my-order-review-note" rows="3" placeholder="Chia sẻ cảm nhận về đơn hàng..."></textarea>
+                            <button type="button" id="btn-submit-my-review" class="my-order-review-btn">
+                                <i class="fa-solid fa-paper-plane"></i> Gửi đánh giá
+                            </button>
+                        </div>
+                        <div id="my-order-cancel-box" class="my-order-review-box is-locked">
+                            <h4><i class="fa-solid fa-ban"></i> Hủy đơn hàng</h4>
+                            <p id="my-order-cancel-hint" class="my-order-review-hint">Đơn đã giao nên không thể hủy.</p>
+                            <div id="my-order-cancel-sent" class="my-order-reviewed" style="display:none;"></div>
+                            <label for="my-order-cancel-reason">Lý do hủy *</label>
+                            <select id="my-order-cancel-reason">
+                                <option value="">-- Chọn lý do hủy --</option>
+                            </select>
+                            <label for="my-order-cancel-note">Ghi chú thêm (nếu có)</label>
+                            <textarea id="my-order-cancel-note" rows="3" placeholder="Mô tả thêm cho admin..."></textarea>
+                            <button type="button" id="btn-submit-my-cancel" class="my-order-review-btn">
+                                <i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu hủy
+                            </button>
+                        </div>
+                        <div id="my-order-msg" class="my-order-msg"></div>
+                    </div>
+                </div>
+            </section>
         </section>
     </main>
 
@@ -131,6 +203,7 @@
     <script src="api.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/header.js"></script>
+    <script src="js/account-orders.js"></script>
     <script>
         function syncMemberProfile() {
             var name = localStorage.getItem('userName');
@@ -174,6 +247,9 @@
             fetchAndCacheProfile().then(function () {
                 syncMemberProfile();
             });
+            if (typeof initAccountOrders === 'function') {
+                Promise.resolve(initAccountOrders()).catch(function (e) { console.warn(e); });
+            }
             applyUserBackground();
             updateCartCount();
         });

@@ -17,11 +17,16 @@ namespace EcommerceApi.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly GoogleAuthSettings _googleAuth;
+        private readonly AdminSettings _adminSettings;
 
-        public AccountController(ApplicationDbContext context, IOptions<GoogleAuthSettings> googleAuth)
+        public AccountController(
+            ApplicationDbContext context,
+            IOptions<GoogleAuthSettings> googleAuth,
+            IOptions<AdminSettings> adminSettings)
         {
             _context = context;
             _googleAuth = googleAuth.Value;
+            _adminSettings = adminSettings.Value;
         }
 
         [HttpGet]
@@ -61,6 +66,7 @@ namespace EcommerceApi.Controllers
                 return Redirect("/oauth-callback.html?error=missing_email");
 
             var displayName = string.IsNullOrWhiteSpace(name) ? email : name.Trim();
+            var roleForNewUser = _adminSettings.IsAdminEmail(email) ? "Admin" : "Customer";
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
             if (user == null)
@@ -76,7 +82,7 @@ namespace EcommerceApi.Controllers
                     AvatarUrl = string.IsNullOrWhiteSpace(avatar) ? null : avatar,
                     GoogleId = string.IsNullOrWhiteSpace(googleId) ? null : googleId,
                     GoogleSub = string.IsNullOrWhiteSpace(googleId) ? null : googleId,
-                    Role = "Customer"
+                    Role = roleForNewUser
                 };
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
@@ -98,6 +104,12 @@ namespace EcommerceApi.Controllers
                 if (string.IsNullOrWhiteSpace(user.AuthProvider) || user.AuthProvider == "Local")
                 {
                     user.AuthProvider = "Google";
+                    changed = true;
+                }
+                if (_adminSettings.IsAdminEmail(email) &&
+                    !string.Equals(user.Role, "Admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    user.Role = "Admin";
                     changed = true;
                 }
                 if (changed) await _context.SaveChangesAsync();

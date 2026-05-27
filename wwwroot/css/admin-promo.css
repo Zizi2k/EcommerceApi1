@@ -1,0 +1,315 @@
+/* Quản lý carousel khuyến mãi — admin */
+.promo-admin-section {
+    margin-top: 40px;
+    padding-top: 8px;
+}
+
+.promo-section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.promo-admin-section .admin-section-title {
+    margin-bottom: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.promo-admin-section .admin-section-title i {
+    color: #0072ff;
+    font-size: 1.1em;
+}
+
+.promo-count-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0369a1;
+    background: #eff6ff;
+    border: 1px solid rgba(0, 114, 255, 0.15);
+    border-radius: 999px;
+}
+
+.promo-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(320px, 400px);
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 1100px) {
+    .promo-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.promo-panel {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+    overflow: hidden;
+}
+
+.promo-panel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 18px 22px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.promo-panel__head h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.promo-panel__head h3 i {
+    color: #0072ff;
+    font-size: 15px;
+}
+
+.promo-panel__body {
+    padding: 20px 22px 22px;
+}
+
+.promo-panel--form .promo-panel__head {
+    background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+}
+
+.promo-panel--form #promo-mode-badge {
+    margin-left: auto;
+}
+
+.promo-table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.promo-admin-section .promo-table-wrap table {
+    margin: 0;
+    font-size: 13px;
+}
+
+.promo-admin-section .promo-table-wrap thead th {
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 12px 14px;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+
+.promo-admin-section .promo-table-wrap tbody td {
+    padding: 14px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.promo-admin-section .promo-table-wrap tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.promo-admin-section .promo-table-wrap tbody tr:hover td {
+    background: #f8fafc;
+}
+
+.promo-admin-section .thumb {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.promo-admin-section .cell-name strong {
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.promo-admin-section .cell-name small {
+    display: block;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.promo-badge-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #b45309;
+    background: #fef3c7;
+    border-radius: 6px;
+}
+
+.promo-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 999px;
+}
+
+.promo-status--on {
+    color: #047857;
+    background: #d1fae5;
+}
+
+.promo-status--on::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+}
+
+.promo-status--off {
+    color: #64748b;
+    background: #f1f5f9;
+}
+
+.promo-sort-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    padding: 4px 8px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #0369a1;
+    background: #e0f2fe;
+    border-radius: 8px;
+}
+
+.promo-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.promo-empty i {
+    font-size: 2rem;
+    color: #cbd5e1;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.promo-form-block {
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.promo-form-block:last-of-type {
+    border-bottom: none;
+    margin-bottom: 8px;
+    padding-bottom: 0;
+}
+
+.promo-form-block__title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+    margin-bottom: 12px;
+}
+
+.promo-form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 480px) {
+    .promo-form-row-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.promo-panel--form .form-group label {
+    color: #334155;
+}
+
+.promo-panel--form input,
+.promo-panel--form textarea,
+.promo-panel--form select {
+    border-color: #cbd5e1;
+    border-radius: 10px;
+}
+
+.promo-panel--form .promo-checkbox-row {
+    padding: 12px 14px;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.promo-panel--form .form-actions {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.promo-panel--form .btn-primary {
+    border-radius: 10px;
+    padding: 13px;
+    font-size: 15px;
+}
+
+.promo-panel--form .success,
+.promo-panel--form .error {
+    margin-bottom: 14px;
+    border-radius: 10px;
+}
+
+.promo-btn-refresh {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    color: #334155;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.promo-btn-refresh:hover {
+    border-color: #0072ff;
+    color: #0072ff;
+    background: #eff6ff;
+}

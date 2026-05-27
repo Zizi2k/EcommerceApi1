@@ -1,5 +1,7 @@
 ﻿using EcommerceApi.Data;
+using EcommerceApi.DTOs;
 using EcommerceApi.Models;
+using EcommerceApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +13,12 @@ namespace EcommerceApi.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ProductReviewService _reviews;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context, ProductReviewService reviews)
         {
             _context = context;
+            _reviews = reviews;
         }
 
         // GET: api/Products — phân trang, lọc giá/danh mục, tìm theo tên/mô tả/tên danh mục
@@ -71,9 +75,29 @@ namespace EcommerceApi.Controllers
                 })
                 .ToListAsync();
 
+            var reviewStats = await _reviews.GetSummariesAsync(products.Select(p => p.Id));
+            var productsWithReviews = products.Select(p =>
+            {
+                reviewStats.TryGetValue(p.Id, out var stat);
+                var display = _reviews.GetDisplayStats(p.Id, stat.Count, stat.Average);
+                return new
+                {
+                    p.Id,
+                    p.Name,
+                    p.Description,
+                    p.Price,
+                    p.Stock,
+                    p.ImageUrl,
+                    p.CategoryId,
+                    p.categoryName,
+                    reviewCount = display.Count,
+                    averageRating = display.Average
+                };
+            }).ToList();
+
             return Ok(new
             {
-                products,
+                products = productsWithReviews,
                 pagination = new
                 {
                     currentPage = page,
@@ -106,7 +130,27 @@ namespace EcommerceApi.Controllers
             if (dto == null)
                 return NotFound();
 
-            return Ok(dto);
+            var stats = await _reviews.GetSummariesAsync(new[] { id });
+            stats.TryGetValue(id, out var stat);
+            var display = _reviews.GetDisplayStats(id, stat.Count, stat.Average);
+            var reviewList = display.IsPlaceholder
+                ? _reviews.GetPlaceholderReviews(id, display.Average, 4)
+                : await _reviews.GetReviewsForProductAsync(id, 30);
+
+            return Ok(new
+            {
+                dto.Id,
+                dto.Name,
+                dto.Description,
+                dto.Price,
+                dto.Stock,
+                dto.ImageUrl,
+                dto.CategoryId,
+                dto.categoryName,
+                reviewCount = display.Count,
+                averageRating = display.Average,
+                reviews = reviewList
+            });
         }
 
         [HttpPut("{id}")]

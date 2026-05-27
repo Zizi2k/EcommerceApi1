@@ -71,6 +71,36 @@ IF COL_LENGTH('Users', 'BackgroundUrl') IS NULL
 ");
         }
 
+        public static void EnsureOrderAdminReviewColumns(ApplicationDbContext context)
+        {
+            context.Database.ExecuteSqlRaw(@"
+IF COL_LENGTH('Orders', 'AdminRating') IS NULL
+    ALTER TABLE [Orders] ADD [AdminRating] int NULL;
+IF COL_LENGTH('Orders', 'AdminReviewNote') IS NULL
+    ALTER TABLE [Orders] ADD [AdminReviewNote] nvarchar(2000) NULL;
+IF COL_LENGTH('Orders', 'AdminReviewedAtUtc') IS NULL
+    ALTER TABLE [Orders] ADD [AdminReviewedAtUtc] datetime2 NULL;
+IF COL_LENGTH('Orders', 'CustomerRating') IS NULL
+    ALTER TABLE [Orders] ADD [CustomerRating] int NULL;
+IF COL_LENGTH('Orders', 'CustomerReviewNote') IS NULL
+    ALTER TABLE [Orders] ADD [CustomerReviewNote] nvarchar(2000) NULL;
+IF COL_LENGTH('Orders', 'CustomerReviewedAtUtc') IS NULL
+    ALTER TABLE [Orders] ADD [CustomerReviewedAtUtc] datetime2 NULL;
+IF COL_LENGTH('Orders', 'CancelReason') IS NULL
+    ALTER TABLE [Orders] ADD [CancelReason] nvarchar(256) NULL;
+IF COL_LENGTH('Orders', 'CancelNote') IS NULL
+    ALTER TABLE [Orders] ADD [CancelNote] nvarchar(2000) NULL;
+IF COL_LENGTH('Orders', 'CancelRequestedAtUtc') IS NULL
+    ALTER TABLE [Orders] ADD [CancelRequestedAtUtc] datetime2 NULL;
+");
+
+            context.Database.ExecuteSqlRaw(@"
+UPDATE [Orders] SET [Status] = N'Delivered' WHERE [Status] IN (N'Completed', N'completed', N'HoanThanh', N'Hoàn thành');
+UPDATE [Orders] SET [Status] = N'Preparing'
+WHERE [Status] NOT IN (N'Preparing', N'Delivering', N'Delivered', N'Cancelled');
+");
+        }
+
         public static void EnsurePromotionalProductsTable(ApplicationDbContext context)
         {
             context.Database.ExecuteSqlRaw(@"
@@ -92,6 +122,65 @@ BEGIN
     CREATE INDEX [IX_PromotionalProducts_ProductId] ON [PromotionalProducts]([ProductId]);
     CREATE INDEX [IX_PromotionalProducts_IsActive_SortOrder] ON [PromotionalProducts]([IsActive], [SortOrder]);
 END;
+");
+        }
+
+        public static void EnsureNotificationsTable(ApplicationDbContext context)
+        {
+            context.Database.ExecuteSqlRaw(@"
+IF OBJECT_ID(N'[Notifications]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [Notifications](
+        [Id] int IDENTITY(1,1) NOT NULL,
+        [UserId] int NOT NULL,
+        [Title] nvarchar(200) NOT NULL,
+        [Message] nvarchar(2000) NOT NULL,
+        [Type] nvarchar(64) NOT NULL,
+        [LinkUrl] nvarchar(512) NULL,
+        [RelatedOrderId] int NULL,
+        [IsRead] bit NOT NULL CONSTRAINT [DF_Notifications_IsRead] DEFAULT 0,
+        [CreatedAtUtc] datetime2 NOT NULL CONSTRAINT [DF_Notifications_CreatedAtUtc] DEFAULT SYSUTCDATETIME(),
+        CONSTRAINT [PK_Notifications] PRIMARY KEY ([Id])
+    );
+    CREATE INDEX [IX_Notifications_UserId_CreatedAtUtc] ON [Notifications]([UserId], [CreatedAtUtc] DESC);
+    CREATE INDEX [IX_Notifications_UserId_IsRead] ON [Notifications]([UserId], [IsRead]);
+END;
+");
+        }
+
+        public static void EnsureProductReviewsTable(ApplicationDbContext context)
+        {
+            context.Database.ExecuteSqlRaw(@"
+IF OBJECT_ID(N'[ProductReviews]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [ProductReviews](
+        [Id] int IDENTITY(1,1) NOT NULL,
+        [ProductId] int NOT NULL,
+        [OrderId] int NOT NULL,
+        [UserId] int NOT NULL,
+        [ReviewerName] nvarchar(256) NOT NULL,
+        [Rating] int NOT NULL,
+        [Note] nvarchar(2000) NULL,
+        [CreatedAtUtc] datetime2 NOT NULL CONSTRAINT [DF_ProductReviews_CreatedAtUtc] DEFAULT SYSUTCDATETIME(),
+        CONSTRAINT [PK_ProductReviews] PRIMARY KEY ([Id])
+    );
+    CREATE UNIQUE INDEX [UX_ProductReviews_Order_Product] ON [ProductReviews]([OrderId], [ProductId]);
+    CREATE INDEX [IX_ProductReviews_ProductId] ON [ProductReviews]([ProductId], [CreatedAtUtc] DESC);
+END;
+");
+
+            context.Database.ExecuteSqlRaw(@"
+INSERT INTO [ProductReviews] ([ProductId], [OrderId], [UserId], [ReviewerName], [Rating], [Note], [CreatedAtUtc])
+SELECT oi.[ProductId], o.[Id], o.[UserId],
+    COALESCE(NULLIF(LTRIM(RTRIM(o.[CustomerName])), N''), NULLIF(LTRIM(RTRIM(o.[AccountUsername])), N''), N'Khách'),
+    o.[CustomerRating], o.[CustomerReviewNote], COALESCE(o.[CustomerReviewedAtUtc], SYSUTCDATETIME())
+FROM [Orders] o
+INNER JOIN [OrderItems] oi ON oi.[OrderId] = o.[Id]
+WHERE o.[CustomerRating] IS NOT NULL AND o.[CustomerRating] BETWEEN 1 AND 5
+AND NOT EXISTS (
+    SELECT 1 FROM [ProductReviews] pr
+    WHERE pr.[OrderId] = o.[Id] AND pr.[ProductId] = oi.[ProductId]
+);
 ");
         }
     }

@@ -5,6 +5,11 @@
       "ClientSecret": "YOUR_GOOGLE_CLIENT_SECRET"
     }
   },
+  "Admin": {
+    "Emails": [
+      "email-admin-cua-ban@gmail.com"
+    ]
+  },
   "_comment": "Copy file này thành appsettings.Development.json (đã gitignore). Trên Google Cloud Console thêm Redirect URI: https://localhost:7181/signin-google",
   "Logging": {
     "LogLevel": {

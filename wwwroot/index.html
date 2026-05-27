@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="css/promo-carousel.css">
     <link rel="stylesheet" href="css/about-trust.css">
     <link rel="stylesheet" href="css/product-filter.css">
+    <link rel="stylesheet" href="css/product-reviews.css">
 
     <style>
         * {
@@ -639,6 +640,7 @@
 
     <script src="config.js"></script>
     <script src="api.js"></script>
+    <script src="js/product-ratings.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/header.js"></script>
     <script src="js/promo-carousel.js"></script>
@@ -729,6 +731,9 @@
             products.forEach(p => {
                 const catLine = categoryLabel(p);
                 const catHtml = catLine ? `<p class="product-category">${escapeHtml(catLine)}</p>` : '';
+                const ratingHtml = (typeof formatProductRatingHtml === 'function')
+                    ? formatProductRatingHtml(p.averageRating, p.reviewCount, { compact: true })
+                    : '';
                 const editBtn = (typeof isAdminUser === 'function' && isAdminUser())
                     ? `<button type="button" class="btn-edit-card" onclick="event.stopPropagation(); editProductFromStore(${p.id})" title="Sửa sản phẩm"><i class="fa-solid fa-pen"></i> Sửa</button>`
                     : '';
@@ -744,6 +749,7 @@
                         <div class="product-info">
                             ${catHtml}
                             <h3 class="product-name">${escapeHtml(p.name)}</h3>
+                            ${ratingHtml}
                             <p class="product-desc">${escapeHtml(p.description || 'Sản phẩm công nghệ cao cấp')}</p>
                             <div class="product-bottom">
                                 <div class="price">${Number(p.price).toLocaleString()} VNĐ</div>

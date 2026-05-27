@@ -150,6 +150,16 @@ async function apiPostFormData(url, formData) {
 }
 
 /**
+ * PATCH request
+ */
+async function apiPatch(url, data) {
+    return apiCall(url, {
+        method: 'PATCH',
+        body: JSON.stringify(data)
+    });
+}
+
+/**
  * PUT request
  */
 async function apiPut(url, data) {

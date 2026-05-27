@@ -1,0 +1,332 @@
+/* Quản lý đơn hàng — admin */
+.orders-admin-section {
+    margin-top: 40px;
+}
+
+.orders-section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.orders-admin-section .admin-section-title {
+    margin-bottom: 0;
+}
+
+.orders-layout {
+    display: grid;
+    grid-template-columns: minmax(300px, 400px) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 992px) {
+    .orders-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.order-panel {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+    overflow: hidden;
+}
+
+.order-panel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.order-panel__head h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.order-panel__head h3 i {
+    color: #7c3aed;
+}
+
+.order-panel__body {
+    padding: 18px 20px 20px;
+}
+
+.order-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.order-filters .form-group {
+    margin-bottom: 0;
+}
+
+.order-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 999px;
+}
+
+.order-status-badge--preparing {
+    color: #b45309;
+    background: #fef3c7;
+}
+
+.order-status-badge--delivering {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+.order-status-badge--delivered {
+    color: #047857;
+    background: #d1fae5;
+}
+
+.order-status-badge--cancelled {
+    color: #9f1239;
+    background: #ffe4e6;
+}
+
+.order-detail-card {
+    margin-top: 14px;
+    padding: 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 13px;
+}
+
+.order-detail-card h4 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: #0f172a;
+}
+
+.order-detail-meta {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 12px;
+    color: #475569;
+}
+
+.order-detail-meta strong {
+    color: #0f172a;
+}
+
+.order-items-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px dashed #cbd5e1;
+    padding-top: 10px;
+}
+
+.order-items-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 12px;
+}
+
+.order-items-list li:last-child {
+    border-bottom: none;
+}
+
+.order-cancel-alert {
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #fecaca;
+    background: #fff1f2;
+    color: #9f1239;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.order-cancel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.btn-cancel-accept,
+.btn-cancel-reject {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+}
+
+.btn-cancel-accept {
+    color: #fff;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.btn-cancel-reject {
+    color: #334155;
+    background: #e2e8f0;
+}
+
+.btn-cancel-accept:hover,
+.btn-cancel-reject:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.order-status-form {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.order-status-form label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.order-status-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.order-status-row select {
+    flex: 1;
+    min-width: 140px;
+    border-radius: 10px;
+}
+
+.btn-order-save {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    color: #fff;
+    background: linear-gradient(135deg, #7c3aed, #5b21b6);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-order-save:hover {
+    filter: brightness(1.06);
+}
+
+.order-review-block {
+    margin-top: 20px;
+    padding: 16px;
+    background: linear-gradient(135deg, #faf5ff 0%, #f8fafc 100%);
+    border: 1px solid #e9d5ff;
+    border-radius: 12px;
+}
+
+.order-review-block.is-locked {
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+.order-review-block h4 {
+    margin: 0 0 4px;
+    font-size: 14px;
+    color: #5b21b6;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.order-review-hint {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0 0 12px;
+}
+
+.order-star-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.order-star-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: #fff;
+    color: #cbd5e1;
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.order-star-btn.is-on,
+.order-star-btn:hover {
+    color: #f59e0b;
+    border-color: #fbbf24;
+    background: #fffbeb;
+}
+
+.order-review-existing {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #fff;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #334155;
+}
+
+.order-msg {
+    margin-top: 10px;
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    display: none;
+}
+
+.order-msg.ok {
+    display: block;
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.order-msg.err {
+    display: block;
+    background: #fef2f2;
+    color: #b91c1c;
+}

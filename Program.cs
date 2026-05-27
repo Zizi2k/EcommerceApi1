@@ -113,6 +113,7 @@ builder.Services.AddScoped<CustomerRankingService>();
 builder.Services.AddScoped<UserProfileResolver>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<ProductReviewService>();
+builder.Services.AddSingleton<PhoneVerificationService>();
 var app = builder.Build();
 
 // Seed database

@@ -65,11 +65,39 @@
         .control input:checked:focus ~ .control__indicator {
             background: #764ba2 !important;
         }
-        .hint {
-            font-size: 11px;
-            color: #94a3b8;
-            margin-top: 4px;
+        .otp-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            align-items: end;
         }
+        .otp-btn {
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            color: #334155;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .otp-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .otp-status {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #475569;
+        }
+        .otp-section {
+            display: none;
+        }
+        .otp-section.show {
+            display: block;
+        }
+        .otp-status.ok { color: #15803d; }
+        .otp-status.err { color: #b91c1c; }
         .auth-divider {
             display: flex;
             align-items: center;
@@ -120,12 +148,10 @@
         <div class="row align-items-center justify-content-center">
           <div class="col-md-7">
             <h3>Đăng ký tài khoản mới</h3>
-            <p class="mb-4">Tạo tài khoản mới để mua sắm và theo dõi đơn hàng tại <strong>Group 1 Store</strong></p>
             <form onsubmit="handleRegister(event)">
               <div class="form-group first">
                 <label for="username">Tên đăng nhập *</label>
                 <input type="text" class="form-control" placeholder="vd: trang_shop" id="username" required autocomplete="username" pattern="[a-zA-Z0-9_]{3,32}" maxlength="32">
-                <p class="hint">3–32 ký tự: chữ, số, dấu _ (không dấu, không khoảng trắng)</p>
               </div>
               <div class="form-group">
                 <label for="displayName">Tên hiển thị</label>
@@ -135,9 +161,21 @@
                 <label for="password">Mật khẩu *</label>
                 <input type="password" class="form-control" placeholder="Ít nhất 4 ký tự" id="password" required minlength="4" autocomplete="new-password">
               </div>
-              <div class="form-group last mb-3">
+              <div class="form-group">
                 <label for="confirmPassword">Nhập lại mật khẩu *</label>
                 <input type="password" class="form-control" placeholder="Nhập lại mật khẩu" id="confirmPassword" required minlength="4" autocomplete="new-password">
+              </div>
+              <div class="form-group">
+                <label for="phone">Số điện thoại *</label>
+                <input type="tel" class="form-control" placeholder="0912345678" id="phone" required autocomplete="tel" maxlength="11">
+              </div>
+              <div class="form-group last mb-3 otp-section" id="otp-section">
+                <label for="otpCode">Mã OTP *</label>
+                <div class="otp-row">
+                    <input type="text" class="form-control" placeholder="Nhập 6 số" id="otpCode" maxlength="6" pattern="[0-9]{6}">
+                    <button type="button" class="otp-btn" id="btn-verify-otp" onclick="verifyRegisterOtp()">Xác thực OTP</button>
+                </div>
+                <p id="otp-status" class="otp-status"></p>
               </div>
               
               <div class="d-flex mb-5 align-items-center">
@@ -173,6 +211,124 @@
     <script src="api.js"></script>
     <script src="js/profile.js"></script>
     <script>
+        var verifiedOtpToken = null;
+        var verifiedPhone = null;
+        var otpExpireAtMs = 0;
+        var otpTimer = null;
+        var latestDemoOtpCode = '';
+
+        function normalizePhone(raw) {
+            var digits = String(raw || '').replace(/\D/g, '');
+            if (digits.startsWith('84') && digits.length >= 11) digits = '0' + digits.slice(2);
+            return digits;
+        }
+
+        function setOtpStatus(text, isError) {
+            var el = document.getElementById('otp-status');
+            if (!el) return;
+            el.textContent = text || '';
+            el.className = 'otp-status' + (text ? (isError ? ' err' : ' ok') : '');
+        }
+
+        function toggleOtpSection(visible) {
+            var section = document.getElementById('otp-section');
+            if (!section) return;
+            section.classList.toggle('show', !!visible);
+        }
+
+        function updateOtpCountdown() {
+            if (!otpExpireAtMs) return;
+            var remainMs = otpExpireAtMs - Date.now();
+            if (remainMs <= 0) {
+                otpExpireAtMs = 0;
+                clearInterval(otpTimer);
+                otpTimer = null;
+                latestDemoOtpCode = '';
+                setOtpStatus('OTP đã hết hạn. Vui lòng gửi lại.', true);
+                return;
+            }
+            var sec = Math.floor(remainMs / 1000);
+            var countdownText = 'OTP còn hiệu lực: ' + Math.floor(sec / 60) + 'm ' + (sec % 60) + 's';
+            if (latestDemoOtpCode) {
+                countdownText = 'Mã OTP demo: ' + latestDemoOtpCode + ' | ' + countdownText;
+            }
+            setOtpStatus(countdownText, false);
+        }
+
+        async function sendRegisterOtp() {
+            var username = document.getElementById('username').value.trim();
+            var displayName = document.getElementById('displayName').value.trim();
+            var password = document.getElementById('password').value;
+            var confirm = document.getElementById('confirmPassword').value;
+            var phone = normalizePhone(document.getElementById('phone').value);
+
+            if (!username || !displayName || !password || !confirm) {
+                setOtpStatus('Nhập đủ tên hiển thị và mật khẩu trước khi gửi OTP.', true);
+                return;
+            }
+            if (password.length < 4) {
+                setOtpStatus('Mật khẩu phải có ít nhất 4 ký tự.', true);
+                return;
+            }
+            if (password !== confirm) {
+                setOtpStatus('Mật khẩu xác nhận không khớp.', true);
+                return;
+            }
+            if (!/^0\d{9}$/.test(phone)) {
+                setOtpStatus('Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0).', true);
+                return;
+            }
+            try {
+                toggleOtpSection(true);
+                var res = await apiPost(API_ENDPOINTS.REGISTER_SEND_OTP, { phone: phone });
+                verifiedOtpToken = null;
+                verifiedPhone = null;
+                document.getElementById('otpCode').value = '';
+                latestDemoOtpCode = '';
+                otpExpireAtMs = Date.now() + ((res && res.expiresInSeconds ? res.expiresInSeconds : 300) * 1000);
+                if (otpTimer) clearInterval(otpTimer);
+                if (res && res.demoCode) {
+                    latestDemoOtpCode = String(res.demoCode);
+                }
+                otpTimer = setInterval(updateOtpCountdown, 1000);
+                updateOtpCountdown();
+                if (!latestDemoOtpCode) {
+                    setOtpStatus('Đã gửi OTP. Vui lòng nhập mã để xác thực.', false);
+                }
+                return true;
+            } catch (e) {
+                setOtpStatus(e.message || 'Không gửi được OTP.', true);
+                return false;
+            }
+        }
+
+        async function verifyRegisterOtp() {
+            var phone = normalizePhone(document.getElementById('phone').value);
+            var code = (document.getElementById('otpCode').value || '').trim();
+            if (!/^0\d{9}$/.test(phone)) {
+                setOtpStatus('Số điện thoại không hợp lệ.', true);
+                return;
+            }
+            if (!/^\d{6}$/.test(code)) {
+                setOtpStatus('Mã OTP phải gồm 6 số.', true);
+                return;
+            }
+            var btn = document.getElementById('btn-verify-otp');
+            btn.disabled = true;
+            try {
+                var res = await apiPost(API_ENDPOINTS.REGISTER_VERIFY_OTP, { phone: phone, code: code });
+                verifiedOtpToken = res.otpToken;
+                verifiedPhone = phone;
+                setOtpStatus('Xác thực số điện thoại thành công.', false);
+            } catch (e) {
+                verifiedOtpToken = null;
+                verifiedPhone = null;
+                setOtpStatus(e.message || 'Xác thực OTP thất bại.', true);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
         async function handleRegister(event) {
             event.preventDefault();
             var msg = document.getElementById('message');
@@ -182,12 +338,29 @@
             var password = document.getElementById('password').value;
             var confirm = document.getElementById('confirmPassword').value;
             var displayName = document.getElementById('displayName').value.trim();
+            var phone = normalizePhone(document.getElementById('phone').value);
 
             msg.classList.remove('show', 'success');
 
             if (password !== confirm) {
                 msg.textContent = 'Mật khẩu xác nhận không khớp.';
                 msg.classList.add('show');
+                return;
+            }
+            if (!/^0\d{9}$/.test(phone)) {
+                msg.textContent = 'Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0).';
+                msg.classList.add('show');
+                return;
+            }
+            if (!verifiedOtpToken || verifiedPhone !== phone) {
+                var sent = await sendRegisterOtp();
+                if (sent) {
+                    msg.textContent = 'Đã gửi mã OTP. Vui lòng xác thực OTP rồi bấm tạo tài khoản lại.';
+                    msg.classList.add('show');
+                } else {
+                    msg.textContent = 'Không gửi được OTP. Vui lòng thử lại.';
+                    msg.classList.add('show');
+                }
                 return;
             }
 
@@ -197,7 +370,9 @@
                     username: username,
                     password: password,
                     confirmPassword: confirm,
-                    displayName: displayName || username
+                    displayName: displayName || username,
+                    phone: phone,
+                    otpToken: verifiedOtpToken
                 });
 
                 localStorage.setItem('userToken', data.token);
@@ -225,6 +400,10 @@
                 btn.disabled = false;
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            toggleOtpSection(false);
+        });
     </script>
   </body>
 </html>

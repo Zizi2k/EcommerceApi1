@@ -246,11 +246,20 @@
 
 .promo-form-row-2 {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
 }
 
-@media (max-width: 480px) {
+.promo-form-row-2 .form-group {
+    min-width: 0;
+}
+
+.promo-panel--form input[type="datetime-local"] {
+    width: 100%;
+    min-width: 0;
+}
+
+@media (max-width: 768px) {
     .promo-form-row-2 {
         grid-template-columns: 1fr;
     }

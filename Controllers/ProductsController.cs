@@ -25,7 +25,7 @@ namespace EcommerceApi.Controllers
         [HttpGet]
         public async Task<ActionResult<object>> GetProducts(
             int page = 1,
-            int pageSize = 9,
+            int pageSize = 12,
             string? search = null,
             decimal? minPrice = null,
             decimal? maxPrice = null,

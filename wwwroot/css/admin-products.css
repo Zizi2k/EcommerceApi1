@@ -31,9 +31,9 @@
 
 .product-panel {
     background: #fff;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+    border-radius: 18px;
+    border: 1px solid #dbe4ef;
+    box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
     overflow: hidden;
 }
 
@@ -43,16 +43,16 @@
     justify-content: space-between;
     gap: 10px;
     flex-wrap: wrap;
-    padding: 16px 20px;
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border-bottom: 1px solid #e2e8f0;
+    padding: 18px 22px;
+    background: linear-gradient(135deg, #f8fafc 0%, #edf4ff 100%);
+    border-bottom: 1px solid #dde7f3;
 }
 
 .product-panel__head h3 {
     margin: 0;
-    font-size: 15px;
-    font-weight: 600;
-    color: #0f172a;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0b1b34;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -100,7 +100,7 @@
 }
 
 .product-panel__body {
-    padding: 18px 20px 20px;
+    padding: 20px 22px 22px;
 }
 
 .product-panel--form .product-panel__head {
@@ -124,16 +124,29 @@
 
 .product-filters label {
     font-size: 12px;
-    color: #64748b;
-    margin-bottom: 5px;
+    color: #475569;
+    margin-bottom: 6px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 }
 
 .product-filters input,
 .product-filters select,
 #product-picker-select {
-    border-color: #cbd5e1;
-    border-radius: 10px;
+    border-color: #c6d3e3;
+    border-radius: 12px;
     font-size: 14px;
+    min-height: 42px;
+    background: #fff;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.product-filters input:focus,
+.product-filters select:focus,
+#product-picker-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
+    outline: none;
 }
 
 #product-picker-select {
@@ -210,7 +223,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    margin-top: 16px;
+    margin-top: 18px;
 }
 
 .btn-product-edit,
@@ -224,14 +237,15 @@
     font-weight: 600;
     font-family: inherit;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: filter 0.2s, transform 0.15s;
+    transition: filter 0.2s, transform 0.15s, box-shadow 0.18s;
 }
 
 .btn-product-edit {
-    background: #e0f2fe;
-    color: #0369a1;
+    background: linear-gradient(180deg, #f0f9ff, #e0f2fe);
+    color: #075985;
+    border: 1px solid #bae6fd;
 }
 
 .btn-product-edit:hover:not(:disabled) {
@@ -239,8 +253,9 @@
 }
 
 .btn-product-del {
-    background: #fee2e2;
+    background: linear-gradient(180deg, #fef2f2, #fee2e2);
     color: #b91c1c;
+    border: 1px solid #fecaca;
 }
 
 .btn-product-del:hover:not(:disabled) {
@@ -278,12 +293,12 @@
 }
 
 .product-form-block__title {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: #64748b;
-    margin-bottom: 12px;
+    color: #475569;
+    margin-bottom: 14px;
 }
 
 .product-form-row-2 {
@@ -302,6 +317,51 @@
     margin-top: 16px;
     padding-top: 16px;
     border-top: 1px solid #e2e8f0;
+}
+
+.product-panel--form .form-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 6px;
+}
+
+.product-panel--form input,
+.product-panel--form select,
+.product-panel--form textarea {
+    border: 1px solid #c6d3e3;
+    border-radius: 12px;
+    min-height: 42px;
+    padding: 10px 12px;
+    background: #fff;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.product-panel--form textarea {
+    min-height: 74px;
+}
+
+.product-panel--form input:focus,
+.product-panel--form select:focus,
+.product-panel--form textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
+    outline: none;
+}
+
+.product-panel--form .btn-primary {
+    border-radius: 12px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    padding: 12px;
+    box-shadow: 0 10px 20px rgba(0, 114, 255, 0.2);
+}
+
+.product-panel--form .btn-secondary {
+    border-radius: 12px;
+    border: 1px solid #dbe4ef;
+    background: #f8fafc;
+    color: #334155;
 }
 
 .product-panel--form .success,

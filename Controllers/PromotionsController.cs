@@ -52,6 +52,13 @@ namespace EcommerceApi.Controllers
         {
             var err = await ValidateDto(dto.ProductId);
             if (err != null) return BadRequest(new { message = err });
+            var flashType = NormalizeFlashSaleType(dto.FlashSaleType);
+            var dailyRange = ParseDailyRange(dto.DailyStartTime, dto.DailyEndTime);
+            if (dto.IsFlashSale && flashType == "DailySlot" && dailyRange == null)
+                return BadRequest(new { message = "Khung giờ hằng ngày không hợp lệ (định dạng HH:mm)." });
+            if (dto.IsFlashSale && flashType == "Event" && dto.EventStartUtc.HasValue && dto.EventEndUtc.HasValue &&
+                dto.EventEndUtc <= dto.EventStartUtc)
+                return BadRequest(new { message = "Kết thúc sự kiện phải sau thời gian bắt đầu." });
 
             var entity = new PromotionalProduct
             {
@@ -62,6 +69,13 @@ namespace EcommerceApi.Controllers
                 PromoPrice = dto.PromoPrice,
                 SortOrder = dto.SortOrder,
                 IsActive = dto.IsActive,
+                IsFlashSale = dto.IsFlashSale,
+                FlashSaleType = dto.IsFlashSale ? flashType : "None",
+                DailySlotKey = dto.IsFlashSale && flashType == "DailySlot" ? "CUSTOM" : null,
+                DailyStartMinute = dto.IsFlashSale && flashType == "DailySlot" ? dailyRange?.Start : null,
+                DailyEndMinute = dto.IsFlashSale && flashType == "DailySlot" ? dailyRange?.End : null,
+                EventStartUtc = dto.IsFlashSale && flashType == "Event" ? dto.EventStartUtc : null,
+                EventEndUtc = dto.IsFlashSale && flashType == "Event" ? dto.EventEndUtc : null,
                 CreatedAtUtc = DateTime.UtcNow
             };
 
@@ -85,6 +99,13 @@ namespace EcommerceApi.Controllers
 
             var err = await ValidateDto(dto.ProductId, id);
             if (err != null) return BadRequest(new { message = err });
+            var flashType = NormalizeFlashSaleType(dto.FlashSaleType);
+            var dailyRange = ParseDailyRange(dto.DailyStartTime, dto.DailyEndTime);
+            if (dto.IsFlashSale && flashType == "DailySlot" && dailyRange == null)
+                return BadRequest(new { message = "Khung giờ hằng ngày không hợp lệ (định dạng HH:mm)." });
+            if (dto.IsFlashSale && flashType == "Event" && dto.EventStartUtc.HasValue && dto.EventEndUtc.HasValue &&
+                dto.EventEndUtc <= dto.EventStartUtc)
+                return BadRequest(new { message = "Kết thúc sự kiện phải sau thời gian bắt đầu." });
 
             entity.ProductId = dto.ProductId;
             entity.Headline = TrimOrNull(dto.Headline);
@@ -93,9 +114,54 @@ namespace EcommerceApi.Controllers
             entity.PromoPrice = dto.PromoPrice;
             entity.SortOrder = dto.SortOrder;
             entity.IsActive = dto.IsActive;
+            entity.IsFlashSale = dto.IsFlashSale;
+            entity.FlashSaleType = dto.IsFlashSale ? flashType : "None";
+            entity.DailySlotKey = dto.IsFlashSale && flashType == "DailySlot" ? "CUSTOM" : null;
+            entity.DailyStartMinute = dto.IsFlashSale && flashType == "DailySlot" ? dailyRange?.Start : null;
+            entity.DailyEndMinute = dto.IsFlashSale && flashType == "DailySlot" ? dailyRange?.End : null;
+            entity.EventStartUtc = dto.IsFlashSale && flashType == "Event" ? dto.EventStartUtc : null;
+            entity.EventEndUtc = dto.IsFlashSale && flashType == "Event" ? dto.EventEndUtc : null;
 
             await _context.SaveChangesAsync();
             return NoContent();
+        }
+
+        [HttpGet("flash-sale")]
+        [AllowAnonymous]
+        public async Task<ActionResult<object>> GetFlashSale()
+        {
+            var now = DateTime.UtcNow;
+            var nowLocal = ToVietnamTime(now);
+            var currentMinute = nowLocal.Hour * 60 + nowLocal.Minute;
+
+            var list = await QueryWithProduct()
+                .Where(p => p.IsActive && p.IsFlashSale)
+                .OrderBy(p => p.SortOrder)
+                .ThenByDescending(p => p.Id)
+                .ToListAsync();
+
+            var eventPromos = list
+                .Where(p => string.Equals(p.FlashSaleType, "Event", StringComparison.OrdinalIgnoreCase))
+                .Where(p => (!p.EventStartUtc.HasValue || p.EventStartUtc <= now) &&
+                            (!p.EventEndUtc.HasValue || p.EventEndUtc >= now))
+                .ToList();
+
+            var dailyPromos = list
+                .Where(p => string.Equals(p.FlashSaleType, "DailySlot", StringComparison.OrdinalIgnoreCase))
+                .Where(p => p.DailyStartMinute.HasValue && p.DailyEndMinute.HasValue &&
+                            IsMinuteInRange(currentMinute, p.DailyStartMinute.Value, p.DailyEndMinute.Value))
+                .ToList();
+
+            return Ok(new
+            {
+                nowUtc = now,
+                nowLocal = nowLocal,
+                dailySlot = dailyPromos.Count > 0
+                    ? new { label = FormatMinuteRange(dailyPromos[0].DailyStartMinute!.Value, dailyPromos[0].DailyEndMinute!.Value) }
+                    : null,
+                dailyProducts = dailyPromos.Select(MapToSlide).ToList(),
+                eventProducts = eventPromos.Select(MapToSlide).ToList()
+            });
         }
 
         [HttpDelete("{id}")]
@@ -132,6 +198,13 @@ namespace EcommerceApi.Controllers
                 p.PromoPrice,
                 p.SortOrder,
                 p.IsActive,
+                p.IsFlashSale,
+                p.FlashSaleType,
+                p.DailySlotKey,
+                p.DailyStartMinute,
+                p.DailyEndMinute,
+                p.EventStartUtc,
+                p.EventEndUtc,
                 productName = product?.Name ?? "",
                 description = product?.Description ?? "",
                 imageUrl = product?.ImageUrl ?? "",
@@ -163,6 +236,60 @@ namespace EcommerceApi.Controllers
         {
             var t = value?.Trim();
             return string.IsNullOrEmpty(t) ? null : t;
+        }
+
+        private static string NormalizeFlashSaleType(string? value)
+        {
+            var t = value?.Trim().ToLowerInvariant();
+            return t switch
+            {
+                "dailyslot" or "daily" => "DailySlot",
+                "event" => "Event",
+                _ => "None"
+            };
+        }
+
+        private static (int Start, int End)? ParseDailyRange(string? startText, string? endText)
+        {
+            if (!TryParseTimeToMinute(startText, out var start) || !TryParseTimeToMinute(endText, out var end))
+                return null;
+            if (start == end) return null;
+            return (start, end);
+        }
+
+        private static bool TryParseTimeToMinute(string? value, out int minute)
+        {
+            minute = 0;
+            if (string.IsNullOrWhiteSpace(value)) return false;
+            var s = value.Trim();
+            var parts = s.Split(':', StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length != 2) return false;
+            if (!int.TryParse(parts[0], out var h) || !int.TryParse(parts[1], out var m)) return false;
+            if (h < 0 || h > 23 || m < 0 || m > 59) return false;
+            minute = h * 60 + m;
+            return true;
+        }
+
+        private static bool IsMinuteInRange(int nowMinute, int start, int end)
+        {
+            if (start < end) return nowMinute >= start && nowMinute < end;
+            return nowMinute >= start || nowMinute < end;
+        }
+
+        private static string FormatMinuteRange(int start, int end)
+        {
+            string f(int m)
+            {
+                var hh = (m / 60) % 24;
+                var mm = m % 60;
+                return hh.ToString("00") + ":" + mm.ToString("00");
+            }
+            return f(start) + " - " + f(end);
+        }
+
+        private static DateTime ToVietnamTime(DateTime utc)
+        {
+            return utc.AddHours(7);
         }
     }
 }

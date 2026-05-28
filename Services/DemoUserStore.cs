@@ -1,5 +1,7 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace EcommerceApi.Services
 {
@@ -175,8 +177,13 @@ namespace EcommerceApi.Services
             if (string.Equals(username, "admin", StringComparison.OrdinalIgnoreCase)) return "1";
             if (string.Equals(username, "khach", StringComparison.OrdinalIgnoreCase)) return "2";
             if (string.Equals(username, "user", StringComparison.OrdinalIgnoreCase)) return "3";
-            var h = username.GetHashCode();
-            return (Math.Abs(h % 999_000) + 1000).ToString();
+            var normalized = (username ?? string.Empty).Trim().ToLowerInvariant();
+            if (string.IsNullOrEmpty(normalized)) return "0";
+
+            // Stable ID across app restarts (GetHashCode is process-randomized in .NET).
+            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(normalized));
+            var value = BitConverter.ToUInt32(bytes, 0);
+            return ((value % 999_000u) + 1000u).ToString();
         }
 
         public string? UsernameForUserId(int userId) => userId switch

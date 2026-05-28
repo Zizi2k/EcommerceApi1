@@ -28,13 +28,18 @@ function applyUserBackground() {
     var url = localStorage.getItem('userBackground');
     var body = document.body;
     if (!body) return;
+    var theme = document.documentElement.getAttribute('data-theme') || 'light';
+    var isDark = theme === 'dark';
 
     if (url && url.trim()) {
         var u = url.trim();
         if (!/^https?:\/\//i.test(u) && u.charAt(0) !== '/') {
             u = '/' + u.replace(/^\//, '');
         }
-        body.style.backgroundImage = 'linear-gradient(rgba(11, 18, 32, 0.82), rgba(11, 18, 32, 0.88)), url("' + u.replace(/"/g, '%22') + '")';
+        var overlay = isDark
+            ? 'linear-gradient(rgba(11, 18, 32, 0.82), rgba(11, 18, 32, 0.88))'
+            : 'linear-gradient(rgba(244, 247, 251, 0.8), rgba(244, 247, 251, 0.9))';
+        body.style.backgroundImage = overlay + ', url("' + u.replace(/"/g, '%22') + '")';
         body.style.backgroundSize = 'cover';
         body.style.backgroundPosition = 'center';
         body.style.backgroundAttachment = 'fixed';
@@ -106,3 +111,11 @@ async function uploadProfileImageFile(file) {
     var result = await apiPostFormData(API_ENDPOINTS.UPLOAD_PROFILE_IMAGE, fd);
     return result && result.url ? result.url : null;
 }
+
+window.addEventListener('store-theme-changed', function () {
+    if (document.body && document.body.classList.contains('admin-page')) {
+        applyUserBackgroundAdmin();
+        return;
+    }
+    applyUserBackground();
+});

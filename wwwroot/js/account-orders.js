@@ -1,4 +1,5 @@
 (function () {
+    var ORDER_CODE_PREFIX = 'PLD25102000';
     var ordersCache = [];
     var selectedOrderId = null;
     var selectedRating = 0;
@@ -44,6 +45,29 @@
         }
     }
 
+    function formatOrderCode(orderId) {
+        return ORDER_CODE_PREFIX + '-' + String(orderId == null ? '—' : orderId);
+    }
+
+    function getFallbackOrderImage() {
+        var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">' +
+            '<rect width="100%" height="100%" fill="#f1f5f9"/>' +
+            '<rect x="14" y="18" width="52" height="36" rx="6" fill="#cbd5e1"/>' +
+            '<circle cx="29" cy="31" r="6" fill="#94a3b8"/>' +
+            '<path d="M18 50l13-11 8 7 10-9 13 13z" fill="#64748b"/>' +
+            '<text x="40" y="71" text-anchor="middle" font-size="9" fill="#475569" font-family="Arial">NO IMAGE</text>' +
+            '</svg>';
+        return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+    }
+
+    function resolveImageUrl(url) {
+        var u = String(url || '').trim();
+        if (!u) return getFallbackOrderImage();
+        if (/^https?:\/\//i.test(u)) return u;
+        if (u.charAt(0) === '/') return window.location.origin + u;
+        return window.location.origin + '/' + u.replace(/^\/+/, '');
+    }
+
     function statusStep(status) {
         if (status === 'Cancelled') return 0;
         if (status === 'Delivered') return 3;
@@ -57,7 +81,7 @@
         if (!sel || !count) return;
 
         sel.innerHTML = '<option value="">-- Chọn đơn hàng --</option>' + ordersCache.map(function (o) {
-            return '<option value="' + o.id + '">#' + o.id + ' · ' + fmtDate(o.createdAtUtc) + ' · ' + fmtMoney(o.totalAmount) + '</option>';
+            return '<option value="' + o.id + '">' + formatOrderCode(o.id) + ' · ' + fmtDate(o.createdAtUtc) + ' · ' + fmtMoney(o.totalAmount) + '</option>';
         }).join('');
         count.textContent = ordersCache.length + ' đơn';
         if (selectedOrderId) sel.value = String(selectedOrderId);
@@ -107,6 +131,44 @@
         box.textContent = msg;
     }
 
+    function ensureReviewSuccessModal() {
+        var existing = document.getElementById('review-success-modal');
+        if (existing) return existing;
+
+        var modal = document.createElement('div');
+        modal.id = 'review-success-modal';
+        modal.className = 'review-success-modal';
+        modal.style.display = 'none';
+        modal.innerHTML =
+            '<div class="review-success-modal__backdrop" data-role="close"></div>' +
+            '<div class="review-success-modal__panel" role="dialog" aria-modal="true" aria-labelledby="review-success-title">' +
+            '<button type="button" class="review-success-modal__close" data-role="close" aria-label="Đóng thông báo">' +
+            '<i class="fa-solid fa-xmark"></i></button>' +
+            '<div class="review-success-modal__meta">Thông báo hệ thống</div>' +
+            '<h4 id="review-success-title"><i class="fa-solid fa-circle-check"></i> Gửi đánh giá thành công</h4>' +
+            '<p id="review-success-text"></p>' +
+            '<button type="button" class="review-success-modal__btn" data-role="close">Đã hiểu</button>' +
+            '</div>';
+        document.body.appendChild(modal);
+
+        modal.addEventListener('click', function (e) {
+            var target = e.target;
+            if (target && target.getAttribute && target.getAttribute('data-role') === 'close') {
+                modal.style.display = 'none';
+            }
+        });
+        return modal;
+    }
+
+    function openReviewSuccessModal(orderId) {
+        var modal = ensureReviewSuccessModal();
+        var text = document.getElementById('review-success-text');
+        if (text) {
+            text.textContent = 'Đơn ' + formatOrderCode(orderId) + ' đã được lưu đánh giá. Admin sẽ nhận thông báo ngay, và đánh giá được lưu trong lịch sử đơn hàng của bạn.';
+        }
+        modal.style.display = 'flex';
+    }
+
     function renderOrderDetail(order) {
         var empty = document.getElementById('my-order-empty');
         var pane = document.getElementById('my-order-detail');
@@ -121,7 +183,7 @@
 
         empty.style.display = 'none';
         pane.style.display = 'block';
-        document.getElementById('my-order-id').textContent = '#' + order.id;
+        document.getElementById('my-order-id').textContent = formatOrderCode(order.id);
         document.getElementById('my-order-time').textContent = fmtDate(order.createdAtUtc);
         document.getElementById('my-order-status').textContent = order.statusLabel;
         document.getElementById('my-order-total').textContent = fmtMoney(order.totalAmount);
@@ -132,7 +194,15 @@
         var items = document.getElementById('my-order-items');
         if (items) {
             items.innerHTML = (order.items || []).map(function (it) {
-                return '<li><span>' + escHtml(it.productName) + ' x ' + it.quantity + '</span><strong>' + fmtMoney(it.lineTotal) + '</strong></li>';
+                var imgSrc = resolveImageUrl(it.imageUrl);
+                var fallbackImg = getFallbackOrderImage();
+                return '<li>' +
+                    '<div class="my-order-item-main">' +
+                    '<img class="my-order-item-thumb" src="' + escHtml(imgSrc) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src=\'' + escHtml(fallbackImg) + '\'">' +
+                    '<span>' + escHtml(it.productName) + ' x ' + it.quantity + '</span>' +
+                    '</div>' +
+                    '<strong>' + fmtMoney(it.lineTotal) + '</strong>' +
+                    '</li>';
             }).join('');
         }
 
@@ -281,6 +351,7 @@
                 note: note ? note.value.trim() : ''
             });
             showOrderMessage('Đã gửi đánh giá. Cảm ơn bạn!', false);
+            openReviewSuccessModal(selectedOrderId);
             if (typeof refreshNotifications === 'function') refreshNotifications();
             await loadMyOrders();
             var sel = document.getElementById('my-order-select');

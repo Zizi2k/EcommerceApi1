@@ -1,4 +1,5 @@
 (function () {
+    var ORDER_CODE_PREFIX = 'PLD25102000';
     var ordersCache = [];
     var selectedOrderId = null;
     var selectedRating = 0;
@@ -51,6 +52,10 @@
         } catch (e) {
             return iso;
         }
+    }
+
+    function formatOrderCode(orderId) {
+        return ORDER_CODE_PREFIX + '-' + String(orderId == null ? '—' : orderId);
     }
 
     function getReportMonthParts() {
@@ -138,7 +143,7 @@
         sel.innerHTML = '<option value="">— Chọn đơn hàng —</option>' +
             list.map(function (o) {
                 var mark = o.hasCancelRequest ? '[YC hủy] ' : '';
-                return '<option value="' + o.id + '">#' + o.id + ' · ' +
+                return '<option value="' + o.id + '">' + formatOrderCode(o.id) + ' · ' +
                     mark + escHtml(o.customerName || o.accountUsername || 'Khách') + ' · ' +
                     formatVnd(o.totalAmount) + '</option>';
             }).join('');
@@ -171,7 +176,7 @@
         empty.style.display = 'none';
         detail.style.display = 'block';
 
-        document.getElementById('order-detail-title').textContent = 'Đơn #' + order.id;
+        document.getElementById('order-detail-title').textContent = 'Đơn ' + formatOrderCode(order.id);
         var badge = document.getElementById('order-detail-status-badge');
         if (badge) {
             badge.className = 'order-status-badge ' + statusBadgeClass(order.status);
@@ -313,6 +318,48 @@
         }
     }
 
+    function getPendingOrderFocusId() {
+        var fromQuery = null;
+        try {
+            var params = new URLSearchParams(window.location.search || '');
+            var raw = params.get('orderId');
+            var parsed = raw != null ? parseInt(raw, 10) : NaN;
+            if (!isNaN(parsed) && parsed > 0) fromQuery = parsed;
+        } catch (e) { /* ignore */ }
+
+        if (fromQuery) return fromQuery;
+
+        try {
+            var stored = sessionStorage.getItem('adminFocusOrderId');
+            var sid = stored != null ? parseInt(stored, 10) : NaN;
+            if (!isNaN(sid) && sid > 0) return sid;
+        } catch (e2) { /* ignore */ }
+
+        return null;
+    }
+
+    function clearPendingOrderFocusId() {
+        try { sessionStorage.removeItem('adminFocusOrderId'); } catch (e) { /* ignore */ }
+    }
+
+    function focusOrderInAdmin(orderId) {
+        if (!orderId) return false;
+        var exists = ordersCache.some(function (o) { return o.id === orderId; });
+        if (!exists) return false;
+
+        if (typeof switchAdminPane === 'function') {
+            switchAdminPane('orders-pane');
+        }
+
+        selectedOrderId = orderId;
+        renderOrderPicker();
+        var sel = document.getElementById('order-picker-select');
+        if (sel) sel.value = String(orderId);
+        onOrderPickerChange();
+        startOrderDetailPolling();
+        return true;
+    }
+
     function stopOrderDetailPolling() {
         if (orderPollTimer) {
             clearInterval(orderPollTimer);
@@ -377,6 +424,13 @@
             }
             if (tools) tools.style.display = 'block';
             renderOrderPicker();
+
+            var pendingOrderId = getPendingOrderFocusId();
+            if (pendingOrderId) {
+                if (focusOrderInAdmin(pendingOrderId)) {
+                    clearPendingOrderFocusId();
+                }
+            }
         } catch (err) {
             if (loading) loading.style.display = 'none';
             if (empty) {
@@ -452,11 +506,14 @@
         }
         try {
             await apiPatch(API_ENDPOINTS.ADMIN_ORDERS + '/' + selectedOrderId + '/status', { status: status });
-            showOrderMsg('Đã cập nhật trạng thái đơn #' + selectedOrderId + '.', false);
+            showOrderMsg('Đã cập nhật trạng thái đơn ' + formatOrderCode(selectedOrderId) + '.', false);
             if (typeof refreshNotifications === 'function') refreshNotifications();
             await loadAdminOrders();
             if (typeof loadCustomerRankings === 'function') {
                 await loadCustomerRankings();
+            }
+            if (typeof loadMonthlyOrderReport === 'function') {
+                await loadMonthlyOrderReport();
             }
             var sel = document.getElementById('order-picker-select');
             if (sel) sel.value = String(selectedOrderId);
@@ -476,10 +533,10 @@
             showOrderMsg('Đơn này không có yêu cầu hủy để xử lý.', true);
             return;
         }
-        if (!confirm('Chấp nhận hủy đơn #' + selectedOrderId + '?')) return;
+        if (!confirm('Chấp nhận hủy đơn ' + formatOrderCode(selectedOrderId) + '?')) return;
         try {
             await apiPost(API_ENDPOINTS.ADMIN_ORDERS + '/' + selectedOrderId + '/cancel-request/accept', {});
-            showOrderMsg('Đã chấp nhận hủy đơn #' + selectedOrderId + '.', false);
+            showOrderMsg('Đã chấp nhận hủy đơn ' + formatOrderCode(selectedOrderId) + '.', false);
             if (typeof refreshNotifications === 'function') refreshNotifications();
             await loadAdminOrders();
             var sel = document.getElementById('order-picker-select');
@@ -500,10 +557,10 @@
             showOrderMsg('Đơn này không có yêu cầu hủy để xử lý.', true);
             return;
         }
-        if (!confirm('Từ chối yêu cầu hủy đơn #' + selectedOrderId + '?')) return;
+        if (!confirm('Từ chối yêu cầu hủy đơn ' + formatOrderCode(selectedOrderId) + '?')) return;
         try {
             await apiPost(API_ENDPOINTS.ADMIN_ORDERS + '/' + selectedOrderId + '/cancel-request/reject', {});
-            showOrderMsg('Đã từ chối yêu cầu hủy đơn #' + selectedOrderId + '.', false);
+            showOrderMsg('Đã từ chối yêu cầu hủy đơn ' + formatOrderCode(selectedOrderId) + '.', false);
             if (typeof refreshNotifications === 'function') refreshNotifications();
             await loadAdminOrders();
             var sel = document.getElementById('order-picker-select');
@@ -534,7 +591,7 @@
                 rating: selectedRating,
                 note: noteEl ? noteEl.value.trim() : ''
             });
-            showOrderMsg('Đã lưu đánh giá đơn #' + selectedOrderId + '.', false);
+            showOrderMsg('Đã lưu đánh giá đơn ' + formatOrderCode(selectedOrderId) + '.', false);
             await loadAdminOrders();
             var sel = document.getElementById('order-picker-select');
             if (sel) sel.value = String(selectedOrderId);
@@ -575,6 +632,7 @@
 
     window.loadAdminOrders = loadAdminOrders;
     window.refreshSelectedOrderFromApi = refreshSelectedOrderFromApi;
+    window.focusOrderInAdmin = focusOrderInAdmin;
 
     document.addEventListener('DOMContentLoaded', wireOrderAdminUi);
 })();

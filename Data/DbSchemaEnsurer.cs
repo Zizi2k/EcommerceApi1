@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using EcommerceApi.Services;
 
 namespace EcommerceApi.Data
 {
@@ -86,6 +87,8 @@ IF COL_LENGTH('Orders', 'CustomerReviewNote') IS NULL
     ALTER TABLE [Orders] ADD [CustomerReviewNote] nvarchar(2000) NULL;
 IF COL_LENGTH('Orders', 'CustomerReviewedAtUtc') IS NULL
     ALTER TABLE [Orders] ADD [CustomerReviewedAtUtc] datetime2 NULL;
+IF COL_LENGTH('Orders', 'DeliveredAtUtc') IS NULL
+    ALTER TABLE [Orders] ADD [DeliveredAtUtc] datetime2 NULL;
 IF COL_LENGTH('Orders', 'CancelReason') IS NULL
     ALTER TABLE [Orders] ADD [CancelReason] nvarchar(256) NULL;
 IF COL_LENGTH('Orders', 'CancelNote') IS NULL
@@ -98,6 +101,12 @@ IF COL_LENGTH('Orders', 'CancelRequestedAtUtc') IS NULL
 UPDATE [Orders] SET [Status] = N'Delivered' WHERE [Status] IN (N'Completed', N'completed', N'HoanThanh', N'Hoàn thành');
 UPDATE [Orders] SET [Status] = N'Preparing'
 WHERE [Status] NOT IN (N'Preparing', N'Delivering', N'Delivered', N'Cancelled');
+UPDATE [Orders]
+SET [DeliveredAtUtc] = COALESCE([DeliveredAtUtc], [CreatedAtUtc], SYSUTCDATETIME())
+WHERE [Status] = N'Delivered' AND [DeliveredAtUtc] IS NULL;
+UPDATE [Orders]
+SET [DeliveredAtUtc] = NULL
+WHERE [Status] <> N'Delivered' AND [DeliveredAtUtc] IS NOT NULL;
 ");
         }
 
@@ -245,6 +254,59 @@ FROM [OrderItems] oi
 INNER JOIN [Products] p ON p.[Id] = oi.[ProductId]
 WHERE oi.[UnitCost] <= 0;
 ");
+        }
+
+        public static void EnsureStableUserIdMapping(ApplicationDbContext context, IDemoUserStore userStore)
+        {
+            var ordersToFix = context.Orders
+                .Where(o => !string.IsNullOrWhiteSpace(o.AccountUsername))
+                .ToList();
+
+            if (ordersToFix.Count == 0) return;
+
+            var orderUserIdChanged = false;
+            foreach (var order in ordersToFix)
+            {
+                var username = order.AccountUsername!.Trim();
+                if (string.IsNullOrWhiteSpace(username)) continue;
+                var expectedIdText = userStore.NameIdentifierFor(username);
+                if (!int.TryParse(expectedIdText, out var expectedUserId)) continue;
+                if (expectedUserId <= 0) continue;
+                if (order.UserId == expectedUserId) continue;
+
+                order.UserId = expectedUserId;
+                orderUserIdChanged = true;
+            }
+
+            if (orderUserIdChanged)
+                context.SaveChanges();
+
+            var accountNotifications = context.Notifications
+                .Where(n => n.RelatedOrderId.HasValue &&
+                            n.LinkUrl != null &&
+                            EF.Functions.Like(n.LinkUrl, "account.html%"))
+                .ToList();
+
+            if (accountNotifications.Count == 0) return;
+
+            var orderOwnerMap = context.Orders.AsNoTracking()
+                .Select(o => new { o.Id, o.UserId })
+                .ToDictionary(o => o.Id, o => o.UserId);
+
+            var notificationUserIdChanged = false;
+            foreach (var n in accountNotifications)
+            {
+                if (!n.RelatedOrderId.HasValue) continue;
+                if (!orderOwnerMap.TryGetValue(n.RelatedOrderId.Value, out var ownerId)) continue;
+                if (ownerId <= 0) continue;
+                if (n.UserId == ownerId) continue;
+
+                n.UserId = ownerId;
+                notificationUserIdChanged = true;
+            }
+
+            if (notificationUserIdChanged)
+                context.SaveChanges();
         }
     }
 }

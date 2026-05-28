@@ -917,7 +917,7 @@
                         </div>
                         <div id="order-detail-panel" style="display:none;">
                             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
-                                <h4 id="order-detail-title" style="margin:0;font-size:16px;">Đơn #—</h4>
+                                <h4 id="order-detail-title" style="margin:0;font-size:16px;">Đơn PLD25102000-—</h4>
                                 <span id="order-detail-status-badge" class="order-status-badge order-status-badge--preparing">—</span>
                             </div>
                             <div class="order-detail-card">
@@ -1692,6 +1692,10 @@
             }
         }
 
+        function formatOrderCode(orderId) {
+            return 'PLD25102000-' + String(orderId == null ? '—' : orderId);
+        }
+
         function escapeHtml(s) {
             if (s == null) return '';
             return String(s)
@@ -1724,7 +1728,7 @@
                     if (c.recentOrders && c.recentOrders.length) {
                         ordersHtml = '<div class="customer-orders-detail">' +
                             c.recentOrders.map(function (o) {
-                                return '<span>#' + o.orderId + ' · ' + formatVnd(o.totalAmount) +
+                                return '<span>' + formatOrderCode(o.orderId) + ' · ' + formatVnd(o.totalAmount) +
                                     ' · ' + escapeHtml(o.paymentMethod) + ' · ' + formatOrderDate(o.createdAtUtc) +
                                     ' · ' + o.itemCount + ' SP</span>';
                             }).join('') + '</div>';

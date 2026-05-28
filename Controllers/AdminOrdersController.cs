@@ -102,8 +102,17 @@ namespace EcommerceApi.Controllers
             if (OrderStatuses.Normalize(order.Status) == OrderStatuses.Cancelled)
                 return BadRequest(new { message = "Đơn đã hủy, không thể đổi trạng thái." });
 
+            var prevStatus = OrderStatuses.Normalize(order.Status);
             var prevLabel = OrderStatuses.GetLabel(order.Status);
             order.Status = next;
+            if (next == OrderStatuses.Delivered && prevStatus != OrderStatuses.Delivered)
+            {
+                order.DeliveredAtUtc = DateTime.UtcNow;
+            }
+            else if (next != OrderStatuses.Delivered && prevStatus == OrderStatuses.Delivered)
+            {
+                order.DeliveredAtUtc = null;
+            }
             await _context.SaveChangesAsync();
 
             await _notifications.NotifyUserAsync(
@@ -325,7 +334,9 @@ namespace EcommerceApi.Controllers
             var orders = await _context.Orders
                 .Include(o => o.Items)
                 .AsNoTracking()
-                .Where(o => o.CreatedAtUtc >= fromUtc && o.CreatedAtUtc < toUtc)
+                .Where(o =>
+                    (o.DeliveredAtUtc.HasValue && o.DeliveredAtUtc.Value >= fromUtc && o.DeliveredAtUtc.Value < toUtc) ||
+                    (!o.DeliveredAtUtc.HasValue && o.CreatedAtUtc >= fromUtc && o.CreatedAtUtc < toUtc))
                 .ToListAsync();
 
             var deliveredOrders = orders

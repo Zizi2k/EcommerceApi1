@@ -50,6 +50,7 @@
             btn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 var open = dropdown.classList.toggle('show');
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
                 if (open) loadNotificationsList();
             });
         }
@@ -67,6 +68,8 @@
             var menu = document.getElementById('notif-menu');
             if (menu && !menu.contains(e.target)) {
                 dropdown.classList.remove('show');
+                var btn = document.getElementById('notif-btn');
+                if (btn) btn.setAttribute('aria-expanded', 'false');
             }
         });
     }
@@ -115,9 +118,10 @@
             }
             list.innerHTML = items.map(function (n) {
                 var cls = 'notif-item' + (n.isRead ? '' : ' is-unread');
+                var unreadDot = n.isRead ? '' : '<span class="notif-item-dot" aria-hidden="true"></span>';
                 return '<button type="button" class="' + cls + '" data-id="' + n.id + '" data-link="' +
-                    (n.linkUrl || '').replace(/"/g, '&quot;') + '">' +
-                    '<span class="notif-item-title">' + esc(n.title) + '</span>' +
+                    (n.linkUrl || '').replace(/"/g, '&quot;') + '" data-order-id="' + (n.relatedOrderId || '') + '">' +
+                    '<span class="notif-item-head">' + unreadDot + '<span class="notif-item-title">' + esc(n.title) + '</span></span>' +
                     '<span class="notif-item-msg">' + esc(n.message) + '</span>' +
                     '<span class="notif-item-time">' + fmtTime(n.createdAtUtc) + '</span>' +
                     '</button>';
@@ -127,7 +131,8 @@
                 btn.addEventListener('click', function () {
                     var id = parseInt(btn.getAttribute('data-id'), 10);
                     var link = btn.getAttribute('data-link') || '';
-                    openNotification(id, link);
+                    var orderId = parseInt(btn.getAttribute('data-order-id'), 10);
+                    openNotification(id, link, isNaN(orderId) ? null : orderId);
                 });
             });
         } catch (e) {
@@ -142,7 +147,7 @@
             .replace(/"/g, '&quot;');
     }
 
-    async function openNotification(id, link) {
+    async function openNotification(id, link, relatedOrderId) {
         try {
             await apiPut(API_ENDPOINTS.NOTIFICATIONS + '/' + id + '/read', {});
         } catch (e) { /* ignore */ }
@@ -150,8 +155,9 @@
         if (dropdown) dropdown.classList.remove('show');
         await refreshUnreadCount();
         if (link) {
-            if (link.indexOf('admin.html') >= 0 && typeof refreshSelectedOrderFromApi === 'function') {
-                setTimeout(refreshSelectedOrderFromApi, 400);
+            if (relatedOrderId && link.indexOf('admin.html') >= 0) {
+                try { sessionStorage.setItem('adminFocusOrderId', String(relatedOrderId)); } catch (e) { /* ignore */ }
+                link = 'admin.html?orderId=' + encodeURIComponent(relatedOrderId) + '#orders-pane';
             }
             window.location.href = link;
         }

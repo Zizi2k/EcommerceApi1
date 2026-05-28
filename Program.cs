@@ -121,6 +121,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApplicationDbContext>();
+    var demoUserStore = services.GetRequiredService<IDemoUserStore>();
     context.Database.Migrate();
     DbSchemaEnsurer.EnsureOrderCustomerColumns(context);
     DbSchemaEnsurer.EnsureUsersForGoogleLogin(context);
@@ -129,6 +130,7 @@ using (var scope = app.Services.CreateScope())
     DbSchemaEnsurer.EnsureNotificationsTable(context);
     DbSchemaEnsurer.EnsureProductReviewsTable(context);
     DbSchemaEnsurer.EnsureCostAndProfitColumns(context);
+    DbSchemaEnsurer.EnsureStableUserIdMapping(context, demoUserStore);
 
     if (!context.Categories.Any())
     {

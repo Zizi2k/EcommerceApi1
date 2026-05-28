@@ -15,8 +15,8 @@
       "BackgroundUrl": null
     },
     "user": {
-      "DisplayName": "Duy2k00",
-      "AvatarUrl": "string",
+      "DisplayName": "Duy",
+      "AvatarUrl": "/uploads/profiles/c83c53361c1248e1a963fb693bf7b049.jpg",
       "BackgroundUrl": "string"
     },
     "trang_moi": {
@@ -36,7 +36,7 @@
     },
     "Hien_Kiet": {
       "DisplayName": "Hi\u1EC1n H\u00F3ng H\u00E1ch",
-      "AvatarUrl": "https://api.dicebear.com/7.x/avataaars/svg?seed=Hien_Kiet",
+      "AvatarUrl": "/uploads/profiles/eb1ae9caed1f403688871ac3cb10a5e2.jpg",
       "BackgroundUrl": null
     }
   }

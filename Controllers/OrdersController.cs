@@ -32,21 +32,22 @@ namespace EcommerceApi.Controllers
         public async Task<ActionResult<IEnumerable<UserOrderDto>>> GetMyOrders()
         {
             var userId = GetUserId();
+            var username = CurrentUsername();
             var orders = await _context.Orders
-                .Where(o => o.UserId == userId)
+                .Where(o => o.UserId == userId || (!string.IsNullOrWhiteSpace(username) && o.AccountUsername == username))
                 .Include(o => o.Items)
                 .AsNoTracking()
                 .OrderByDescending(o => o.CreatedAtUtc)
                 .ToListAsync();
 
             var productIds = orders.SelectMany(o => o.Items.Select(i => i.ProductId)).Distinct().ToList();
-            var productNames = productIds.Count == 0
-                ? new Dictionary<int, string>()
+            var productMeta = productIds.Count == 0
+                ? new Dictionary<int, (string Name, string? ImageUrl)>()
                 : await _context.Products.AsNoTracking()
                     .Where(p => productIds.Contains(p.Id))
-                    .ToDictionaryAsync(p => p.Id, p => p.Name);
+                    .ToDictionaryAsync(p => p.Id, p => (p.Name, p.ImageUrl));
 
-            return Ok(orders.Select(o => Map(o, productNames)).ToList());
+            return Ok(orders.Select(o => Map(o, productMeta)).ToList());
         }
 
         [HttpPut("{id:int}/review")]
@@ -58,7 +59,10 @@ namespace EcommerceApi.Controllers
                 return BadRequest(new { message = "Điểm đánh giá phải từ 1 đến 5 sao." });
 
             var userId = GetUserId();
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
+            var username = CurrentUsername();
+            var order = await _context.Orders.FirstOrDefaultAsync(o =>
+                o.Id == id &&
+                (o.UserId == userId || (!string.IsNullOrWhiteSpace(username) && o.AccountUsername == username)));
             if (order == null) return NotFound(new { message = "Không tìm thấy đơn hàng." });
 
             if (OrderStatuses.Normalize(order.Status) != OrderStatuses.Delivered)
@@ -75,7 +79,8 @@ namespace EcommerceApi.Controllers
                 $"Đơn #{order.Id}: {dto.Rating}/5 sao",
                 NotificationTypes.OrderReviewFromCustomer,
                 order.Id,
-                "admin.html#orders-section-title");
+                "admin.html#orders-section-title",
+                userId);
 
             return Ok(new
             {
@@ -98,7 +103,10 @@ namespace EcommerceApi.Controllers
                 return BadRequest(new { message = "Lý do hủy không hợp lệ.", allowedReasons = OrderCancelReasons.All });
 
             var userId = GetUserId();
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
+            var username = CurrentUsername();
+            var order = await _context.Orders.FirstOrDefaultAsync(o =>
+                o.Id == id &&
+                (o.UserId == userId || (!string.IsNullOrWhiteSpace(username) && o.AccountUsername == username)));
             if (order == null) return NotFound(new { message = "Không tìm thấy đơn hàng." });
 
             var status = OrderStatuses.Normalize(order.Status);
@@ -131,8 +139,13 @@ namespace EcommerceApi.Controllers
         }
 
         private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        private string? CurrentUsername()
+        {
+            var name = User.FindFirstValue(ClaimTypes.Name);
+            return string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+        }
 
-        private static UserOrderDto Map(Order o, Dictionary<int, string> productNames)
+        private static UserOrderDto Map(Order o, Dictionary<int, (string Name, string? ImageUrl)> productMeta)
         {
             var status = OrderStatuses.Normalize(o.Status);
             return new UserOrderDto
@@ -159,7 +172,8 @@ namespace EcommerceApi.Controllers
                 Items = o.Items.Select(i => new UserOrderItemDto
                 {
                     ProductId = i.ProductId,
-                    ProductName = productNames.TryGetValue(i.ProductId, out var name) ? name : ("SP #" + i.ProductId),
+                    ProductName = productMeta.TryGetValue(i.ProductId, out var meta) ? meta.Name : ("SP #" + i.ProductId),
+                    ImageUrl = productMeta.TryGetValue(i.ProductId, out var meta2) ? meta2.ImageUrl : null,
                     Quantity = i.Quantity,
                     UnitPrice = i.UnitPrice,
                     LineTotal = i.UnitPrice * i.Quantity

@@ -21,10 +21,13 @@ namespace EcommerceApi.Services
             var orders = await _context.Orders
                 .AsNoTracking()
                 .Include(o => o.Items)
-                .Where(o => o.Status == OrderStatuses.Delivered || o.Status == "delivered")
                 .ToListAsync();
 
-            var grouped = orders
+            var deliveredOrders = orders
+                .Where(o => OrderStatuses.Normalize(o.Status) == OrderStatuses.Delivered)
+                .ToList();
+
+            var grouped = deliveredOrders
                 .GroupBy(o => o.UserId)
                 .Select(g =>
                 {

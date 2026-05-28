@@ -79,6 +79,34 @@ function pickBackgroundFile() {
     if (input) input.click();
 }
 
+async function persistProfileAfterUpload(uploadedField, uploadedUrl) {
+    if (!uploadedUrl) {
+        throw new Error('Server không trả về URL ảnh hợp lệ.');
+    }
+
+    var displayNameEl = document.getElementById('displayName');
+    var avatarUrlEl = document.getElementById('avatarUrl');
+    var backgroundUrlEl = document.getElementById('backgroundUrl');
+
+    var payload = {
+        displayName: displayNameEl ? displayNameEl.value.trim() : '',
+        avatarUrl: avatarUrlEl ? avatarUrlEl.value.trim() : '',
+        backgroundUrl: backgroundUrlEl ? backgroundUrlEl.value.trim() : ''
+    };
+
+    if (uploadedField === 'avatar') {
+        payload.avatarUrl = uploadedUrl;
+    } else if (uploadedField === 'background') {
+        payload.backgroundUrl = uploadedUrl;
+    }
+
+    var profile = await apiPut(API_ENDPOINTS.PROFILE, payload);
+    saveProfileToLocalStorage(profile);
+    fillFormFromProfile(profile);
+    syncUserAvatarButton();
+    applyUserBackground();
+}
+
 async function saveProfile(event) {
     event.preventDefault();
     var payload = {
@@ -160,9 +188,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             if (status) status.textContent = 'Đang tải lên...';
             try {
                 var url = await uploadProfileImageFile(file);
-                document.getElementById('avatarUrl').value = url;
-                updateAvatarPreview(url);
-                if (status) status.textContent = 'Đã tải ảnh đại diện.';
+                await persistProfileAfterUpload('avatar', url);
+                if (status) status.textContent = 'Đã cập nhật ảnh đại diện.';
             } catch (e) {
                 if (status) status.textContent = '';
                 showSettingsAlert(e.message || 'Tải ảnh thất bại.', true);
@@ -180,9 +207,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             if (status) status.textContent = 'Đang tải lên...';
             try {
                 var url = await uploadProfileImageFile(file);
-                document.getElementById('backgroundUrl').value = url;
-                updateBgPreview(url);
-                if (status) status.textContent = 'Đã tải hình nền.';
+                await persistProfileAfterUpload('background', url);
+                if (status) status.textContent = 'Đã cập nhật hình nền.';
             } catch (e) {
                 if (status) status.textContent = '';
                 showSettingsAlert(e.message || 'Tải ảnh thất bại.', true);

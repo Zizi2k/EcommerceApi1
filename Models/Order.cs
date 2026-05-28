@@ -13,6 +13,8 @@ namespace EcommerceApi.Models
         /// <summary>Preparing | Delivering | Delivered | Cancelled</summary>
         public string Status { get; set; } = OrderStatuses.Preparing;
         public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
+        /// <summary>Thời điểm đơn được chuyển sang trạng thái Đã giao.</summary>
+        public DateTime? DeliveredAtUtc { get; set; }
 
         /// <summary>Đánh giá admin (1–5), chỉ khi đã giao.</summary>
         public int? AdminRating { get; set; }

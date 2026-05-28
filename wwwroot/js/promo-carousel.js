@@ -4,6 +4,11 @@
     var currentIndex = 0;
     var autoplayTimer = null;
     var AUTOPLAY_MS = 5500;
+    var topRankItems = [];
+    var bottomRankItems = [];
+    var rankPairIndex = 0;
+    var rankTimer = null;
+    var RANK_AUTOPLAY_MS = 6000;
 
     var FALLBACK_SLIDES = [
         {
@@ -135,13 +140,48 @@
         var topList = list.slice(0, mid);
         var bottomList = list.slice(mid);
 
-        topEl.innerHTML = topList.map(function (s, i) {
-            return renderSaleItemHtml(s, i + 1);
-        }).join('') || '<p class="promo-sale-empty">—</p>';
+        topRankItems = topList;
+        bottomRankItems = bottomList;
+        rankPairIndex = 0;
+        renderRankPair(0);
+        restartRankAutoplay();
+    }
 
-        bottomEl.innerHTML = bottomList.map(function (s, i) {
-            return renderSaleItemHtml(s, mid + i + 1);
-        }).join('') || '<p class="promo-sale-empty">—</p>';
+    function renderRankPair(index) {
+        var topEl = document.getElementById('promo-list-top');
+        var bottomEl = document.getElementById('promo-list-bottom');
+        if (!topEl || !bottomEl) return;
+
+        var pairCount = Math.max(topRankItems.length, bottomRankItems.length);
+        if (!pairCount) {
+            var empty = '<p class="promo-sale-empty">Chưa có sản phẩm sale</p>';
+            topEl.innerHTML = empty;
+            bottomEl.innerHTML = empty;
+            return;
+        }
+
+        rankPairIndex = ((index % pairCount) + pairCount) % pairCount;
+
+        var topItem = topRankItems[rankPairIndex];
+        var bottomItem = bottomRankItems[rankPairIndex];
+
+        topEl.innerHTML = topItem
+            ? renderSaleItemHtml(topItem, rankPairIndex + 1)
+            : '<p class="promo-sale-empty">—</p>';
+
+        bottomEl.innerHTML = bottomItem
+            ? renderSaleItemHtml(bottomItem, Math.ceil(sortedPromos.length / 2) + rankPairIndex + 1)
+            : '<p class="promo-sale-empty">—</p>';
+    }
+
+    function restartRankAutoplay() {
+        clearInterval(rankTimer);
+        var pairCount = Math.max(topRankItems.length, bottomRankItems.length);
+        if (pairCount > 1) {
+            rankTimer = setInterval(function () {
+                renderRankPair(rankPairIndex + 1);
+            }, RANK_AUTOPLAY_MS);
+        }
     }
 
     function buildDots(count) {

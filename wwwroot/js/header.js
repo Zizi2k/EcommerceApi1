@@ -2,6 +2,32 @@
 
 let headerListenersAttached = false;
 
+function ensurePrimaryAccountNavLink() {
+    const navMenu = document.querySelector('.nav-menu');
+    if (!navMenu) return null;
+
+    let link = navMenu.querySelector('#nav-account-link') ||
+        navMenu.querySelector('a[href="account.html"]');
+    if (!link) {
+        link = document.createElement('a');
+        link.href = 'account.html';
+        link.innerHTML = '<i class="fa-solid fa-gauge-high"></i> Khu cá nhân';
+        link.title = 'Khu cá nhân';
+    }
+    link.id = 'nav-account-link';
+
+    const homeLink = navMenu.querySelector('a[href="index.html"]');
+    const cartLink = navMenu.querySelector('a[href="cart.html"]');
+    if (homeLink && homeLink.nextSibling !== link) {
+        navMenu.insertBefore(link, homeLink.nextSibling);
+    }
+    if (cartLink && link.compareDocumentPosition(cartLink) & Node.DOCUMENT_POSITION_FOLLOWING) {
+        navMenu.insertBefore(link, cartLink);
+    }
+
+    return link;
+}
+
 /**
  * Cập nhật nút tài khoản: avatar + tên từ localStorage (sau đăng nhập).
  */
@@ -52,6 +78,9 @@ function initializeHeader() {
     const token = getToken();
     const userBtn = document.getElementById('user-btn');
     const loginNav = document.getElementById('login-nav');
+    const accountNavLink = ensurePrimaryAccountNavLink();
+    const path = (window.location.pathname || '').toLowerCase();
+    const onAccountPage = path.endsWith('/account.html') || path.endsWith('account.html');
     
     if (token && userBtn) {
         userBtn.style.display = 'inline-flex';
@@ -64,6 +93,10 @@ function initializeHeader() {
     }
 
     document.body.classList.toggle('app-user-logged-in', !!token);
+
+    if (accountNavLink) {
+        accountNavLink.style.display = (token && !onAccountPage) ? '' : 'none';
+    }
 
     if (token) {
         if (typeof fetchAndCacheProfile === 'function') {

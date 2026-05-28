@@ -83,9 +83,9 @@
 
         .cart-list-panel {
             background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
-            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            border: 1px solid #dbe6f3;
             overflow: hidden;
         }
 
@@ -119,8 +119,9 @@
             grid-template-columns: 100px 1fr auto auto auto;
             gap: 16px 20px;
             align-items: center;
-            padding: 20px 22px;
-            border-bottom: 1px solid #f1f5f9;
+            padding: 18px 22px;
+            border-bottom: 1px solid #edf2f8;
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
         }
 
         .cart-line:last-child {
@@ -153,12 +154,12 @@
         }
 
         .cart-line__media {
-            width: 100px;
-            height: 100px;
+            width: 108px;
+            height: 108px;
             border-radius: 12px;
             overflow: hidden;
             background: #f8fafc;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #dbe6f3;
             flex-shrink: 0;
         }
 
@@ -175,7 +176,7 @@
 
         .cart-line__title {
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             color: #0f172a;
             text-decoration: none;
             line-height: 1.35;
@@ -193,8 +194,8 @@
         }
 
         .cart-line__unit strong {
-            color: #0284c7;
-            font-weight: 600;
+            color: #0369a1;
+            font-weight: 700;
         }
 
         .cart-line__qty {
@@ -213,15 +214,16 @@
         }
 
         .qty-input {
-            width: 72px;
-            padding: 10px 8px;
+            width: 80px;
+            padding: 11px 8px;
             border: 1px solid #cbd5e1;
             border-radius: 10px;
             text-align: center;
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 700;
             font-family: 'Poppins', sans-serif;
             color: #0f172a;
+            background: #ffffff;
         }
 
         .qty-input:focus {
@@ -245,9 +247,10 @@
         }
 
         .cart-line__line-total .amount {
-            font-size: 17px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 800;
             color: #0369a1;
+            letter-spacing: -0.01em;
         }
 
         .cart-line__actions {
@@ -258,28 +261,30 @@
         }
 
         .btn-update {
-            background: #0f766e;
+            background: linear-gradient(135deg, #0f766e, #0d9488);
             color: white;
-            padding: 9px 14px;
+            padding: 10px 14px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             font-size: 13px;
             font-weight: 600;
             font-family: 'Poppins', sans-serif;
-            transition: background 0.2s, transform 0.15s;
+            transition: filter 0.2s, transform 0.15s, box-shadow 0.2s;
             white-space: nowrap;
+            box-shadow: 0 8px 18px rgba(13, 148, 136, 0.22);
         }
 
         .btn-update:hover {
-            background: #115e59;
+            filter: brightness(1.05);
+            box-shadow: 0 10px 22px rgba(13, 148, 136, 0.28);
         }
 
         .btn-delete {
             background: transparent;
             color: #dc2626;
             padding: 8px 10px;
-            border: 1px solid #fecaca;
+            border: 1px solid #fbcaca;
             border-radius: 10px;
             cursor: pointer;
             font-size: 13px;
@@ -293,8 +298,8 @@
         }
 
         .btn-delete:hover {
-            background: #fef2f2;
-            border-color: #f87171;
+            background: #fff5f5;
+            border-color: #fb7185;
         }
 
         .cart-summary-aside {
@@ -553,6 +558,33 @@
             transition: border-color 0.2s, background 0.2s;
         }
 
+        .payment-option-logos {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            width: 70px;
+            flex: 0 0 70px;
+            margin-top: 1px;
+        }
+
+        .payment-option-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: 1px solid #dbe3ef;
+            background: #fff;
+            object-fit: contain;
+            padding: 4px;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+        }
+
+        .payment-option-logo--bank-grid {
+            width: 68px;
+            height: 44px;
+            padding: 2px;
+        }
+
         .payment-option:hover {
             border-color: #00d4ff;
             background: #f8fafc;
@@ -572,6 +604,7 @@
             cursor: pointer;
             font-size: 14px;
             line-height: 1.45;
+            min-width: 0;
         }
 
         .payment-option strong {
@@ -1131,20 +1164,12 @@
                 <a href="index.html">
                     <i class="fa-solid fa-home"></i> Trang chủ
                 </a>
-                <div class="nav-dropdown nav-dropdown--products">
-                    <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true" title="Sản phẩm">
-                        <i class="fa-solid fa-box"></i> Sản phẩm
-                        <i class="fa-solid fa-chevron-down nav-dropdown-chevron" aria-hidden="true"></i>
-                    </button>
-                    <div class="nav-dropdown-menu" role="menu">
-                        <a href="index.html#products" class="nav-dropdown-item" role="menuitem" title="Xem danh sách sản phẩm">
-                            <i class="fa-solid fa-store"></i> Cửa hàng
-                        </a>
-                        <a href="admin.html" class="nav-dropdown-item nav-dropdown-item--module nav-admin-only" role="menuitem" title="Quản lý sản phẩm">
-                            <i class="fa-solid fa-sliders"></i> Quản lý
-                        </a>
-                    </div>
-                </div>
+                <a href="index.html#products" title="Cửa hàng">
+                    <i class="fa-solid fa-store"></i> Cửa hàng
+                </a>
+                <a href="admin.html" class="nav-admin-only" title="Quản lý sản phẩm">
+                    <i class="fa-solid fa-sliders"></i> Quản lý
+                </a>
             </nav>
 
             <div class="header-right">
@@ -1240,7 +1265,7 @@
                 <div class="detail-grid">
                     <div class="order-detail-row order-detail-row--id">
                         <span class="label"><i class="fa-solid fa-receipt"></i> Mã đơn hàng</span>
-                        <span class="value" id="success-order-id">#—</span>
+                        <span class="value" id="success-order-id">PLD25102000-—</span>
                     </div>
                     <div class="order-detail-row">
                         <span class="label"><i class="fa-solid fa-credit-card"></i> Hình thức</span>
@@ -1297,11 +1322,55 @@
         }
 
         const PAYMENT_OPTIONS = [
-            { id: 'COD', title: 'Tiền mặt (COD)', desc: 'Thanh toán khi nhận hàng tại nhà.', hint: 'Điền đủ thông tin giao hàng phía trên, chọn COD rồi bấm Đặt hàng.' },
-            { id: 'BankTransfer', title: 'Chuyển khoản ngân hàng', desc: 'CK qua Internet Banking / quầy.', hint: 'Điền đủ thông tin giao hàng. Nội dung CK: SĐT + Mã đơn. STK demo: 0123456789 — GROUP1 STORE.' },
-            { id: 'MoMo', title: 'Ví MoMo', desc: 'Quét QR hoặc thanh toán trong app MoMo.', hint: 'Điền đủ thông tin giao hàng. Ví demo: 0901 234 567 (mô phỏng thanh toán).' },
-            { id: 'VNPay', title: 'VNPay', desc: 'Thẻ ATM nội địa / QR VNPay.', hint: 'Điền đủ thông tin giao hàng. Quét QR VNPay rồi bấm Đặt hàng (demo).' },
-            { id: 'Card', title: 'Thẻ quốc tế', desc: 'Visa, Mastercard, JCB.', hint: 'Điền đủ thông tin giao hàng trước khi hoàn tất đơn (demo, không nhập thẻ thật).' }
+            {
+                id: 'COD',
+                title: 'Tiền mặt (COD)',
+                desc: 'Thanh toán khi nhận hàng tại nhà.',
+                hint: 'Điền đủ thông tin giao hàng phía trên, chọn COD rồi bấm Đặt hàng.',
+                icons: [
+                    { url: 'https://cdn.simpleicons.org/cashapp/22c55e', alt: 'Tiền mặt' }
+                ]
+            },
+            {
+                id: 'BankTransfer',
+                title: 'Chuyển khoản ngân hàng',
+                desc: 'CK qua Internet Banking / quầy.',
+                hint: 'Điền đủ thông tin giao hàng. Nội dung CK: SĐT + Mã đơn. STK demo: 0123456789 — GROUP1 STORE.',
+                icons: [
+                    { url: 'images/payment-icons/bank-vcb.png', alt: 'Vietcombank' },
+                    { url: 'images/payment-icons/bank-bidv.png', alt: 'BIDV' },
+                    { url: 'images/payment-icons/bank-tcb.png', alt: 'Techcombank' }
+                ]
+            },
+            {
+                id: 'MoMo',
+                title: 'Ví MoMo',
+                desc: 'Quét QR hoặc thanh toán trong app MoMo.',
+                hint: 'Điền đủ thông tin giao hàng. Ví demo: 0901 234 567 (mô phỏng thanh toán).',
+                icons: [
+                    { url: 'images/payment-icons/momo.png', alt: 'MoMo' }
+                ]
+            },
+            {
+                id: 'VNPay',
+                title: 'VNPay',
+                desc: 'Thẻ ATM nội địa / QR VNPay.',
+                hint: 'Điền đủ thông tin giao hàng. Quét QR VNPay rồi bấm Đặt hàng (demo).',
+                icons: [
+                    { url: 'images/payment-icons/vnpay.png?v=3', alt: 'VNPay', className: 'payment-option-logo--bank-grid' }
+                ]
+            },
+            {
+                id: 'Card',
+                title: 'Thẻ quốc tế',
+                desc: 'Visa, Mastercard, JCB.',
+                hint: 'Điền đủ thông tin giao hàng trước khi hoàn tất đơn (demo, không nhập thẻ thật).',
+                icons: [
+                    { url: 'https://cdn.simpleicons.org/visa/1a1f71', alt: 'Visa' },
+                    { url: 'https://cdn.simpleicons.org/mastercard/eb001b', alt: 'Mastercard' },
+                    { url: 'https://cdn.simpleicons.org/jcb/0b4ea2', alt: 'JCB' }
+                ]
+            }
         ];
 
         // VNPay QR (ảnh do bạn cung cấp)
@@ -1309,6 +1378,7 @@
         const VN_PAY_QR_IMAGE_URL = 'images/vnpay-qr.png';
         const VN_PAY_QR_MISSING_TEXT = 'Chưa tìm thấy file QR tại wwwroot/images/vnpay-qr.png.';
         const LAST_PAYMENT_METHOD_KEY = 'lastPaymentMethod';
+        const ORDER_CODE_PREFIX = 'PLD25102000';
 
         window.onload = function() {
             initializeHeader();
@@ -1445,9 +1515,16 @@
                         '</div>' +
                         '</div>')
                     : '';
+                const logoHtml = Array.isArray(o.icons) && o.icons.length
+                    ? '<div class="payment-option-logos">' + o.icons.map(function (ic) {
+                        var cls = 'payment-option-logo' + (ic.className ? (' ' + ic.className) : '');
+                        return '<img class="' + cls + '" src="' + ic.url + '" alt="' + (ic.alt || o.title) + '" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">';
+                    }).join('') + '</div>'
+                    : '';
                 return (
                     '<div class="payment-option' + sel + '" data-id="' + o.id + '" onclick="selectPaymentMethod(\'' + o.id + '\')">' +
                     '<input type="radio" name="paymethod" id="pay-' + o.id + '" value="' + o.id + '"' + chk + '>' +
+                    logoHtml +
                     '<label for="pay-' + o.id + '"><strong>' + o.title + '</strong><small>' + o.desc + '</small></label>' +
                     vnQr +
                     '</div>'
@@ -1632,12 +1709,16 @@
             return opt ? opt.title : methodId;
         }
 
+        function formatOrderCode(orderId) {
+            return ORDER_CODE_PREFIX + '-' + String(orderId == null ? '—' : orderId);
+        }
+
         function showOrderSuccessModal(res, paymentMethod) {
             var overlay = document.getElementById('order-success-overlay');
             document.getElementById('success-message').textContent =
                 (res && res.message) ? res.message : 'Đơn hàng của bạn đã được ghi nhận thành công.';
             document.getElementById('success-order-id').textContent =
-                '#' + (res && res.orderId != null ? res.orderId : '—');
+                formatOrderCode(res && res.orderId != null ? res.orderId : '—');
             document.getElementById('success-payment').textContent = getPaymentMethodLabel(paymentMethod);
             document.getElementById('success-total').textContent =
                 Number(res && res.totalAmount != null ? res.totalAmount : 0).toLocaleString('vi-VN') + ' VNĐ';

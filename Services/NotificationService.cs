@@ -23,11 +23,14 @@ namespace EcommerceApi.Services
             await AddAsync(userId, title, message, type, orderId, linkUrl);
         }
 
-        public async Task NotifyAllAdminsAsync(string title, string message, string type, int? orderId = null, string? linkUrl = null)
+        public async Task NotifyAllAdminsAsync(string title, string message, string type, int? orderId = null, string? linkUrl = null, int? excludeUserId = null)
         {
             var adminIds = await GetAdminRecipientIdsAsync();
             foreach (var id in adminIds)
+            {
+                if (excludeUserId.HasValue && id == excludeUserId.Value) continue;
                 await AddAsync(id, title, message, type, orderId, linkUrl);
+            }
         }
 
         private async Task AddAsync(int userId, string title, string message, string type, int? orderId, string? linkUrl)

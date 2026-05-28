@@ -78,12 +78,45 @@
             var old = p.price && p.displayPrice && Number(p.displayPrice) < Number(p.price)
                 ? '<span class="flash-sale-item__old">' + escHtml(formatPrice(p.price)) + '</span>'
                 : '';
-            return '<a class="flash-sale-item" href="' + href + '">' +
+            var addBtn = p.productId
+                ? '<button type="button" class="flash-sale-item__add" data-product-id="' + Number(p.productId) + '">' +
+                  '<i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ</button>'
+                : '';
+            return '<article class="flash-sale-item">' +
+                '<a class="flash-sale-item__link" href="' + href + '">' +
                 '<img src="' + escHtml(p.imageUrl || '') + '" alt="" onerror="this.src=\'https://via.placeholder.com/64\'">' +
                 '<div class="flash-sale-item__name">' + escHtml(p.productName || p.headline || 'Sản phẩm') + '</div>' +
                 '<div class="flash-sale-item__price"><span class="flash-sale-item__now">' + escHtml(formatPrice(p.displayPrice)) + '</span>' + old + '</div>' +
-                '</a>';
+                '</a>' + addBtn +
+                '</article>';
         }).join('');
+
+        el.querySelectorAll('.flash-sale-item__add').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var id = parseInt(btn.getAttribute('data-product-id'), 10);
+                if (!isNaN(id)) addFlashSaleToCart(id, btn);
+            });
+        });
+    }
+
+    async function addFlashSaleToCart(productId, button) {
+        var token = typeof getToken === 'function' ? getToken() : null;
+        if (!token) {
+            window.location.href = 'login.html';
+            return;
+        }
+        if (button) button.disabled = true;
+        try {
+            await apiPost(API_ENDPOINTS.CART_ADD, { productId: productId, quantity: 1 });
+            if (typeof updateCartCount === 'function') await updateCartCount();
+            if (window.AppNotify && typeof window.AppNotify.success === 'function') {
+                window.AppNotify.success('Đã thêm sản phẩm vào giỏ hàng.');
+            }
+        } catch (e) {
+            alert(e.message || 'Không thêm được vào giỏ hàng.');
+        } finally {
+            if (button) button.disabled = false;
+        }
     }
 
     async function loadFlashSale() {

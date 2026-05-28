@@ -1,4 +1,4 @@
-﻿namespace EcommerceApi.Models
+namespace EcommerceApi.Models
 {
     public class User
     {

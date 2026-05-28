@@ -58,9 +58,13 @@
 
     function applyTheme(theme) {
         var t = theme === 'dark' ? 'dark' : 'light';
+        var prev = document.documentElement.getAttribute('data-theme') || '';
         document.documentElement.setAttribute('data-theme', t);
         localStorage.setItem(STORAGE_KEY, t);
         updateToggleUi(t);
+        window.dispatchEvent(new CustomEvent('store-theme-changed', {
+            detail: { theme: t, previousTheme: prev }
+        }));
     }
 
     function updateToggleUi(theme) {

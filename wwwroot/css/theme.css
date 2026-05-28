@@ -347,6 +347,15 @@ html[data-theme="dark"] .cod-field label {
 }
 
 /* Member pages — chế độ sáng */
+html[data-theme="light"] body:not(.member-page):not(.admin-page) {
+    background: linear-gradient(180deg, #f4f7fb 0%, #eef3fb 45%, #f8fbff 100%) !important;
+    color: #0f172a !important;
+}
+
+html[data-theme="light"] body.has-user-background:not(.member-page):not(.admin-page) {
+    background-color: #f4f7fb !important;
+}
+
 html[data-theme="light"] body.member-page {
     background: #f1f5f9 !important;
     color: #0f172a !important;
@@ -423,6 +432,100 @@ html[data-theme="light"] .settings-field input {
 html[data-theme="light"] .settings-btn.secondary {
     background: #f1f5f9 !important;
     color: #334155 !important;
+    border-color: #cbd5e1 !important;
+}
+
+html[data-theme="light"] .my-orders-section {
+    background: #ffffff !important;
+    border-color: #dbe6f3 !important;
+}
+
+html[data-theme="light"] .my-orders-head h3,
+html[data-theme="light"] .my-order-meta strong,
+html[data-theme="light"] .my-order-items li,
+html[data-theme="light"] .my-order-reviewed,
+html[data-theme="light"] .my-order-review-box h4 {
+    color: #0f172a !important;
+}
+
+html[data-theme="light"] .my-orders-picker label,
+html[data-theme="light"] .my-order-empty,
+html[data-theme="light"] .my-order-meta span,
+html[data-theme="light"] .my-order-review-hint,
+html[data-theme="light"] .my-order-review-box label,
+html[data-theme="light"] .my-order-msg {
+    color: #475569 !important;
+}
+
+html[data-theme="light"] .my-order-meta div,
+html[data-theme="light"] .track-step,
+html[data-theme="light"] .my-order-items,
+html[data-theme="light"] .my-order-items li,
+html[data-theme="light"] .my-order-review-box {
+    background: #f8fbff !important;
+    border-color: #dbe6f3 !important;
+}
+
+html[data-theme="light"] .track-step.is-on {
+    color: #0369a1 !important;
+    border-color: #7dd3fc !important;
+    background: #eff6ff !important;
+}
+
+html[data-theme="light"] .track-step.is-done {
+    color: #166534 !important;
+    border-color: #86efac !important;
+    background: #f0fdf4 !important;
+}
+
+html[data-theme="light"] .my-order-review-box textarea,
+html[data-theme="light"] .my-order-review-box select,
+html[data-theme="light"] .my-orders-picker-row select {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+    box-sizing: border-box !important;
+}
+
+html[data-theme="light"] .my-order-star-btn {
+    background: #ffffff !important;
+    color: #94a3b8 !important;
+    border-color: #cbd5e1 !important;
+}
+
+html[data-theme="light"] .my-order-star-btn.is-on,
+html[data-theme="light"] .my-order-star-btn:hover {
+    color: #f59e0b !important;
+    border-color: #f59e0b !important;
+    background: #fffbeb !important;
+}
+
+html[data-theme="light"] .my-order-item-thumb {
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+}
+
+html[data-theme="light"] .review-success-modal__panel {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #dbe6f3 !important;
+}
+
+html[data-theme="light"] .review-success-modal__panel h4 {
+    color: #0369a1 !important;
+}
+
+html[data-theme="light"] .review-success-modal__panel p {
+    color: #334155 !important;
+}
+
+html[data-theme="light"] .review-success-modal__meta {
+    color: #64748b !important;
+}
+
+html[data-theme="light"] .review-success-modal__close {
+    background: #f8fafc !important;
+    color: #475569 !important;
     border-color: #cbd5e1 !important;
 }
 

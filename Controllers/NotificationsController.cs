@@ -24,11 +24,20 @@ namespace EcommerceApi.Controllers
         public async Task<ActionResult<IEnumerable<NotificationDto>>> GetMyNotifications([FromQuery] int limit = 40)
         {
             var userId = GetUserId();
+            var username = CurrentUsername();
             if (limit < 1) limit = 1;
             if (limit > 100) limit = 100;
 
+            var ownedOrderIds = string.IsNullOrWhiteSpace(username)
+                ? new List<int>()
+                : await _context.Orders.AsNoTracking()
+                    .Where(o => o.AccountUsername == username)
+                    .Select(o => o.Id)
+                    .ToListAsync();
+
             var list = await _context.Notifications.AsNoTracking()
-                .Where(n => n.UserId == userId)
+                .Where(n => n.UserId == userId ||
+                            (n.RelatedOrderId.HasValue && ownedOrderIds.Contains(n.RelatedOrderId.Value)))
                 .OrderByDescending(n => n.CreatedAtUtc)
                 .Take(limit)
                 .Select(n => Map(n))
@@ -41,7 +50,17 @@ namespace EcommerceApi.Controllers
         public async Task<ActionResult<NotificationUnreadDto>> GetUnreadCount()
         {
             var userId = GetUserId();
-            var count = await _context.Notifications.CountAsync(n => n.UserId == userId && !n.IsRead);
+            var username = CurrentUsername();
+            var ownedOrderIds = string.IsNullOrWhiteSpace(username)
+                ? new List<int>()
+                : await _context.Orders.AsNoTracking()
+                    .Where(o => o.AccountUsername == username)
+                    .Select(o => o.Id)
+                    .ToListAsync();
+            var count = await _context.Notifications.CountAsync(n =>
+                !n.IsRead &&
+                (n.UserId == userId ||
+                 (n.RelatedOrderId.HasValue && ownedOrderIds.Contains(n.RelatedOrderId.Value))));
             return Ok(new NotificationUnreadDto { Count = count });
         }
 
@@ -49,8 +68,16 @@ namespace EcommerceApi.Controllers
         public async Task<IActionResult> MarkRead(int id)
         {
             var userId = GetUserId();
-            var n = await _context.Notifications.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            var username = CurrentUsername();
+            var n = await _context.Notifications.FirstOrDefaultAsync(x => x.Id == id);
             if (n == null) return NotFound(new { message = "Không tìm thấy thông báo." });
+            var isOwnerByUserId = n.UserId == userId;
+            var isOwnerByOrder = !string.IsNullOrWhiteSpace(username) &&
+                                 n.RelatedOrderId.HasValue &&
+                                 await _context.Orders.AsNoTracking().AnyAsync(o =>
+                                     o.Id == n.RelatedOrderId.Value && o.AccountUsername == username);
+            if (!isOwnerByUserId && !isOwnerByOrder)
+                return NotFound(new { message = "Không tìm thấy thông báo." });
 
             if (!n.IsRead)
             {
@@ -65,8 +92,17 @@ namespace EcommerceApi.Controllers
         public async Task<IActionResult> MarkAllRead()
         {
             var userId = GetUserId();
+            var username = CurrentUsername();
+            var ownedOrderIds = string.IsNullOrWhiteSpace(username)
+                ? new List<int>()
+                : await _context.Orders.AsNoTracking()
+                    .Where(o => o.AccountUsername == username)
+                    .Select(o => o.Id)
+                    .ToListAsync();
             var unread = await _context.Notifications
-                .Where(n => n.UserId == userId && !n.IsRead)
+                .Where(n => !n.IsRead &&
+                            (n.UserId == userId ||
+                             (n.RelatedOrderId.HasValue && ownedOrderIds.Contains(n.RelatedOrderId.Value))))
                 .ToListAsync();
 
             foreach (var n in unread)
@@ -91,5 +127,10 @@ namespace EcommerceApi.Controllers
         };
 
         private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        private string? CurrentUsername()
+        {
+            var name = User.FindFirstValue(ClaimTypes.Name);
+            return string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+        }
     }
 }

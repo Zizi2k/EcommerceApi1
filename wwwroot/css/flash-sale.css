@@ -2,10 +2,11 @@
     max-width: 1300px;
     margin: 18px auto 14px;
     padding: 0 20px 12px;
-    background: #fff;
+    background: #ffffff;
     border-radius: 14px;
     overflow: hidden;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #dbe6f3;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
 }
 
 .flash-sale-headline {
@@ -14,7 +15,7 @@
     align-items: center;
     gap: 10px;
     padding: 10px 14px;
-    background: linear-gradient(90deg, #ff512f, #f09819);
+    background: linear-gradient(90deg, #ff6b3d, #ff9f43);
     color: #fff;
 }
 
@@ -39,15 +40,15 @@
 .flash-sale-timebar {
     display: grid;
     grid-template-columns: repeat(6, minmax(120px, 1fr));
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    background: #2f2f34;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
 }
 
 .flash-slot {
     border: none;
-    border-right: 1px solid #4b5563;
+    border-right: 1px solid #e2e8f0;
     background: transparent;
-    color: #e2e8f0;
+    color: #0f172a;
     padding: 8px;
     text-align: center;
     font-family: inherit;
@@ -66,11 +67,11 @@
 
 .flash-slot span {
     font-size: 12px;
-    color: #cbd5e1;
+    color: #64748b;
 }
 
 .flash-slot.is-active {
-    background: #f97316;
+    background: linear-gradient(180deg, #ff8a3d, #ff6a2b);
     color: #fff;
 }
 
@@ -88,12 +89,20 @@
 .flash-sale-item {
     display: flex;
     flex-direction: column;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #dbe6f3;
     border-radius: 10px;
-    padding: 0 0 8px;
-    text-decoration: none;
+    padding: 0 0 10px;
     background: #fff;
     overflow: hidden;
+    height: 100%;
+}
+
+.flash-sale-item__link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .flash-sale-item img {
@@ -122,20 +131,44 @@
     text-align: left;
     padding: 0 8px;
     margin-top: 6px;
+    min-height: 54px;
 }
 
 .flash-sale-item__now {
     display: block;
-    color: #ef4444;
+    color: #dc2626;
     font-size: 28px;
     font-weight: 700;
     line-height: 1;
 }
 
 .flash-sale-item__old {
+    display: block;
     font-size: 12px;
     color: #94a3b8;
     text-decoration: line-through;
+    line-height: 1.25;
+}
+
+.flash-sale-item__add {
+    margin: 10px 8px 0;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    cursor: pointer;
+}
+
+.flash-sale-item__add:hover {
+    filter: brightness(1.05);
+}
+
+.flash-sale-item__add:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .flash-sale-empty {

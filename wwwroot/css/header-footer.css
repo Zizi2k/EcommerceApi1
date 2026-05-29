@@ -12,20 +12,29 @@ header.site-header {
 .header-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 12px 24px;
-    display: flex;
-    justify-content: space-between;
+    padding: 10px 24px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "brand nav actions";
     align-items: center;
     overflow: visible;
-    gap: 14px;
+    gap: 12px 20px;
 }
 
 .logo {
+    grid-area: brand;
+    justify-self: start;
     color: white;
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 700;
     cursor: pointer;
     transition: 0.3s;
+    white-space: nowrap;
+}
+
+.logo i {
+    font-size: 0.92em;
+    margin-right: 2px;
 }
 
 .logo:hover {
@@ -36,16 +45,19 @@ header.site-header {
     color: #00d4ff;
 }
 
-/* Navigation */
+/* Navigation — giữa header */
 .nav-menu {
+    grid-area: nav;
     display: flex;
     gap: 14px;
     align-items: center;
-    flex: 1;
-    margin-left: 18px;
+    justify-content: center;
+    justify-self: center;
     flex-wrap: nowrap;
     overflow: visible;
     min-width: 0;
+    width: 100%;
+    margin: 0;
 }
 
 .nav-menu a, .nav-menu button {
@@ -156,9 +168,12 @@ header.site-header {
 
 /* Header Right Section */
 .header-right {
+    grid-area: actions;
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: flex-end;
+    justify-self: end;
+    gap: 10px;
     flex-shrink: 0;
 }
 
@@ -239,6 +254,49 @@ header.site-header {
     align-items: center;
     gap: 8px;
     max-width: 220px;
+}
+
+/* Nút user đã đăng nhập: chỉ avatar tròn */
+#user-btn.user-btn {
+    padding: 0;
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    max-width: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(0, 212, 255, 0.45);
+    justify-content: center;
+    overflow: hidden;
+}
+
+#user-btn.user-btn:hover {
+    background: rgba(0, 212, 255, 0.22);
+    border-color: #00d4ff;
+}
+
+#user-btn .user-btn-text {
+    display: none !important;
+}
+
+#user-btn .user-btn-mark {
+    width: 100%;
+    height: 100%;
+}
+
+#user-btn .user-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: none;
+    background: transparent;
+}
+
+#user-btn .user-avatar-fallback {
+    font-size: 15px;
+    line-height: 1;
+    color: #e5e7eb;
 }
 
 .user-btn:hover {
@@ -438,9 +496,15 @@ footer {
 /* ========== RESPONSIVE ========== */
 @media(max-width: 768px) {
     .header-container {
+        display: flex;
         flex-wrap: wrap;
+        justify-content: space-between;
         gap: 15px;
-        padding: 15px 20px;
+        padding: 12px 20px;
+    }
+
+    .logo {
+        font-size: 20px;
     }
 
     .nav-menu {
@@ -454,8 +518,10 @@ footer {
         padding: 20px;
         gap: 15px;
         width: 100%;
-        order: 3;
+        order: 4;
         overflow: visible;
+        justify-content: flex-start;
+        justify-self: stretch;
     }
 
     .nav-menu.show {
@@ -486,19 +552,13 @@ footer {
 
     .menu-toggle {
         display: block;
-        order: 2;
-    }
-
-    .logo {
-        order: 1;
-        font-size: 22px;
     }
 
     .header-right {
-        order: 3;
-        width: 100%;
+        margin-left: auto;
+        width: auto;
         justify-content: flex-end;
-        gap: 10px;
+        gap: 8px;
     }
 
     .search-box {
@@ -508,6 +568,14 @@ footer {
     .cart-icon, .user-btn {
         padding: 8px 14px;
         font-size: 13px;
+    }
+
+    #user-btn.user-btn {
+        padding: 0;
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        max-width: 36px;
     }
 
     .footer-content {

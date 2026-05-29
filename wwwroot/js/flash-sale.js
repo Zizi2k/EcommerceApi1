@@ -19,6 +19,13 @@
         return Number(v || 0).toLocaleString('vi-VN') + ' VNĐ';
     }
 
+    function calcDiscountPercent(original, current) {
+        var orig = Number(original);
+        var curr = Number(current);
+        if (!orig || !curr || curr >= orig) return 0;
+        return Math.round(((orig - curr) / orig) * 100);
+    }
+
     function getVietnamNow() {
         var now = new Date();
         return new Date(now.getTime() + 7 * 3600000 + now.getTimezoneOffset() * 60000);
@@ -75,6 +82,10 @@
         }
         el.innerHTML = items.map(function (p) {
             var href = p.productId ? 'product.html?id=' + encodeURIComponent(p.productId) : '#products';
+            var discount = calcDiscountPercent(p.price, p.displayPrice);
+            var badge = discount > 0
+                ? '<span class="flash-sale-item__badge">-' + discount + '%</span>'
+                : '';
             var old = p.price && p.displayPrice && Number(p.displayPrice) < Number(p.price)
                 ? '<span class="flash-sale-item__old">' + escHtml(formatPrice(p.price)) + '</span>'
                 : '';
@@ -84,7 +95,9 @@
                 : '';
             return '<article class="flash-sale-item">' +
                 '<a class="flash-sale-item__link" href="' + href + '">' +
+                '<div class="flash-sale-item__media">' + badge +
                 '<img src="' + escHtml(p.imageUrl || '') + '" alt="" onerror="this.src=\'https://via.placeholder.com/64\'">' +
+                '</div>' +
                 '<div class="flash-sale-item__name">' + escHtml(p.productName || p.headline || 'Sản phẩm') + '</div>' +
                 '<div class="flash-sale-item__price"><span class="flash-sale-item__now">' + escHtml(formatPrice(p.displayPrice)) + '</span>' + old + '</div>' +
                 '</a>' + addBtn +

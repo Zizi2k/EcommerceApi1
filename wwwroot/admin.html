@@ -462,33 +462,174 @@
         }
         .tier-badge {
             display: inline-block;
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 999px;
             font-size: 11px;
             font-weight: 700;
             white-space: nowrap;
+            border: 1px solid transparent;
         }
-        .tier-diamond { background: #e0e7ff; color: #3730a3; }
-        .tier-gold { background: #fef3c7; color: #b45309; }
-        .tier-silver { background: #f1f5f9; color: #475569; }
-        .tier-bronze { background: #ffedd5; color: #c2410c; }
-        .tier-new { background: #ecfdf5; color: #047857; }
+        .tier-diamond { background: #eef2ff; color: #4338ca; border-color: #c7d2fe; }
+        .tier-gold { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+        .tier-silver { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
+        .tier-bronze { background: #ffedd5; color: #c2410c; border-color: #fed7aa; }
+        .tier-new { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+        .customer-rank-table {
+            table-layout: fixed;
+            width: 100%;
+        }
+        .customer-rank-table th,
+        .customer-rank-table td {
+            vertical-align: middle;
+            padding: 12px 10px;
+        }
+        .customer-rank-table th:nth-child(1),
+        .customer-rank-table .cr-col-rank { width: 52px; text-align: center; }
+        .customer-rank-table th:nth-child(2) { width: 30%; }
+        .customer-rank-table th:nth-child(3) { width: 16%; }
+        .customer-rank-table th:nth-child(4),
+        .customer-rank-table .cr-col-count { width: 76px; text-align: center; }
+        .customer-rank-table th:nth-child(5),
+        .customer-rank-table .cr-col-spent { width: 148px; text-align: right; }
+        .customer-rank-table th:nth-child(6),
+        .customer-rank-table .cr-col-date { width: 128px; text-align: center; }
+        .customer-rank-table th:nth-child(7),
+        .customer-rank-table .cr-col-tier { width: 120px; text-align: center; }
         .rank-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            color: #0369a1;
+            background: #eff6ff;
+        }
+        .rank-num--1 { background: #fef3c7; color: #b45309; }
+        .rank-num--2 { background: #f1f5f9; color: #475569; }
+        .rank-num--3 { background: #ffedd5; color: #c2410c; }
+        .customer-sub {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 3px;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        .cr-customer-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.35;
+        }
+        .cr-col-customer { vertical-align: top !important; }
+        .cr-contact-phone {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0f172a;
+            white-space: nowrap;
+        }
+        .cr-contact-addr {
+            margin-top: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .cr-stat {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 34px;
+            height: 34px;
+            padding: 0 8px;
+            border-radius: 10px;
+            background: #eff6ff;
+            color: #0369a1;
+            font-weight: 700;
+            font-size: 15px;
+        }
+        .cr-money {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 13px;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+        .cr-money small {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 11px;
+            margin-left: 2px;
+        }
+        .cr-date {
+            font-size: 12px;
+            color: #334155;
+            white-space: nowrap;
+            line-height: 1.35;
+        }
+        .cr-orders-fold {
+            margin-top: 8px;
+            font-size: 12px;
+        }
+        .cr-orders-fold summary {
+            cursor: pointer;
+            color: #0369a1;
+            font-weight: 600;
+            list-style: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            user-select: none;
+        }
+        .cr-orders-fold summary::-webkit-details-marker { display: none; }
+        .cr-orders-fold summary::before {
+            content: '▸';
+            font-size: 11px;
+            transition: transform 0.15s;
+        }
+        .cr-orders-fold[open] summary::before { transform: rotate(90deg); }
+        .cr-orders-list {
+            margin: 8px 0 0;
+            padding: 0;
+            list-style: none;
+            max-height: 160px;
+            overflow-y: auto;
+        }
+        .cr-orders-list li {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 4px 10px;
+            padding: 7px 9px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 11px;
+            line-height: 1.35;
+        }
+        .cr-orders-list li:last-child { margin-bottom: 0; }
+        .cr-order-code {
+            font-weight: 700;
+            color: #0f172a;
+            white-space: nowrap;
+        }
+        .cr-order-amt {
             font-weight: 700;
             color: #0369a1;
-            min-width: 28px;
-            display: inline-block;
+            text-align: right;
+            white-space: nowrap;
         }
-        .customer-sub { font-size: 12px; color: #64748b; margin-top: 2px; }
-        .customer-orders-detail {
-            font-size: 12px;
-            color: #475569;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px dashed #e2e8f0;
+        .cr-order-meta {
+            grid-column: 1 / -1;
+            color: #64748b;
+            font-size: 10px;
         }
-        .customer-orders-detail span { display: block; margin-bottom: 4px; }
-        tr.customer-row-top td { vertical-align: top; }
+        .customer-rank-table tbody tr:hover td { background: #f8fafc; }
+        @media (max-width: 1100px) {
+            .customer-rank-table { table-layout: auto; min-width: 860px; }
+        }
     </style>
 </head>
 <body class="admin-page">
@@ -1037,7 +1178,7 @@
             </div>
             <div id="customers-loading" class="empty-hint" style="display:none;">Đang tải...</div>
             <div class="table-wrap">
-                <table>
+                <table class="customer-rank-table">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -1371,10 +1512,49 @@
             updateModeUI();
         }
 
+        function normalizeProductRecord(p) {
+            if (!p || typeof p !== 'object') return p;
+            var rawId = p.id != null ? p.id : p.Id;
+            var id = parseInt(rawId, 10);
+            return Object.assign({}, p, {
+                id: isNaN(id) ? rawId : id,
+                categoryId: p.categoryId != null ? p.categoryId : p.CategoryId,
+                categoryName: p.categoryName != null ? p.categoryName : p.CategoryName,
+                imageUrl: p.imageUrl != null ? p.imageUrl : p.ImageUrl,
+                costPrice: p.costPrice != null ? p.costPrice : p.CostPrice
+            });
+        }
+
+        function parsePickerProductId(raw) {
+            if (raw == null || raw === '') return null;
+            var n = parseInt(String(raw), 10);
+            return isNaN(n) || n < 1 ? null : n;
+        }
+
+        function findCachedProduct(id) {
+            var n = typeof id === 'number' ? id : parsePickerProductId(id);
+            if (n == null) return null;
+            return adminProductsCache.find(function (x) {
+                return Number(x.id) === n;
+            }) || null;
+        }
+
+        function syncProductPickerActions() {
+            var sel = document.getElementById('product-picker-select');
+            var editBtn = document.getElementById('btn-edit-selected');
+            var delBtn = document.getElementById('btn-delete-selected');
+            var p = findCachedProduct(sel && sel.value);
+            if (editBtn) editBtn.disabled = !p;
+            if (delBtn) delBtn.disabled = !p;
+            return p;
+        }
+
         function wireProductPickerUi() {
             const search = document.getElementById('product-filter-search');
             const catFilter = document.getElementById('product-filter-category');
             const picker = document.getElementById('product-picker-select');
+            const editBtn = document.getElementById('btn-edit-selected');
+            const delBtn = document.getElementById('btn-delete-selected');
             if (search && !search._wired) {
                 search._wired = true;
                 search.addEventListener('input', renderProductPicker);
@@ -1386,12 +1566,28 @@
             if (picker && !picker._wired) {
                 picker._wired = true;
                 picker.addEventListener('change', onProductPickerChange);
+                picker.addEventListener('input', onProductPickerChange);
+            }
+            if (editBtn && !editBtn._wired) {
+                editBtn._wired = true;
+                editBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    editSelectedProduct();
+                });
+            }
+            if (delBtn && !delBtn._wired) {
+                delBtn._wired = true;
+                delBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    deleteSelectedProduct();
+                });
             }
         }
 
         function fillForm(p) {
-            editingId = p.id;
-            document.getElementById('productId').value = p.id;
+            p = normalizeProductRecord(p);
+            editingId = parsePickerProductId(p.id);
+            document.getElementById('productId').value = editingId != null ? editingId : '';
             document.getElementById('name').value = p.name || '';
             document.getElementById('description').value = p.description || '';
             document.getElementById('price').value = p.price != null ? p.price : '';
@@ -1446,23 +1642,13 @@
         function onProductPickerChange() {
             const sel = document.getElementById('product-picker-select');
             const card = document.getElementById('product-picker-preview');
-            const editBtn = document.getElementById('btn-edit-selected');
-            const delBtn = document.getElementById('btn-delete-selected');
-            const id = sel && parseInt(sel.value, 10);
+            const p = syncProductPickerActions();
+            const id = parsePickerProductId(sel && sel.value);
+
             if (!card) return;
 
-            if (!id || isNaN(id)) {
+            if (!id || !p) {
                 card.style.display = 'none';
-                if (editBtn) editBtn.disabled = true;
-                if (delBtn) delBtn.disabled = true;
-                return;
-            }
-
-            const p = adminProductsCache.find(function (x) { return x.id === id; });
-            if (!p) {
-                card.style.display = 'none';
-                if (editBtn) editBtn.disabled = true;
-                if (delBtn) delBtn.disabled = true;
                 return;
             }
 
@@ -1485,8 +1671,6 @@
             if (catEl) catEl.textContent = resolveCategoryName(p.categoryId, p.categoryName) || '—';
 
             card.style.display = 'flex';
-            if (editBtn) editBtn.disabled = false;
-            if (delBtn) delBtn.disabled = false;
         }
 
         function renderProductPicker() {
@@ -1498,8 +1682,10 @@
             const prevId = sel.value;
             sel.innerHTML = '<option value="">— Chọn sản phẩm —</option>' +
                 list.map(function (p) {
-                    return '<option value="' + p.id + '">' + escHtml(p.name) + ' · ' +
-                        Number(p.price).toLocaleString('vi-VN') + ' ₫</option>';
+                    var pid = parsePickerProductId(p.id);
+                    if (pid == null) return '';
+                    return '<option value="' + pid + '">' + escHtml(p.name) + ' · ' +
+                        Number(p.price || 0).toLocaleString('vi-VN') + ' ₫</option>';
                 }).join('');
 
             if (countEl) {
@@ -1508,9 +1694,9 @@
                     : '0 SP';
             }
 
-            if (prevId && list.some(function (p) { return String(p.id) === prevId; })) {
+            if (prevId && list.some(function (p) { return String(parsePickerProductId(p.id)) === String(prevId); })) {
                 sel.value = prevId;
-            } else if (editingId != null && list.some(function (p) { return p.id === editingId; })) {
+            } else if (editingId != null && list.some(function (p) { return Number(p.id) === Number(editingId); })) {
                 sel.value = String(editingId);
             } else {
                 sel.value = '';
@@ -1520,24 +1706,25 @@
 
         function setProductPickerSelection(id) {
             const sel = document.getElementById('product-picker-select');
-            if (!sel || !id) return;
-            if (!Array.from(sel.options).some(function (o) { return o.value === String(id); })) {
-                const p = adminProductsCache.find(function (x) { return x.id === id; });
+            const pid = parsePickerProductId(id);
+            if (!sel || pid == null) return;
+            if (!Array.from(sel.options).some(function (o) { return o.value === String(pid); })) {
+                const p = findCachedProduct(pid);
                 if (p) {
                     const opt = document.createElement('option');
-                    opt.value = String(p.id);
-                    opt.textContent = (p.name || '') + ' · ' + Number(p.price).toLocaleString('vi-VN') + ' ₫';
+                    opt.value = String(pid);
+                    opt.textContent = (p.name || '') + ' · ' + Number(p.price || 0).toLocaleString('vi-VN') + ' ₫';
                     sel.appendChild(opt);
                 }
             }
-            sel.value = String(id);
+            sel.value = String(pid);
             onProductPickerChange();
         }
 
         function editSelectedProduct() {
             const sel = document.getElementById('product-picker-select');
-            const id = sel && parseInt(sel.value, 10);
-            if (!id || isNaN(id)) {
+            const id = parsePickerProductId(sel && sel.value);
+            if (id == null) {
                 setMessages('', 'Chọn một sản phẩm trong danh sách.');
                 return;
             }
@@ -1546,8 +1733,8 @@
 
         function deleteSelectedProduct() {
             const sel = document.getElementById('product-picker-select');
-            const id = sel && parseInt(sel.value, 10);
-            if (!id || isNaN(id)) {
+            const id = parsePickerProductId(sel && sel.value);
+            if (id == null) {
                 setMessages('', 'Chọn một sản phẩm để xóa.');
                 return;
             }
@@ -1575,7 +1762,7 @@
                 }
 
                 if (loading) loading.style.display = 'none';
-                adminProductsCache = list;
+                adminProductsCache = list.map(normalizeProductRecord);
 
                 const countEl = document.getElementById('product-count-text');
                 if (!list.length) {
@@ -1601,18 +1788,24 @@
         }
 
         function editProductById(id) {
-            const p = adminProductsCache.find(x => x.id === id);
-            if (p) fillForm(p);
+            const p = findCachedProduct(id);
+            if (p) {
+                fillForm(p);
+                return;
+            }
+            setMessages('', 'Không tìm thấy sản phẩm trong danh sách. Hãy bấm Làm mới.');
         }
 
         async function deleteProduct(id) {
             if (!checkAuth()) return;
-            const p = adminProductsCache.find(x => x.id === id);
-            const name = p && p.name ? p.name : ('#' + id);
+            const pid = parsePickerProductId(id);
+            if (pid == null) return;
+            const p = findCachedProduct(pid);
+            const name = p && p.name ? p.name : ('#' + pid);
             if (!confirm('Xóa sản phẩm "' + name + '"? Thao tác không hoàn tác.')) return;
             try {
-                await apiDelete(`${API_ENDPOINTS.PRODUCTS}/${id}`);
-                if (editingId === id) resetForm();
+                await apiDelete(`${API_ENDPOINTS.PRODUCTS}/${pid}`);
+                if (editingId === pid) resetForm();
                 setMessages('Đã xóa sản phẩm.', '');
                 await loadProductTable();
             } catch (e) {
@@ -1683,12 +1876,19 @@
             return Number(amount || 0).toLocaleString('vi-VN') + ' VNĐ';
         }
 
+        function formatVndParts(amount) {
+            return Number(amount || 0).toLocaleString('vi-VN') + ' <small>VNĐ</small>';
+        }
+
         function formatOrderDate(iso) {
             if (!iso) return '—';
             try {
-                return new Date(iso).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' });
+                var d = new Date(iso);
+                var date = d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: '2-digit' });
+                var time = d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', hour12: false });
+                return '<span class="cr-date">' + time + '<br>' + date + '</span>';
             } catch (e) {
-                return iso;
+                return escapeHtml(iso);
             }
         }
 
@@ -1724,26 +1924,37 @@
 
                 tbody.innerHTML = list.map(function (c) {
                     var tierClass = 'tier-' + (c.tier || 'new');
+                    var rankClass = c.rank <= 3 ? ' rank-num--' + c.rank : '';
                     var ordersHtml = '';
                     if (c.recentOrders && c.recentOrders.length) {
-                        ordersHtml = '<div class="customer-orders-detail">' +
+                        ordersHtml = '<details class="cr-orders-fold">' +
+                            '<summary>' + c.recentOrders.length + ' đơn gần đây</summary>' +
+                            '<ul class="cr-orders-list">' +
                             c.recentOrders.map(function (o) {
-                                return '<span>' + formatOrderCode(o.orderId) + ' · ' + formatVnd(o.totalAmount) +
-                                    ' · ' + escapeHtml(o.paymentMethod) + ' · ' + formatOrderDate(o.createdAtUtc) +
-                                    ' · ' + o.itemCount + ' SP</span>';
-                            }).join('') + '</div>';
+                                return '<li>' +
+                                    '<span class="cr-order-code">' + formatOrderCode(o.orderId) + '</span>' +
+                                    '<span class="cr-order-amt">' + formatVnd(o.totalAmount) + '</span>' +
+                                    '<span class="cr-order-meta">' + escapeHtml(o.paymentMethod || '—') +
+                                    ' · ' + o.itemCount + ' SP · ' +
+                                    new Date(o.createdAtUtc).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' }) +
+                                    '</span></li>';
+                            }).join('') +
+                            '</ul></details>';
                     }
-                    return '<tr class="customer-row-top">' +
-                        '<td><span class="rank-num">' + c.rank + '</span></td>' +
-                        '<td><strong>' + escapeHtml(c.displayName) + '</strong>' +
+                    return '<tr class="customer-rank-row">' +
+                        '<td class="cr-col-rank"><span class="rank-num' + rankClass + '">' + c.rank + '</span></td>' +
+                        '<td class="cr-col-customer">' +
+                        '<div class="cr-customer-name">' + escapeHtml(c.displayName) + '</div>' +
                         '<div class="customer-sub">@' + escapeHtml(c.accountUsername) + ' · ID ' + c.userId + '</div>' +
                         ordersHtml + '</td>' +
-                        '<td>' + (c.phone ? escapeHtml(c.phone) : '—') +
-                        (c.shippingAddress ? '<div class="customer-sub">' + escapeHtml(c.shippingAddress) + '</div>' : '') + '</td>' +
-                        '<td><strong>' + c.orderCount + '</strong></td>' +
-                        '<td>' + formatVnd(c.totalSpent) + '</td>' +
-                        '<td>' + formatOrderDate(c.lastOrderAtUtc) + '</td>' +
-                        '<td><span class="tier-badge ' + tierClass + '">' + escapeHtml(c.tierLabel) + '</span></td>' +
+                        '<td class="cr-col-contact">' +
+                        (c.phone ? '<div class="cr-contact-phone">' + escapeHtml(c.phone) + '</div>' : '<span class="customer-sub">—</span>') +
+                        (c.shippingAddress ? '<div class="customer-sub cr-contact-addr">' + escapeHtml(c.shippingAddress) + '</div>' : '') +
+                        '</td>' +
+                        '<td class="cr-col-count"><span class="cr-stat">' + c.orderCount + '</span></td>' +
+                        '<td class="cr-col-spent"><span class="cr-money">' + formatVndParts(c.totalSpent) + '</span></td>' +
+                        '<td class="cr-col-date">' + formatOrderDate(c.lastOrderAtUtc) + '</td>' +
+                        '<td class="cr-col-tier"><span class="tier-badge ' + tierClass + '">' + escapeHtml(c.tierLabel) + '</span></td>' +
                         '</tr>';
                 }).join('');
             } catch (e) {

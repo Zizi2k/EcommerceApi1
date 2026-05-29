@@ -42,7 +42,10 @@ function syncUserAvatarButton() {
     const label = userBtn.querySelector('.user-btn-text');
 
     if (label) {
-        label.textContent = (userName && userName.trim()) ? userName.trim() : 'Tài khoản';
+        var name = (userName && userName.trim()) ? userName.trim() : 'Tài khoản';
+        label.textContent = name;
+        userBtn.title = name;
+        userBtn.setAttribute('aria-label', 'Tài khoản: ' + name);
     }
 
     if (!img || !fallback) return;

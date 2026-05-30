@@ -6,7 +6,8 @@
     "trang_moi": "123456",
     "Duy": "123456",
     "ThanhHien": "123456",
-    "Hien_Kiet": "123456"
+    "Hien_Kiet": "123456",
+    "ChaManh": "123456"
   },
   "Profiles": {
     "admin": {
@@ -37,6 +38,11 @@
     "Hien_Kiet": {
       "DisplayName": "Hi\u1EC1n H\u00F3ng H\u00E1ch",
       "AvatarUrl": "/uploads/profiles/eb1ae9caed1f403688871ac3cb10a5e2.jpg",
+      "BackgroundUrl": null
+    },
+    "ChaManh": {
+      "DisplayName": "ChaManh",
+      "AvatarUrl": "https://png.pngtree.com/png-clipart/20250501/original/pngtree-adorable-cartoon-piglet-pink-cute-happy-smiling-big-eyes-on-black-png-image_20921133.png",
       "BackgroundUrl": null
     }
   }
